@@ -1,0 +1,10 @@
+<resources>
+
+    <declare-styleable name="menuAttrs">
+        <attr name="menuAddIcon" format="reference" />
+        <attr name="menuSearchIcon" format="reference" />
+        <attr name="menuHelpIcon" format="reference" />
+        <attr name="actionSend" format="reference" />
+    </declare-styleable>
+
+</resources>

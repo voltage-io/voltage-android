@@ -1,0 +1,95 @@
+<resources>
+    <string name="app_name">voltage.io</string>
+
+    <string name="title_inbox">INBOX</string>
+    <string name="title_user_new">NEW FRIEND</string>
+    <string name="title_user_add">ADD FRIEND</string>
+    <string name="title_user_edit">EDIT FRIEND</string>
+    <string name="title_broadcasting">BROADCASTING</string>
+    <string name="title_settings">SETTINGS</string>
+    <string name="title_conversation">CONVERSATION</string>
+    <string name="title_conversation_new">NEW CONVERSATION</string>
+    <string name="title_conversation_edit">EDIT CONVERSATION</string>
+    <string name="title_user_list">FRIENDS</string>
+    <string name="title_select_action">SELECT ACTION</string>
+    <string name="title_delete_messages">DELETE MESSAGES</string>
+    <string name="title_members_add">ADD MEMBERS</string>
+    <string name="title_members_remove">REMOVE MEMBERS</string>
+    <string name="title_members">MEMBERS</string>
+    <string name="title_account">ACCOUNT</string>
+    <string name="title_help">HELP</string>
+    <string name="title_send">SEND</string>
+
+    <string name="preference_title">SETTINGS</string>
+    <string name="preference_version">VERSION</string>
+    <string name="preference_user_name">USER NAME</string>
+    <string name="preference_reg_id">REGISTRATION ID</string>
+    <string name="preference_read_receipts">SEND READ RECEIPTS</string>
+    <string name="preference_read_receipts_summary">Send a read receipt after viewing each message</string>
+    <string name="preference_auto_play_gifs">AUTO PLAY GIFS</string>
+    <string name="preference_auto_play_gifs_summary">Automatically play animated gifs within a conversation</string>
+    <string name="preference_auto_add_users">AUTO ADD USERS</string>
+    <string name="preference_auto_add_users_summary">Automatically fetch user information when an unknown user is added to a conversation</string>
+    <string name="preference_use_dark_theme">USE DARK THEME</string>
+
+    <string name="empty_start">START</string>
+    <string name="empty_a_new">A NEW</string>
+    <string name="empty_conversation">CONVERSATION</string>
+    <string name="empty_add">ADD</string>
+    <string name="empty_friend">FRIEND</string>
+    <string name="empty_add_a_friend">CLICK TO ADD A NEW FRIEND</string>
+    <string name="empty_added_all_friends">ALL YOUR FRIENDS HAVE ALREADY BEEN ADDED</string>
+    <string name="empty_no_more_members">NO ONE LEFT TO REMOVE</string>
+    <string name="empty_no_members">THERE IS NO ONE HERE</string>
+    <string name="empty_no_friends">YOUR FRIENDS LIST IS EMPTY :(</string>
+    <string name="empty_send">SEND</string>
+    <string name="empty_message">MESSAGE</string>
+    <string name="empty_no_results">NO RESULTS</string>
+
+    <string name="menu_add">Add</string>
+    <string name="menu_remove">Remove</string>
+    <string name="menu_share">Share</string>
+    <string name="menu_all_friends">All Friends</string>
+    <string name="menu_add_friend">Add Friend</string>
+    <string name="menu_broadcast">Broadcast</string>
+    <string name="menu_settings">Settings</string>
+    <string name="menu_search">Search</string>
+    <string name="menu_info">Info</string>
+    <string name="menu_members_add">Add Members</string>
+    <string name="menu_members_remove">Remove Members</string>
+    <string name="menu_members_view">View Members</string>
+    <string name="menu_rename">Rename</string>
+    <string name="menu_leave">Leave</string>
+    <string name="menu_mute">Mute</string>
+
+    <string name="user_reg_id">REGISTRATION ID</string>
+    <string name="user_name">NAME</string>
+    <string name="user_add">ADD</string>
+    <string name="user_broadcast">BROADCAST</string>
+    <string name="user_share">SHARE</string>
+    <string name="user_update">UPDATE</string>
+
+    <string name="broadcasting_title">BROADCASTING INFO OVER NFC</string>
+    <string name="broadcasting_text">Place devices back to back to send your registration information to a friend.</string>
+
+    <string name="help_title">HOW DO I ADD A FRIEND?</string>
+    <string name="help_text">In order to add someone as a friend, you need their registration id.\n\nThey can send you this information in two different ways:\n\nBroadcast it over NFC\n(Settings -> Broadcast)\n\nSend you a URL\n(Settings -> Share)</string>
+
+    <string name="user_new_two_ways">ADD A FRIEND IN ONE OF TWO WAYS:</string>
+    <string name="user_new_broadcast">Broadcast your registration information over NFC.</string>
+    <string name="user_new_or">- OR -</string>
+    <string name="user_new_share">Share your registration information as a link.</string>
+
+    <string name="select_user_name">Select a username</string>
+
+    <string name="conversation_create">CREATE CONVERSATION</string>
+    <string name="conversation_select_a_name">Select a name</string>
+    <string name="conversation_select_participants">Select participants</string>
+    <string name="conversation_optional">(Optional)</string>
+
+    <string name="ok">OK</string>
+    <string name="next">NEXT</string>
+    <string name="play">PLAY</string>
+    <string name="emoji">ツ</string>
+
+</resources>

@@ -1,0 +1,46 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 23
+    buildToolsVersion "23.0.3"
+
+    defaultConfig {
+        applicationId "io.voltage.app"
+        minSdkVersion 16
+        targetSdkVersion 23
+    }
+
+    signingConfigs {
+        release {
+            storeFile file(VOLTAGE_STORE_FILE)
+            storePassword VOLTAGE_STORE_PASS
+            keyAlias VOLTAGE_KEY_ALIAS
+            keyPassword VOLTAGE_KEY_PASS
+        }
+    }
+
+    buildTypes {
+        release {
+            signingConfig signingConfigs.release
+        }
+    }
+}
+
+dependencies {
+    compile 'com.google.code.gson:gson:2.4'
+    compile 'com.facebook.fresco:fresco:0.9.0'
+    compile 'com.squareup.retrofit2:retrofit:2.0.1'
+    compile 'com.squareup.retrofit2:converter-gson:2.0.1'
+
+    compile 'com.android.support:support-v4:23.0.1'
+    compile 'com.android.support:support-v13:23.0.1'
+    compile 'com.android.support:appcompat-v7:23.0.1'
+    compile 'com.android.support:preference-v7:23.0.1'
+    compile 'com.google.android.gms:play-services-gcm:8.4.0'
+
+    compile('io.pivotal:arca-service:1.0-beta.5-SNAPSHOT')
+    compile('io.pivotal:arca-provider:1.0-beta.5-SNAPSHOT')
+    compile('io.pivotal:arca-fragments:1.0-beta.5-SNAPSHOT') {
+        exclude group: 'com.android.support'
+    }
+}

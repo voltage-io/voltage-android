@@ -1,0 +1,24 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+    <style name="VoltageTheme.Color_333333" parent="VoltageTheme.Light">
+        <item name="android:colorPrimary" tools:ignore="NewApi">#333</item>
+        <item name="colorPrimary">#333</item>
+        <item name="android:colorPrimaryDark" tools:ignore="NewApi">#000</item>
+        <item name="colorPrimaryDark">#000</item>
+    </style>
+
+    <style name="VoltageTheme.Color_777777" parent="VoltageTheme.Light">
+        <item name="android:colorPrimary" tools:ignore="NewApi">#aaa</item>
+        <item name="colorPrimary">#aaa</item>
+        <item name="android:colorPrimaryDark" tools:ignore="NewApi">#777</item>
+        <item name="colorPrimaryDark">#777</item>
+    </style>
+
+    <style name="VoltageTheme.Color_ffffff" parent="VoltageTheme.Dark">
+        <item name="android:colorPrimary" tools:ignore="NewApi">#fff</item>
+        <item name="colorPrimary">#fff</item>
+        <item name="android:colorPrimaryDark" tools:ignore="NewApi">#eee</item>
+        <item name="colorPrimaryDark">#eee</item>
+    </style>
+
+</resources>

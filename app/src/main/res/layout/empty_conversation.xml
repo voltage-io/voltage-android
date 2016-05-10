@@ -1,0 +1,47 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@android:id/empty"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:alpha="0.5"
+    android:gravity="bottom"
+    android:orientation="vertical"
+    android:padding="15dp"
+    android:visibility="gone">
+
+    <ImageView
+        android:id="@+id/empty_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="20dp"
+        android:src="@drawable/ic_arrow_down_80" />
+
+    <TextView
+        android:id="@+id/empty_text_1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toLeftOf="@id/empty_icon"
+        android:text="@string/empty_send"
+        android:textSize="18sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/empty_text_2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignRight="@id/empty_text_1"
+        android:layout_below="@id/empty_text_1"
+        android:text="@string/empty_a_new"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/empty_text_3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignRight="@id/empty_text_1"
+        android:layout_below="@id/empty_text_2"
+        android:text="@string/empty_message"
+        android:textSize="18sp" />
+
+</RelativeLayout>

@@ -1,0 +1,60 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+    <style name="VoltageTheme.Dialog" parent="Theme.AppCompat.Light.Dialog">
+        <item name="android:windowNoTitle">false</item>
+    </style>
+
+    <style name="VoltageTheme.Fullscreen" parent="Theme.AppCompat.Light.NoActionBar">
+    </style>
+
+    <style name="VoltageTheme.Light" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="menuAddIcon">@drawable/ic_add_box_white_48dp</item>
+        <item name="menuSearchIcon">@drawable/ic_search_white_48dp</item>
+        <item name="menuHelpIcon">@drawable/ic_live_help_white_48dp</item>
+        <item name="actionSend">@drawable/ic_action_send_now_light</item>
+
+        <item name="android:actionBarStyle">@style/VoltageTheme.ActionBar.Light</item>
+        <item name="actionBarStyle">@style/VoltageTheme.ActionBar.Light</item>
+        <item name="android:actionBarSize">70dp</item>
+        <item name="actionBarSize">70dp</item>
+
+        <item name="preferenceTheme">@style/PreferenceThemeOverlay</item>
+    </style>
+
+    <style name="VoltageTheme.ActionBar.Light" parent="@style/Widget.AppCompat.Light.ActionBar">
+        <item name="android:titleTextStyle">@style/VoltageTheme.ActionBarTitle.Light</item>
+        <item name="titleTextStyle">@style/VoltageTheme.ActionBarTitle.Light</item>
+    </style>
+
+    <style name="VoltageTheme.ActionBarTitle.Light" parent="@style/TextAppearance.AppCompat.Widget.ActionBar.Title">
+        <item name="android:textColor">#fff</item>
+        <item name="android:textSize">24sp</item>
+        <item name="android:textStyle">normal</item>
+    </style>
+
+    <style name="VoltageTheme.Dark" parent="Theme.AppCompat">
+        <item name="menuAddIcon">@drawable/ic_add_box_black_48dp</item>
+        <item name="menuSearchIcon">@drawable/ic_search_black_48dp</item>
+        <item name="menuHelpIcon">@drawable/ic_live_help_black_48dp</item>
+        <item name="actionSend">@drawable/ic_action_send_now_light</item>
+
+        <item name="android:actionBarStyle">@style/VoltageTheme.ActionBar.Dark</item>
+        <item name="actionBarStyle">@style/VoltageTheme.ActionBar.Dark</item>
+        <item name="android:actionBarSize">70dp</item>
+        <item name="actionBarSize">70dp</item>
+
+        <item name="preferenceTheme">@style/PreferenceThemeOverlay</item>
+    </style>
+
+    <style name="VoltageTheme.ActionBar.Dark" parent="@style/Widget.AppCompat.Light.ActionBar">
+        <item name="android:titleTextStyle">@style/VoltageTheme.ActionBarTitle.Dark</item>
+        <item name="titleTextStyle">@style/VoltageTheme.ActionBarTitle.Dark</item>
+    </style>
+
+    <style name="VoltageTheme.ActionBarTitle.Dark" parent="@style/TextAppearance.AppCompat.Widget.ActionBar.Title">
+        <item name="android:textColor">#000</item>
+        <item name="android:textSize">24sp</item>
+        <item name="android:textStyle">normal</item>
+    </style>
+
+</resources>

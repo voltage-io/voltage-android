@@ -1,0 +1,365 @@
+package io.voltage.app.application;
+
+import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
+
+import io.pivotal.arca.provider.Column;
+import io.pivotal.arca.provider.ColumnOptions;
+import io.pivotal.arca.provider.DatabaseProvider;
+import io.pivotal.arca.provider.GroupBy;
+import io.pivotal.arca.provider.Joins;
+import io.pivotal.arca.provider.OrderBy;
+import io.pivotal.arca.provider.SQLiteTable;
+import io.pivotal.arca.provider.SQLiteView;
+import io.pivotal.arca.provider.Select;
+import io.pivotal.arca.provider.SelectFrom;
+import io.pivotal.arca.provider.Unique;
+
+public class VoltageContentProvider extends DatabaseProvider {
+
+    public static final String AUTHORITY = VoltageContentProvider.class.getName();
+
+    private static final Uri BASE_URI = Uri.parse("content://" + AUTHORITY);
+
+    public static final class Uris {
+        public static final Uri THREADS = Uri.withAppendedPath(BASE_URI, Paths.THREADS);
+        public static final Uri USERS =  Uri.withAppendedPath(BASE_URI, Paths.USERS);
+        public static final Uri THREAD_USERS = Uri.withAppendedPath(BASE_URI, Paths.THREAD_USERS);
+        public static final Uri MESSAGES = Uri.withAppendedPath(BASE_URI, Paths.MESSAGES);
+        public static final Uri INBOX = Uri.withAppendedPath(BASE_URI, Paths.INBOX);
+        public static final Uri CONVERSATION = Uri.withAppendedPath(BASE_URI, Paths.CONVERSATION);
+        public static final Uri PARTICIPANTS = Uri.withAppendedPath(BASE_URI, Paths.PARTICIPANTS);
+        public static final Uri RECIPIENTS = Uri.withAppendedPath(BASE_URI, Paths.RECIPIENTS);
+        public static final Uri MEMBERS = Uri.withAppendedPath(BASE_URI, Paths.MEMBERS);
+        public static final Uri TRANSACTIONS = Uri.withAppendedPath(BASE_URI, Paths.TRANSACTIONS);
+    }
+
+    private static final class Paths {
+        public static final String THREADS = "threads";
+        public static final String USERS = "users";
+        public static final String THREAD_USERS = "thread_users";
+        public static final String MESSAGES = "messages";
+        public static final String INBOX = "inbox";
+        public static final String CONVERSATION = "conversation";
+        public static final String PARTICIPANTS = "participants";
+        public static final String RECIPIENTS = "recipients";
+        public static final String MEMBERS = "members";
+        public static final String TRANSACTIONS = "transactions";
+    }
+
+    @Override
+    public boolean onCreate() {
+        registerDataset(AUTHORITY, Paths.THREADS, ThreadTable.class);
+        registerDataset(AUTHORITY, Paths.USERS, UserTable.class);
+        registerDataset(AUTHORITY, Paths.THREAD_USERS, ThreadUserTable.class);
+        registerDataset(AUTHORITY, Paths.MESSAGES, MessageTable.class);
+        registerDataset(AUTHORITY, Paths.INBOX, InboxView.class);
+        registerDataset(AUTHORITY, Paths.CONVERSATION, ConversationView.class);
+        registerDataset(AUTHORITY, Paths.PARTICIPANTS, ParticipantView.class);
+        registerDataset(AUTHORITY, Paths.RECIPIENTS, RecipientView.class);
+        registerDataset(AUTHORITY, Paths.MEMBERS, MemberView.class);
+        registerDataset(AUTHORITY, Paths.TRANSACTIONS, TransactionView.class);
+        return true;
+    }
+
+    public static class ThreadTable extends SQLiteTable {
+
+        public interface State {
+            int DEFAULT = 0, MUTED = 1;
+        }
+
+        public interface Columns extends SQLiteTable.Columns {
+            @Unique(Unique.OnConflict.IGNORE)
+            @Column(Column.Type.TEXT) String ID = "id";
+            @Column(Column.Type.TEXT) String NAME = "name";
+            @Column(Column.Type.TEXT) String KEY = "key";
+        }
+
+        @Override public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {}
+        @Override public void onDowngrade(SQLiteDatabase db, int oldVersion, int newVersion) {}
+    }
+
+    public static class UserTable extends SQLiteTable {
+        public interface Columns extends SQLiteTable.Columns {
+            @Unique(Unique.OnConflict.IGNORE)
+            @Column(Column.Type.TEXT) String REG_ID = "reg_id";
+            @Column(Column.Type.TEXT) String NAME = "name";
+            @Column(Column.Type.TEXT) String IMAGE = "image";
+            @Column(Column.Type.TEXT) String KEY = "key";
+        }
+
+        @Override public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {}
+        @Override public void onDowngrade(SQLiteDatabase db, int oldVersion, int newVersion) {}
+    }
+
+    public static class ThreadUserTable extends SQLiteTable {
+        public interface Columns extends SQLiteTable.Columns {
+            @Unique(Unique.OnConflict.REPLACE)
+            @Column(Column.Type.TEXT) String THREAD_ID = "thread_id";
+            @Unique(Unique.OnConflict.REPLACE)
+            @Column(Column.Type.TEXT) String USER_ID = "user_id";
+        }
+
+        @Override public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {}
+        @Override public void onDowngrade(SQLiteDatabase db, int oldVersion, int newVersion) {}
+    }
+
+    public static class MessageTable extends SQLiteTable {
+
+        public interface State {
+            int DEFAULT = 0, SENDING = 1, UNREAD = 2, ERROR = 3, RECEIPT = 4;
+        }
+
+        public interface Columns extends SQLiteTable.Columns {
+            @Unique(Unique.OnConflict.REPLACE)
+            @Column(Column.Type.TEXT) String MSG_UUID = "msg_uuid";
+            @Column(Column.Type.TEXT) String THREAD_ID = "thread_id";
+            @Column(Column.Type.TEXT) String SENDER_ID = "sender_id";
+            @Column(Column.Type.TEXT) String TEXT = "text";
+            @Column(Column.Type.TEXT) String METADATA = "metadata";
+            @Column(Column.Type.INTEGER) String TIMESTAMP = "timestamp";
+            @ColumnOptions("DEFAULT 'MESSAGE'")
+            @Column(Column.Type.TEXT) String TYPE = "type";
+        }
+
+        @Override public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {}
+        @Override public void onDowngrade(SQLiteDatabase db, int oldVersion, int newVersion) {}
+    }
+
+
+    public static class InboxView extends SQLiteView {
+
+        @SelectFrom("ThreadTable")
+
+        @Joins({
+            "LEFT JOIN ThreadUserTable ON ThreadTable.id = ThreadUserTable.thread_id",
+            "LEFT JOIN UserTable ON ThreadUserTable.user_id = UserTable.reg_id",
+            "INNER JOIN (" +
+                "SELECT MAX(timestamp) timestamp, thread_id, text, _state FROM MessageTable GROUP BY thread_id" +
+            ") as MessageTable ON ThreadTable.id = MessageTable.thread_id"
+        })
+
+        @GroupBy("ThreadTable.id")
+
+        @OrderBy("MessageTable.timestamp DESC")
+
+        public interface Columns {
+
+            @Select("ThreadTable._id")
+            public static final String _ID = "_id";
+
+            @Select("ThreadTable.id")
+            public static final String THREAD_ID = "thread_id";
+
+            @Select("ThreadTable.name")
+            public static final String THREAD_NAME = "thread_name";
+
+            @Select("ThreadTable._state")
+            public static final String THREAD_STATE = "thread_state";
+
+            @Select("GROUP_CONCAT(DISTINCT ThreadUserTable.user_id)")
+            public static final String USER_IDS = "user_ids";
+
+            @Select("GROUP_CONCAT(DISTINCT UserTable.name)")
+            public static final String USER_NAMES = "user_names";
+
+            @Select("MessageTable.text")
+            public static final String MESSAGE_TEXT = "message_text";
+
+            @Select("MessageTable.timestamp")
+            public static final String MESSAGE_TIMESTAMP = "message_timestamp";
+
+            @Select("MessageTable._state")
+            public static final String MESSAGE_STATE = "message_state";
+        }
+    }
+
+
+    public static class ConversationView extends SQLiteView {
+
+        @SelectFrom("ThreadTable")
+
+        @Joins({
+            "INNER JOIN MessageTable ON ThreadTable.id = MessageTable.thread_id",
+            "LEFT JOIN UserTable ON MessageTable.sender_id = UserTable.reg_id",
+            "LEFT JOIN UserTable as MetaUser ON MessageTable.metadata = MetaUser.reg_id"
+        })
+
+        @OrderBy("MessageTable.timestamp")
+
+        public interface Columns {
+
+            @Select("MessageTable._id")
+            public static final String _ID = "_id";
+
+            @Select("MessageTable.msg_uuid")
+            public static final String MSG_UUID = "msg_uuid";
+
+            @Select("ThreadTable.id")
+            public static final String THREAD_ID = "thread_id";
+
+            @Select("ThreadTable.name")
+            public static final String THREAD_NAME = "thread_name";
+
+            @Select("MessageTable.sender_id")
+            public static final String SENDER_ID = "sender_id";
+
+            @Select("UserTable.name")
+            public static final String SENDER_NAME = "sender_name";
+
+            @Select("MessageTable.text")
+            public static final String TEXT = "text";
+
+            @Select("MessageTable.metadata")
+            public static final String METADATA = "metadata";
+
+            @Select("MessageTable.timestamp")
+            public static final String TIMESTAMP = "timestamp";
+
+            @Select("MetaUser.name")
+            public static final String META_USER = "meta_user";
+
+            @Select("MessageTable.type")
+            public static final String TYPE = "type";
+
+            @Select("MessageTable._state")
+            public static final String _STATE = "_state";
+        }
+    }
+
+    public static class ParticipantView extends SQLiteView {
+
+        @SelectFrom("ThreadTable")
+
+        @Joins({
+            "INNER JOIN ThreadUserTable ON ThreadTable.id = ThreadUserTable.thread_id",
+            "LEFT JOIN UserTable ON ThreadUserTable.user_id = UserTable.reg_id"
+        })
+
+        @GroupBy("ThreadTable.id")
+
+        public interface Columns {
+
+            @Select("ThreadTable._id")
+            public static final String _ID = "_id";
+
+            @Select("ThreadTable.id")
+            public static final String THREAD_ID = "thread_id";
+
+            @Select("ThreadTable.name")
+            public static final String THREAD_NAME = "thread_name";
+
+            @Select("ThreadTable._state")
+            public static final String THREAD_STATE = "thread_state";
+
+            @Select("GROUP_CONCAT(DISTINCT ThreadUserTable.user_id)")
+            public static final String USER_IDS = "user_ids";
+
+            @Select("GROUP_CONCAT(DISTINCT UserTable.name)")
+            public static final String USER_NAMES = "user_names";
+        }
+    }
+
+    public static class RecipientView extends SQLiteView {
+
+        @SelectFrom("MessageTable")
+
+        @Joins({
+            "LEFT JOIN ThreadTable ON MessageTable.thread_id = ThreadTable.id",
+            "INNER JOIN ThreadUserTable ON ThreadTable.id = ThreadUserTable.thread_id",
+            "LEFT JOIN UserTable ON ThreadUserTable.user_id = UserTable.reg_id"
+        })
+
+        @GroupBy("MessageTable.msg_uuid")
+
+        public interface Columns {
+
+            @Select("MessageTable._id")
+            public static final String _ID = "_id";
+
+            @Select("MessageTable.msg_uuid")
+            public static final String MSG_UUID = "msg_uuid";
+
+            @Select("ThreadTable.id")
+            public static final String THREAD_ID = "thread_id";
+
+            @Select("ThreadTable.name")
+            public static final String THREAD_NAME = "thread_name";
+
+            @Select("ThreadTable._state")
+            public static final String THREAD_STATE = "thread_state";
+
+            @Select("GROUP_CONCAT(DISTINCT ThreadUserTable.user_id)")
+            public static final String USER_IDS = "user_ids";
+
+            @Select("GROUP_CONCAT(DISTINCT UserTable.name)")
+            public static final String USER_NAMES = "user_names";
+        }
+    }
+
+    public static class MemberView extends SQLiteView {
+
+        @SelectFrom("ThreadTable")
+
+        @Joins({
+            "INNER JOIN ThreadUserTable ON ThreadTable.id = ThreadUserTable.thread_id",
+            "LEFT JOIN UserTable ON ThreadUserTable.user_id = UserTable.reg_id"
+        })
+
+        public interface Columns {
+
+            @Select("ThreadTable._id")
+            public static final String _ID = "_id";
+
+            @Select("ThreadTable.id")
+            public static final String THREAD_ID = "thread_id";
+
+            @Select("ThreadTable.name")
+            public static final String THREAD_NAME = "thread_name";
+
+            @Select("ThreadTable._state")
+            public static final String THREAD_STATE = "thread_state";
+
+            @Select("ThreadUserTable.user_id")
+            public static final String USER_ID = "user_id";
+
+            @Select("UserTable.name")
+            public static final String USER_NAME = "user_name";
+        }
+    }
+
+    public static class TransactionView extends SQLiteView {
+
+        @SelectFrom("ThreadTable")
+
+        @Joins({
+            "INNER JOIN (" +
+                "SELECT COUNT(*) count, GROUP_CONCAT(msg_uuid) msg_uuids, thread_id FROM (" +
+                    "SELECT msg_uuid, thread_id FROM MessageTable WHERE type != 'MESSAGE' ORDER BY timestamp" +
+                ") GROUP BY thread_id" +
+            ") as TransactionTable ON ThreadTable.id = TransactionTable.thread_id"
+        })
+
+        public interface Columns {
+
+            @Select("ThreadTable._id")
+            public static final String _ID = "_id";
+
+            @Select("ThreadTable.id")
+            public static final String THREAD_ID = "thread_id";
+
+            @Select("ThreadTable.name")
+            public static final String THREAD_NAME = "thread_name";
+
+            @Select("ThreadTable._state")
+            public static final String THREAD_STATE = "thread_state";
+
+            @Select("TransactionTable.msg_uuids")
+            public static final String MSG_UUIDS = "msg_uuids";
+
+            @Select("TransactionTable.count")
+            public static final String COUNT = "count";
+        }
+    }
+
+}

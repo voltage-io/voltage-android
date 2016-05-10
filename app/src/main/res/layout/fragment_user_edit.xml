@@ -1,0 +1,61 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="20dp">
+
+        <LinearLayout
+            android:id="@android:id/content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/user_edit_name_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:text="@string/user_name" />
+
+            <EditText
+                android:id="@+id/user_edit_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:inputType="textShortMessage"
+                android:singleLine="true" />
+
+            <TextView
+                android:id="@+id/user_edit_reg_id_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="25dp"
+                android:text="@string/user_reg_id" />
+
+            <EditText
+                android:id="@+id/user_edit_reg_id"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:inputType="textMultiLine" />
+
+            <Button
+                android:id="@+id/user_edit_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="25dp"
+                android:text="@string/user_update" />
+
+        </LinearLayout>
+
+        <include layout="@layout/progress" />
+
+        <include layout="@layout/empty_no_results" />
+
+    </FrameLayout>
+
+</ScrollView>

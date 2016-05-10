@@ -1,0 +1,133 @@
+<resources>
+
+    <string-array name="conversation_actions">
+        <item>Copy Text</item>
+        <item>Delete Message</item>
+    </string-array>
+
+    <string-array name="conversation_full_actions">
+        <item>Copy Text</item>
+        <item>Delete Message</item>
+        <item>Resend Message</item>
+    </string-array>
+
+    <string-array name="user_list_actions">
+        <item>Delete Friend</item>
+    </string-array>
+
+    <string-array name="inbox_actions">
+        <item>Rename Conversation</item>
+        <item>Delete Conversation</item>
+    </string-array>
+
+    <string-array name="members_actions">
+        <item>Add as Friend</item>
+    </string-array>
+
+    <string-array name="emojicons">
+        <item>(╯°□°)╯︵ ┻━┻</item>
+
+        <item>ʕノ•ᴥ•ʔノ ︵ ┻━┻</item>
+
+        <item>(ﾉಥ益ಥ）ﾉ﻿ ┻━┻</item>
+
+        <item>┬─┬ ノ(° -° ノ)</item>
+
+        <item>¯\\_(ツ)_/¯</item>
+
+        <item>¯\\(º_o)/¯</item>
+
+        <item>ლ(❛˳❛ლ)</item>
+
+        <item>(●°u°●)​ 」</item>
+
+        <item>(• ε •)</item>
+
+        <item>╮(.❛ᴗ❛.)╭</item>
+
+        <item>ლ(ಠ益ಠლ)</item>
+
+        <item>t(-.-t)</item>
+
+        <item>┌∩┐(◣_◢)┌∩┐</item>
+
+        <item>(⊙ω⊙)</item>
+
+        <item>(- ,ლ)</item>
+
+        <item>ヾ(⌐■_■)ノ♪</item>
+
+        <item>♪┏(・o･)┛♪</item>
+
+        <item>(´▽｀)ノ♪</item>
+
+        <item>(\˳˘ ɜ˘)˳ ♬♪♫</item>
+
+        <item>|ʘ‿ʘ)╯</item>
+
+        <item>┐( ˘_˘)┌</item>
+
+        <item>＜(。_。)＞</item>
+
+        <item>(:3 っ)っ</item>
+
+        <item>(´ε｀ )♡</item>
+
+        <item>(-, - )…zzzZZZ</item>
+
+        <item>(-_-) zzz</item>
+
+        <item>ᕙ(⇀‸↼‶)ᕗ</item>
+
+        <item>( •_•)σ</item>
+
+        <item>ヽ༼ ಠ益ಠ ༽ﾉ</item>
+
+        <item>＼（^０＾）／</item>
+
+        <item>ヘ( ^o^)ノ＼(^_^ )</item>
+
+        <item>(ﾉ^_^)ﾉ</item>
+
+        <item>(;-_-)</item>
+
+        <item>(´∩｀。)</item>
+
+        <item>(╭ᅇ)╭</item>
+
+        <item>[¬º-°]¬</item>
+
+        <item>ミ●﹏☉ミ</item>
+
+        <item>φ（．．）</item>
+
+        <item>(⊙_◎)</item>
+
+        <item>(。ヘ°)</item>
+
+        <item>（。_°☆＼(- – )</item>
+
+        <item>◉‿◉</item>
+
+        <item>(V) (°,,,,°) (V)</item>
+
+        <item>ಠ_ಠ</item>
+
+        <item>ಥ_ಥ</item>
+
+        <item>¬_¬</item>
+
+        <item>ʕ •ᴥ•ʔ</item>
+
+        <item>d-_-b</item>
+
+        <item>~=[,,_,,]:3</item>
+
+        <item>no_O</item>
+
+        <item>&lt;コ:彡</item>
+
+        <item>☆.。.:*・°☆</item>
+    </string-array>
+
+</resources>

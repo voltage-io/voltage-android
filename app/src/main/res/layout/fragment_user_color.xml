@@ -1,0 +1,41 @@
+<HorizontalScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:overScrollMode="never"
+    android:padding="10dp">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <View android:background="#DB3110" android:layout_width="40dp" android:layout_height="40dp" android:layout_margin="3dp" />
+        <View android:background="#FF5857" android:layout_width="40dp" android:layout_height="40dp" android:layout_margin="3dp" />
+        <View android:background="#F98466" android:layout_width="40dp" android:layout_height="40dp" android:layout_margin="3dp" />
+        <View android:background="#FFA05C" android:layout_width="40dp" android:layout_height="40dp" android:layout_margin="3dp" />
+        <View android:background="#FFCA3F" android:layout_width="40dp" android:layout_height="40dp" android:layout_margin="3dp" />
+        <View android:background="#FFEC30" android:layout_width="40dp" android:layout_height="40dp" android:layout_margin="3dp" />
+        <View android:background="#F1F33B" android:layout_width="40dp" android:layout_height="40dp" android:layout_margin="3dp" />
+        <View android:background="#C8EC51" android:layout_width="40dp" android:layout_height="40dp" android:layout_margin="3dp" />
+        <View android:background="#AEF653" android:layout_width="40dp" android:layout_height="40dp" android:layout_margin="3dp" />
+        <View android:background="#99FF55" android:layout_width="40dp" android:layout_height="40dp" android:layout_margin="3dp" />
+        <View android:background="#71E069" android:layout_width="40dp" android:layout_height="40dp" android:layout_margin="3dp" />
+        <View android:background="#42BA81" android:layout_width="40dp" android:layout_height="40dp" android:layout_margin="3dp" />
+        <View android:background="#6CD1A8" android:layout_width="40dp" android:layout_height="40dp" android:layout_margin="3dp" />
+        <View android:background="#8FE5C9" android:layout_width="40dp" android:layout_height="40dp" android:layout_margin="3dp" />
+        <View android:background="#82D6E5" android:layout_width="40dp" android:layout_height="40dp" android:layout_margin="3dp" />
+        <View android:background="#77CAF1" android:layout_width="40dp" android:layout_height="40dp" android:layout_margin="3dp" />
+        <View android:background="#69BCFF" android:layout_width="40dp" android:layout_height="40dp" android:layout_margin="3dp" />
+        <View android:background="#5BADEB" android:layout_width="40dp" android:layout_height="40dp" android:layout_margin="3dp" />
+        <View android:background="#50A0DA" android:layout_width="40dp" android:layout_height="40dp" android:layout_margin="3dp" />
+        <View android:background="#327EAD" android:layout_width="40dp" android:layout_height="40dp" android:layout_margin="3dp" />
+        <View android:background="#6F55A2" android:layout_width="40dp" android:layout_height="40dp" android:layout_margin="3dp" />
+        <View android:background="#A13298" android:layout_width="40dp" android:layout_height="40dp" android:layout_margin="3dp" />
+        <View android:background="#B2228C" android:layout_width="40dp" android:layout_height="40dp" android:layout_margin="3dp" />
+        <View android:background="#C60E7D" android:layout_width="40dp" android:layout_height="40dp" android:layout_margin="3dp" />
+        <View android:background="#E02D86" android:layout_width="40dp" android:layout_height="40dp" android:layout_margin="3dp" />
+        <View android:background="#FF5391" android:layout_width="40dp" android:layout_height="40dp" android:layout_margin="3dp" />
+
+    </LinearLayout>
+
+</HorizontalScrollView>

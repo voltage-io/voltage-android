@@ -1,0 +1,23 @@
+<android.support.v7.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <android.support.v7.preference.PreferenceCategory
+        android:key="pref_key_settings">
+
+        <!--<android.support.v7.preference.CheckBoxPreference-->
+            <!--android:key="pref_key_send_read_receipts"-->
+            <!--android:title="@string/preference_read_receipts"-->
+            <!--android:summary="@string/preference_read_receipts_summary" />-->
+
+        <android.support.v7.preference.CheckBoxPreference
+            android:key="pref_key_auto_play_gifs"
+            android:title="@string/preference_auto_play_gifs"
+            android:summary="@string/preference_auto_play_gifs_summary"/>
+
+        <android.support.v7.preference.CheckBoxPreference
+            android:key="pref_key_auto_add_users"
+            android:title="@string/preference_auto_add_users"
+            android:summary="@string/preference_auto_add_users_summary" />
+
+    </android.support.v7.preference.PreferenceCategory>
+
+</android.support.v7.preference.PreferenceScreen>

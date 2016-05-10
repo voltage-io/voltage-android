@@ -1,0 +1,18 @@
+#!/bin/bash
+
+set -ex
+
+main() {
+	local package="io.voltage.app"
+	local db_file_name="${package}.db"
+
+	adb shell run-as $package chmod 777 /data/data/$package/databases/
+
+	adb shell run-as $package chmod 777 /data/data/$package/databases/$db_file_name
+
+	adb shell cp /data/data/$package/databases/$db_file_name /sdcard/
+
+	adb pull /sdcard/$db_file_name
+}
+
+main "%@"

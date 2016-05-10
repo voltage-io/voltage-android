@@ -1,0 +1,43 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="25dp">
+
+    <LinearLayout
+        android:id="@android:id/content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/conversation_select_participants"
+            android:textStyle="bold"
+            android:textSize="18sp" />
+
+        <GridView
+            android:id="@android:id/list"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginTop="20dp"
+            android:layout_weight="1"
+            android:background="#fff"
+            android:verticalSpacing="2dp" />
+
+        <Button
+            android:id="@+id/conversation_create"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:enabled="false"
+            android:text="@string/next" />
+
+    </LinearLayout>
+
+    <include layout="@layout/empty_conversation_new_users" />
+
+    <include layout="@layout/progress" />
+
+</FrameLayout>

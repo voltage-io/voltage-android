@@ -1,0 +1,101 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="30dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/user_new_two_ways"
+                android:gravity="center"
+                android:textStyle="bold"
+                android:textSize="24sp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="25dp"
+                android:text="@string/user_new_broadcast"
+                android:gravity="center"
+                android:alpha="0.5"
+                android:textSize="18sp" />
+
+        </LinearLayout>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginRight="90dp" />
+
+            <Button
+                android:id="@+id/user_broadcast"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="#777"
+                android:text="@string/user_broadcast" />
+
+        </FrameLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/user_new_or"
+                android:layout_marginTop="25dp"
+                android:gravity="center"
+                android:textStyle="bold"
+                android:textSize="24sp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/user_new_share"
+                android:gravity="center"
+                android:layout_marginTop="25dp"
+                android:alpha="0.5"
+                android:textSize="18sp" />
+
+        </LinearLayout>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginRight="90dp" />
+
+            <Button
+                android:id="@+id/user_share"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="#777"
+                android:text="@string/user_share" />
+
+        </FrameLayout>
+
+    </LinearLayout>
+</ScrollView>

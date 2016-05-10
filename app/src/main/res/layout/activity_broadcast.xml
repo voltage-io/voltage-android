@@ -1,0 +1,43 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:padding="50dp"
+        android:alpha="0.25">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/broadcasting_title"
+            android:gravity="center_horizontal"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:layout_marginTop="10dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/broadcasting_text"
+            android:gravity="center_horizontal"
+            android:textSize="18sp"
+            android:layout_marginTop="20dp" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_transmit" />
+    </LinearLayout>
+
+    <io.voltage.app.views.WaveView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+</FrameLayout>
