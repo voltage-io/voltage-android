@@ -18,7 +18,9 @@ ENCRYPTION means your messages are private [Coming soon].
 CROSS PLATFORM communication (iOS support) [Coming soon].
 
 
-# Check out the [design notes](NOTES.md)
+# Design Notes
+
+Check out the [design notes](NOTES.md). These are just random ideas to make the app better.
 
 
 # Screenshots
