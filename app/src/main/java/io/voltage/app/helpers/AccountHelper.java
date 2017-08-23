@@ -8,7 +8,7 @@ import android.os.Bundle;
 
 import java.util.UUID;
 
-import io.voltage.app.application.VoltageAuthenticator;
+import io.voltage.app.application.VoltageAuthenticatorService;
 import io.voltage.app.application.VoltageContentProvider;
 
 public class AccountHelper {
@@ -27,7 +27,7 @@ public class AccountHelper {
 
     public Account[] getAccounts(final Context context) {
         final AccountManager manager = AccountManager.get(context);
-        return manager.getAccountsByType(VoltageAuthenticator.ACCOUNT_TYPE);
+        return manager.getAccountsByType(VoltageAuthenticatorService.ACCOUNT_TYPE);
     }
 
     public void setUsername(final Context context, final String name) {
@@ -52,7 +52,7 @@ public class AccountHelper {
     }
 
     private void addAccount(final Context context, final String name) {
-        final String type = VoltageAuthenticator.ACCOUNT_TYPE;
+        final String type = VoltageAuthenticatorService.ACCOUNT_TYPE;
         final Account account = new Account(name, type);
 
         setupSync(account);
@@ -68,7 +68,7 @@ public class AccountHelper {
     }
 
     private void setupAccount(final Context context, final Account account) {
-        final String tokenType = VoltageAuthenticator.TOKEN_TYPE;
+        final String tokenType = VoltageAuthenticatorService.TOKEN_TYPE;
         final String authToken = UUID.randomUUID().toString();
 
         final AccountManager manager = AccountManager.get(context);
