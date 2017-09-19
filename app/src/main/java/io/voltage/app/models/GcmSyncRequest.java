@@ -1,8 +1,8 @@
 package io.voltage.app.models;
 
-import android.os.Bundle;
-
 import com.google.gson.annotations.SerializedName;
+
+import java.util.Map;
 
 public class GcmSyncRequest extends GcmSync {
     private interface Fields extends GcmSync.Fields {
@@ -16,10 +16,10 @@ public class GcmSyncRequest extends GcmSync {
     @SerializedName(Fields.MSG_INDEX)
     private String mMsgIndex;
 
-    public GcmSyncRequest(final Bundle extras) {
-        super(extras);
-        mMsgUuid = extras.getString(Fields.MSG_UUID);
-        mMsgIndex = extras.getString(Fields.MSG_INDEX);
+    public GcmSyncRequest(final Map<String, String> data) {
+        super(data);
+        mMsgUuid = data.get(Fields.MSG_UUID);
+        mMsgIndex = data.get(Fields.MSG_INDEX);
     }
 
     public GcmSyncRequest(final String threadId, final String senderId, final String msgUuid, final int msgIndex) {

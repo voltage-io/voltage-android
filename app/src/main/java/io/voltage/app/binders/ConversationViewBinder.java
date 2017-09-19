@@ -54,26 +54,27 @@ public class ConversationViewBinder implements ViewBinder {
 
     @Override
     public boolean setViewValue(final View view, final Cursor cursor, final Binding binding) {
-        if (view.getId() == R.id.message_letter) {
-            return setMessageLetter((TextView) view, cursor, binding);
+        switch (view.getId()) {
+            case R.id.message_letter:
+                return setMessageLetter((TextView) view, cursor, binding);
 
-        } else if (view.getId() == R.id.message_timestamp) {
-            return setMessageTimestamp((TextView) view, cursor, binding);
+            case R.id.message_timestamp:
+                return setMessageTimestamp((TextView) view, cursor, binding);
 
-        } else if (view.getId() == R.id.message_state) {
-            return setMessageState((TextView) view, cursor, binding);
+            case R.id.message_state:
+                return setMessageState((TextView) view, cursor, binding);
 
-        } else if (view.getId() == R.id.message_text) {
-            return setMessageText((TextView) view, cursor, binding);
+            case R.id.message_text:
+                return setMessageText((TextView) view, cursor, binding);
 
-        } else if (view.getId() == R.id.message_metadata) {
-            return setMessageMetadata((TextView) view, cursor, binding);
+            case R.id.message_metadata:
+                return setMessageMetadata((TextView) view, cursor, binding);
 
-        } else if (view.getId() == R.id.message_image) {
-            return setMessageImage((SimpleDraweeView) view, cursor, binding);
+            case R.id.message_image:
+                return setMessageImage((SimpleDraweeView) view, cursor, binding);
 
-        } else {
-            return false;
+            default:
+                return false;
         }
     }
 

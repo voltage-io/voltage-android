@@ -16,7 +16,7 @@ import io.voltage.app.models.MessageState;
 
 public class MessageStateOperation extends GcmPayloadOperation {
 
-    private final DatabaseHelper mDatabaseHelper = new DatabaseHelper();
+    private final DatabaseHelper mDatabaseHelper = new DatabaseHelper.Default();
 
     private final String mMsgUuid;
     private final int mState;

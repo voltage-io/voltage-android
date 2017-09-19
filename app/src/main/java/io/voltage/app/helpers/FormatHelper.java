@@ -7,40 +7,47 @@ import java.util.Random;
 
 import io.voltage.app.models.Participants;
 
-public class FormatHelper {
+public interface FormatHelper {
 
-    public static final String UNKNOWN = "UNKNOWN";
+    String getUserName(final String name);
+    String getThreadName(final String threadName, final String userNames);
+    String getThreadName(final Context context, final String threadId);
+    int getNotificationId(final String idString);
 
 
-    public String getUserName(final String name) {
-        return !TextUtils.isEmpty(name) ? name : UNKNOWN;
-    }
+    class Default implements FormatHelper {
+        private final DatabaseHelper mDatabaseHelper = new DatabaseHelper.Default();
 
-    public String getThreadName(final String threadName, final String userNames) {
-        return !TextUtils.isEmpty(threadName) ? threadName : getUserName(userNames);
-    }
-
-    public String getThreadName(final Context context, final String threadId) {
-        final Participants participants = new DatabaseHelper().getParticipants(context, threadId);
-
-        if (participants != null) {
-            return getThreadName(participants.getThreadName(), participants.getUserNames());
+        public String getUserName(final String name) {
+            return !TextUtils.isEmpty(name) ? name : "UNKNOWN";
         }
 
-        return UNKNOWN;
-    }
+        public String getThreadName(final String threadName, final String userNames) {
+            return !TextUtils.isEmpty(threadName) ? threadName : getUserName(userNames);
+        }
 
-    public int getNotificationId(final String idString) {
-        if (idString != null) {
-            final String stripped = idString.replaceAll("[^0-9.]", "");
-            if (stripped.length() > 7) {
-                return Integer.parseInt(stripped.substring(0, 7));
+        public String getThreadName(final Context context, final String threadId) {
+            final Participants participants = mDatabaseHelper.getParticipants(context, threadId);
 
-            } else if (stripped.length() > 0) {
-                return Integer.parseInt(stripped);
+            if (participants != null) {
+                return getThreadName(participants.getThreadName(), participants.getUserNames());
             }
+
+            return "UNKNOWN";
         }
 
-        return new Random().nextInt();
+        public int getNotificationId(final String idString) {
+            if (idString != null) {
+                final String stripped = idString.replaceAll("[^0-9.]", "");
+                if (stripped.length() > 7) {
+                    return Integer.parseInt(stripped.substring(0, 7));
+
+                } else if (stripped.length() > 0) {
+                    return Integer.parseInt(stripped);
+                }
+            }
+
+            return new Random().nextInt();
+        }
     }
 }

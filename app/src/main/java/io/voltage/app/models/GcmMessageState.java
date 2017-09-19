@@ -1,8 +1,8 @@
 package io.voltage.app.models;
 
-import android.os.Bundle;
-
 import com.google.gson.annotations.SerializedName;
+
+import java.util.Map;
 
 public class GcmMessageState extends GcmPayload {
     private interface Fields extends GcmPayload.Fields {
@@ -17,9 +17,9 @@ public class GcmMessageState extends GcmPayload {
     private int mState;
 
 
-    public GcmMessageState(final Bundle extras) {
-        mMsgUuid = extras.getString(Fields.MSG_UUID);
-        mState = Integer.parseInt(extras.getString(Fields.STATE));
+    public GcmMessageState(final Map<String, String> data) {
+        mMsgUuid = data.get(Fields.MSG_UUID);
+        mState = Integer.parseInt(data.get(Fields.STATE));
     }
 
     public GcmMessageState(final MessageState state) {

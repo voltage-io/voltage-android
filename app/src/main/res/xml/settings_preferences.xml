@@ -9,6 +9,11 @@
             <!--android:summary="@string/preference_read_receipts_summary" />-->
 
         <android.support.v7.preference.CheckBoxPreference
+            android:key="pref_key_publish_reg_id"
+            android:title="@string/preference_publish_reg_id"
+            android:summary="@string/preference_publish_reg_id_summary" />
+
+        <android.support.v7.preference.CheckBoxPreference
             android:key="pref_key_auto_play_gifs"
             android:title="@string/preference_auto_play_gifs"
             android:summary="@string/preference_auto_play_gifs_summary"/>

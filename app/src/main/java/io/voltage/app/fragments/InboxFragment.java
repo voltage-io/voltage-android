@@ -6,8 +6,8 @@ import android.content.DialogInterface;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.os.Vibrator;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.widget.AdapterView;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -15,7 +15,7 @@ import java.util.Collection;
 import io.pivotal.arca.adapters.Binding;
 import io.pivotal.arca.fragments.ArcaFragment;
 import io.pivotal.arca.fragments.ArcaFragmentBindings;
-import io.pivotal.arca.fragments.ArcaSimpleAdapterFragment;
+import io.pivotal.arca.fragments.ArcaSimpleRecyclerViewFragment;
 import io.voltage.app.R;
 import io.voltage.app.activities.ConversationActivity;
 import io.voltage.app.activities.ConversationEditActivity;
@@ -31,7 +31,7 @@ import io.voltage.app.requests.ThreadMessagesDelete;
     binder = InboxViewBinder.class,
     monitor = InboxMonitor.class
 )
-public class InboxFragment extends ArcaSimpleAdapterFragment {
+public class InboxFragment extends ArcaSimpleRecyclerViewFragment {
 
     @ArcaFragmentBindings
     private static final Collection<Binding> BINDINGS = Arrays.asList(
@@ -42,18 +42,25 @@ public class InboxFragment extends ArcaSimpleAdapterFragment {
     );
 
     @Override
-    public void onItemClick(final AdapterView<?> adapterView, final View view, final int position, final long id) {
-        final Cursor cursor = (Cursor) adapterView.getItemAtPosition(position);
+    public void onViewCreated(final View view, final Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        execute(new InboxQuery());
+    }
+
+    @Override
+    public void onItemClick(final RecyclerView recyclerView, final View view, final int position, final long id) {
+        final Cursor cursor = (Cursor) getRecyclerViewAdapter().getItem(position);
         final String threadId = cursor.getString(cursor.getColumnIndex(InboxView.Columns.THREAD_ID));
 
         ConversationActivity.newInstance(getActivity(), threadId);
     }
 
     @Override
-    public boolean onItemLongClick(final AdapterView<?> adapterView, final View view, final int position, final long id) {
+    public void onItemLongClick(final RecyclerView recyclerView, final View view, final int position, final long id) {
         ((Vibrator) getActivity().getSystemService(Context.VIBRATOR_SERVICE)).vibrate(40);
 
-        return showActionsDialog(position);
+        showActionsDialog(position);
     }
 
     private boolean showActionsDialog(final int position) {
@@ -64,12 +71,7 @@ public class InboxFragment extends ArcaSimpleAdapterFragment {
         return true;
     }
 
-    @Override
-    public void onViewCreated(final View view, final Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
 
-        execute(new InboxQuery());
-    }
 
     private final class ConversationClickListener implements DialogInterface.OnClickListener {
 
@@ -90,13 +92,13 @@ public class InboxFragment extends ArcaSimpleAdapterFragment {
         }
 
         private void deleteThread(final int position) {
-            final Cursor cursor = (Cursor)  getAdapterView().getItemAtPosition(position);
+            final Cursor cursor = (Cursor) getRecyclerViewAdapter().getItem(position);
             final String threadId = cursor.getString(cursor.getColumnIndex(InboxView.Columns.THREAD_ID));
             getRequestDispatcher().execute(new ThreadMessagesDelete(threadId));
         }
 
         private void renameThread(final int position) {
-            final Cursor cursor = (Cursor) getAdapterView().getItemAtPosition(position);
+            final Cursor cursor = (Cursor) getRecyclerViewAdapter().getItem(position);
             final String threadId = cursor.getString(cursor.getColumnIndex(InboxView.Columns.THREAD_ID));
             ConversationEditActivity.newInstance(getActivity(), threadId);
         }

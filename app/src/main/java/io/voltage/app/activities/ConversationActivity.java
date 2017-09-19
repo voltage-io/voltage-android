@@ -1,7 +1,6 @@
 package io.voltage.app.activities;
 
 import android.app.FragmentManager;
-import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -22,6 +21,7 @@ import io.voltage.app.application.VoltagePreferences;
 import io.voltage.app.fragments.ConversationFragment;
 import io.voltage.app.fragments.MessageSendFragment;
 import io.voltage.app.helpers.FormatHelper;
+import io.voltage.app.helpers.NotificationHelper;
 import io.voltage.app.models.GcmPayload;
 import io.voltage.app.monitors.ParticipantsMonitor;
 import io.voltage.app.requests.MessageInsert;
@@ -30,7 +30,7 @@ import io.voltage.app.requests.ThreadUpdate;
 
 public class ConversationActivity extends ColorActivity implements QueryListener {
 
-    public interface Extras {
+    private interface Extras {
         String THREAD_ID = "thread_id";
     }
 
@@ -45,7 +45,8 @@ public class ConversationActivity extends ColorActivity implements QueryListener
         context.startActivity(intent);
     }
 
-    private final FormatHelper mFormatHelper = new FormatHelper();
+    private final FormatHelper mFormatHelper = new FormatHelper.Default();
+    private final NotificationHelper mNotificationHelper = new NotificationHelper.Default();
 
     private ArcaDispatcher mDispatcher;
 
@@ -76,7 +77,7 @@ public class ConversationActivity extends ColorActivity implements QueryListener
     public void onRequestComplete(final QueryResult result) {
         final Cursor cursor = result.getData();
 
-        if (cursor.moveToFirst()) {
+        if (cursor != null && cursor.moveToFirst()) {
             final String threadName = cursor.getString(cursor.getColumnIndex(ParticipantView.Columns.THREAD_NAME));
             final String userNames = cursor.getString(cursor.getColumnIndex(ParticipantView.Columns.USER_NAMES));
 
@@ -85,10 +86,6 @@ public class ConversationActivity extends ColorActivity implements QueryListener
             setTitle(mFormatHelper.getThreadName(threadName, userNames));
         }
     }
-
-    @Override
-    public void onRequestReset() {}
-
 
     private MessageSendFragment getMessageSendFragment() {
         final FragmentManager manager = getFragmentManager();
@@ -101,10 +98,7 @@ public class ConversationActivity extends ColorActivity implements QueryListener
     }
 
     public void clearNotifications() {
-        final String notificationService = Context.NOTIFICATION_SERVICE;
-        final NotificationManager manager = (NotificationManager) getSystemService(notificationService);
-
-        manager.cancel(mFormatHelper.getNotificationId(mThreadId));
+        mNotificationHelper.cancelNotification(this, mThreadId);
     }
 
     private void muteConversation(final boolean isChecked) {

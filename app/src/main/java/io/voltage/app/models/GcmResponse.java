@@ -29,8 +29,12 @@ public class GcmResponse {
     @SerializedName(Fields.RESULTS)
     private List<Result> mResults;
 
-    public boolean isSuccess() {
+    public boolean hasSuccess() {
         return mSuccess != null && Integer.parseInt(mSuccess) > 0;
+    }
+
+    public boolean hasFailure() {
+        return mFailure != null && Integer.parseInt(mFailure) > 0;
     }
 
     public List<Result> getResults() {

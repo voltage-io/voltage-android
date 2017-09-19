@@ -3,9 +3,6 @@ package io.voltage.app.helpers;
 import android.content.ContentProviderOperation;
 import android.content.ContentValues;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import io.pivotal.arca.provider.DataUtils;
 import io.voltage.app.application.VoltageContentProvider;
 import io.voltage.app.application.VoltageContentProvider.MessageTable;
@@ -13,7 +10,6 @@ import io.voltage.app.application.VoltageContentProvider.ThreadTable;
 import io.voltage.app.application.VoltageContentProvider.ThreadUserTable;
 import io.voltage.app.application.VoltageContentProvider.UserTable;
 import io.voltage.app.models.Message;
-import io.voltage.app.models.Participants;
 import io.voltage.app.models.Thread;
 import io.voltage.app.models.ThreadUser;
 
@@ -43,13 +39,6 @@ public class OperationHelper {
                 .build();
     }
 
-    public ContentProviderOperation insertThread(final String threadId, final String threadName) {
-        return ContentProviderOperation.newInsert(VoltageContentProvider.Uris.THREADS)
-                .withValue(ThreadTable.Columns.ID, threadId)
-                .withValue(ThreadTable.Columns.NAME, threadName)
-                .build();
-    }
-
     public ContentProviderOperation insertThreadUserOperation(final String threadId, final String userId) {
         return ContentProviderOperation.newInsert(VoltageContentProvider.Uris.THREAD_USERS)
                 .withValue(ThreadUserTable.Columns.THREAD_ID, threadId)
@@ -61,20 +50,6 @@ public class OperationHelper {
         return ContentProviderOperation.newDelete(VoltageContentProvider.Uris.THREAD_USERS)
                 .withSelection(ThreadUserTable.Columns.THREAD_ID + "=?" + " AND " + ThreadUserTable.Columns.USER_ID + "=?", new String[]{threadId, userId})
                 .build();
-    }
-
-    public ArrayList<ContentProviderOperation> insertThreadUserOperations(final Participants participants, final String regId) {
-        final String threadId = participants.getThreadId();
-        final List<String> userIdsList = participants.getUserIdsList();
-        final ArrayList<ContentProviderOperation> operations = new ArrayList<>();
-        if (userIdsList != null) {
-            for (final String userId : userIdsList) {
-                if (userId != null && !userId.equals(regId)) {
-                    operations.add(insertThreadUserOperation(threadId, userId));
-                }
-            }
-        }
-        return operations;
     }
 
     public ContentProviderOperation updateUserOperation(final String regId, final String oldRegId) {
@@ -117,7 +92,7 @@ public class OperationHelper {
                 .build();
     }
 
-    public ContentProviderOperation updateThread(final String threadId, final String threadName) {
+    public ContentProviderOperation updateThreadOperation(final String threadId, final String threadName) {
         final ContentValues values = new ContentValues();
         values.put(ThreadTable.Columns.NAME, threadName);
 

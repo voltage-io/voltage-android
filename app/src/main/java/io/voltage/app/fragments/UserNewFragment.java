@@ -45,7 +45,7 @@ public class UserNewFragment extends Fragment implements View.OnClickListener {
 
     private void startShareActivity() {
         final CharSequence title = getResources().getText(R.string.title_send);
-        final String url = new ShareHelper().getShareUrl(getActivity());
+        final String url = new ShareHelper.Default().getShareUrl(getActivity());
 
         final Intent intent = new Intent(Intent.ACTION_SEND);
         intent.putExtra(Intent.EXTRA_TEXT, url);

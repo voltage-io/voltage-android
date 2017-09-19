@@ -40,7 +40,7 @@
 
         <fragment
             android:id="@+id/fragment_drawer"
-            android:name="io.voltage.app.fragments.DrawerFragment"
+            android:name="io.voltage.app.fragments.RegistrationFragment"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 

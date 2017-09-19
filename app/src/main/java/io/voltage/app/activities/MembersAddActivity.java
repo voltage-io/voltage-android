@@ -13,7 +13,7 @@ import io.voltage.app.fragments.MembersAddFragment;
 
 public class MembersAddActivity extends FragmentActivity {
 
-	public interface Extras {
+	private interface Extras {
 		String THREAD_ID = "thread_id";
 	}
 

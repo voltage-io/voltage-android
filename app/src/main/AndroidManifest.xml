@@ -1,21 +1,12 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="io.voltage.app"
-    android:versionCode="53"
+    android:versionCode="54"
     android:versionName="1.0.0">
 
-    <uses-sdk android:minSdkVersion="16" />
-
-    <permission
-        android:name="io.voltage.app.permission.C2D_MESSAGE"
-        android:protectionLevel="signature" />
-
-    <uses-permission android:name="io.voltage.app.permission.C2D_MESSAGE" />
-    <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
+    <uses-permission android:name="android.permission.NFC" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
-    <uses-permission android:name="android.permission.NFC" />
-
     <uses-permission android:name="android.permission.READ_SYNC_SETTINGS" />
     <uses-permission android:name="android.permission.WRITE_SYNC_SETTINGS" />
     <uses-permission android:name="android.permission.MANAGE_ACCOUNTS" android:maxSdkVersion="22"/>
@@ -33,10 +24,6 @@
         android:label="@string/app_name"
         android:logo="@drawable/ic_voltage_logo"
         android:theme="@style/VoltageTheme.Color_333333">
-
-        <meta-data
-            android:name="com.google.android.gms.version"
-            android:value="@integer/google_play_services_version" />
 
         <activity
             android:name=".activities.LauncherActivity"
@@ -206,13 +193,17 @@
             android:authorities="io.voltage.app.application.VoltageContentProvider"
             android:exported="false" />
 
-        <service
-            android:name=".application.VoltageGcmService"
-            android:exported="false" />
+        <service android:name=".application.VoltageMessagingService">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
 
-        <service
-            android:name=".application.VoltageGcmSyncingService"
-            android:exported="false" />
+        <service android:name=".application.VoltageInstanceIdService">
+            <intent-filter>
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
+            </intent-filter>
+        </service>
 
         <service
             android:name="io.pivotal.arca.service.OperationService"
@@ -239,15 +230,6 @@
                 android:name="android.content.SyncAdapter"
                 android:resource="@xml/syncadapter" />
         </service>
-
-        <receiver
-            android:name=".application.VoltageGcmReceiver"
-            android:permission="com.google.android.c2dm.permission.SEND">
-            <intent-filter>
-                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
-                <category android:name="io.voltage.app" />
-            </intent-filter>
-        </receiver>
 
     </application>
 

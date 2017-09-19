@@ -7,7 +7,7 @@ import io.voltage.app.helpers.ShareHelper;
 
 public class UserAddLinkActivity extends UserAddActivity {
 
-    private final ShareHelper mShareHelper = new ShareHelper();
+    private final ShareHelper mShareHelper = new ShareHelper.Default();
 
     @Override
     public void onResume() {

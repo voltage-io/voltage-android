@@ -10,8 +10,10 @@
         android:padding="10dp"
         android:visibility="gone" />
 
-    <include layout="@layout/empty_inbox" />
+    <include
+        layout="@layout/empty_user_search" />
 
-    <include layout="@layout/progress" />
+    <include
+        layout="@layout/progress" />
 
 </FrameLayout>

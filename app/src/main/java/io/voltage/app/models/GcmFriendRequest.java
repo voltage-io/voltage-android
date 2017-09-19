@@ -1,8 +1,8 @@
 package io.voltage.app.models;
 
-import android.os.Bundle;
-
 import com.google.gson.annotations.SerializedName;
+
+import java.util.Map;
 
 public class GcmFriendRequest extends GcmPayload {
     private interface Fields extends GcmPayload.Fields {
@@ -16,9 +16,9 @@ public class GcmFriendRequest extends GcmPayload {
     @SerializedName(Fields.REG_ID)
     private String mRegId;
 
-    public GcmFriendRequest(final Bundle extras) {
-        mSenderId = extras.getString(Fields.SENDER_ID);
-        mRegId = extras.getString(Fields.REG_ID);
+    public GcmFriendRequest(final Map<String, String> data) {
+        mSenderId = data.get(Fields.SENDER_ID);
+        mRegId = data.get(Fields.REG_ID);
     }
 
     public GcmFriendRequest(final String senderId, final String regId) {

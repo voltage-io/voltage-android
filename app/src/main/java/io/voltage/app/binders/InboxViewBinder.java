@@ -17,24 +17,21 @@ import io.voltage.app.helpers.FormatHelper;
 
 public class InboxViewBinder implements ViewBinder {
 
-    private final FormatHelper mFormatHelper = new FormatHelper();
+    private final FormatHelper mFormatHelper = new FormatHelper.Default();
 
     @Override
     public boolean setViewValue(final View view, final Cursor cursor, final Binding binding) {
-        if (view.getId() == R.id.inbox_letter) {
-            return setInboxLetter((TextView) view, cursor, binding);
-
-        } else if (view.getId() == R.id.inbox_message_timestamp) {
-            return setInboxTimestamp((TextView) view, cursor, binding);
-
-        } else if (view.getId() == R.id.inbox_user_name) {
-            return setInboxThreadName((TextView) view, cursor, binding);
-
-        } else if (view.getId() == R.id.inbox_message_text) {
-            return setInboxMessage((TextView) view, cursor, binding);
-
-        } else {
-            return false;
+        switch (view.getId()) {
+            case R.id.inbox_letter:
+                return setInboxLetter((TextView) view, cursor, binding);
+            case R.id.inbox_message_timestamp:
+                return setInboxTimestamp((TextView) view, cursor, binding);
+            case R.id.inbox_user_name:
+                return setInboxThreadName((TextView) view, cursor, binding);
+            case R.id.inbox_message_text:
+                return setInboxMessage((TextView) view, cursor, binding);
+            default:
+                return false;
         }
     }
 

@@ -17,7 +17,7 @@ import io.voltage.app.models.Recipients;
 
 public class MessageOperation extends GcmPayloadOperation {
 
-    private final NotificationHelper mNotificationHelper = new NotificationHelper();
+    private final NotificationHelper mNotificationHelper = new NotificationHelper.Default();
 
     private final String mMsgUuid;
 

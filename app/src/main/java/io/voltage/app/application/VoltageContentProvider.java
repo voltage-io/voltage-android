@@ -1,10 +1,14 @@
 package io.voltage.app.application;
 
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 
+import java.util.List;
+
 import io.pivotal.arca.provider.Column;
 import io.pivotal.arca.provider.ColumnOptions;
+import io.pivotal.arca.provider.DataUtils;
 import io.pivotal.arca.provider.DatabaseProvider;
 import io.pivotal.arca.provider.GroupBy;
 import io.pivotal.arca.provider.Joins;
@@ -14,41 +18,47 @@ import io.pivotal.arca.provider.SQLiteView;
 import io.pivotal.arca.provider.Select;
 import io.pivotal.arca.provider.SelectFrom;
 import io.pivotal.arca.provider.Unique;
+import io.voltage.app.models.Registration;
+import io.voltage.app.utils.SearchDataset;
 
 public class VoltageContentProvider extends DatabaseProvider {
 
     public static final String AUTHORITY = VoltageContentProvider.class.getName();
+    public static final Uri BASE_URI = Uri.parse("content://" + AUTHORITY);
 
-    private static final Uri BASE_URI = Uri.parse("content://" + AUTHORITY);
-
-    public static final class Uris {
-        public static final Uri THREADS = Uri.withAppendedPath(BASE_URI, Paths.THREADS);
-        public static final Uri USERS =  Uri.withAppendedPath(BASE_URI, Paths.USERS);
-        public static final Uri THREAD_USERS = Uri.withAppendedPath(BASE_URI, Paths.THREAD_USERS);
-        public static final Uri MESSAGES = Uri.withAppendedPath(BASE_URI, Paths.MESSAGES);
-        public static final Uri INBOX = Uri.withAppendedPath(BASE_URI, Paths.INBOX);
-        public static final Uri CONVERSATION = Uri.withAppendedPath(BASE_URI, Paths.CONVERSATION);
-        public static final Uri PARTICIPANTS = Uri.withAppendedPath(BASE_URI, Paths.PARTICIPANTS);
-        public static final Uri RECIPIENTS = Uri.withAppendedPath(BASE_URI, Paths.RECIPIENTS);
-        public static final Uri MEMBERS = Uri.withAppendedPath(BASE_URI, Paths.MEMBERS);
-        public static final Uri TRANSACTIONS = Uri.withAppendedPath(BASE_URI, Paths.TRANSACTIONS);
+    public interface Uris {
+        Uri REGISTRATIONS = Uri.withAppendedPath(BASE_URI, Paths.REGISTRATIONS);
+        Uri THREADS = Uri.withAppendedPath(BASE_URI, Paths.THREADS);
+        Uri USERS =  Uri.withAppendedPath(BASE_URI, Paths.USERS);
+        Uri THREAD_USERS = Uri.withAppendedPath(BASE_URI, Paths.THREAD_USERS);
+        Uri MESSAGES = Uri.withAppendedPath(BASE_URI, Paths.MESSAGES);
+        Uri INBOX = Uri.withAppendedPath(BASE_URI, Paths.INBOX);
+        Uri CONVERSATION = Uri.withAppendedPath(BASE_URI, Paths.CONVERSATION);
+        Uri PARTICIPANTS = Uri.withAppendedPath(BASE_URI, Paths.PARTICIPANTS);
+        Uri RECIPIENTS = Uri.withAppendedPath(BASE_URI, Paths.RECIPIENTS);
+        Uri MEMBERS = Uri.withAppendedPath(BASE_URI, Paths.MEMBERS);
+        Uri TRANSACTIONS = Uri.withAppendedPath(BASE_URI, Paths.TRANSACTIONS);
+        Uri USER_SEARCH = Uri.withAppendedPath(BASE_URI, Paths.USER_SEARCH);
     }
 
-    private static final class Paths {
-        public static final String THREADS = "threads";
-        public static final String USERS = "users";
-        public static final String THREAD_USERS = "thread_users";
-        public static final String MESSAGES = "messages";
-        public static final String INBOX = "inbox";
-        public static final String CONVERSATION = "conversation";
-        public static final String PARTICIPANTS = "participants";
-        public static final String RECIPIENTS = "recipients";
-        public static final String MEMBERS = "members";
-        public static final String TRANSACTIONS = "transactions";
+    private interface Paths {
+        String REGISTRATIONS = "registrations";
+        String THREADS = "threads";
+        String USERS = "users";
+        String THREAD_USERS = "thread_users";
+        String MESSAGES = "messages";
+        String INBOX = "inbox";
+        String CONVERSATION = "conversation";
+        String PARTICIPANTS = "participants";
+        String RECIPIENTS = "recipients";
+        String MEMBERS = "members";
+        String TRANSACTIONS = "transactions";
+        String USER_SEARCH = "user_search";
     }
 
     @Override
     public boolean onCreate() {
+        registerDataset(AUTHORITY, Paths.REGISTRATIONS, RegistrationTable.class);
         registerDataset(AUTHORITY, Paths.THREADS, ThreadTable.class);
         registerDataset(AUTHORITY, Paths.USERS, UserTable.class);
         registerDataset(AUTHORITY, Paths.THREAD_USERS, ThreadUserTable.class);
@@ -59,7 +69,16 @@ public class VoltageContentProvider extends DatabaseProvider {
         registerDataset(AUTHORITY, Paths.RECIPIENTS, RecipientView.class);
         registerDataset(AUTHORITY, Paths.MEMBERS, MemberView.class);
         registerDataset(AUTHORITY, Paths.TRANSACTIONS, TransactionView.class);
+        registerDataset(AUTHORITY, Paths.USER_SEARCH, UserSearchView.class);
         return true;
+    }
+
+    public static class RegistrationTable extends SQLiteTable {
+        public interface Columns extends SQLiteTable.Columns {
+            @Unique(Unique.OnConflict.REPLACE)
+            @Column(Column.Type.TEXT) String REG_ID = "reg_id";
+            @Column(Column.Type.TEXT) String LOOKUP = "lookup";
+        }
     }
 
     public static class ThreadTable extends SQLiteTable {
@@ -359,6 +378,20 @@ public class VoltageContentProvider extends DatabaseProvider {
 
             @Select("TransactionTable.count")
             public static final String COUNT = "count";
+        }
+    }
+
+    public static class UserSearchView extends SearchDataset {
+
+        public interface Columns {
+            @Column(Column.Type.TEXT) String _ID = "_id";
+            @Column(Column.Type.TEXT) String REG_ID = "reg_id";
+            @Column(Column.Type.TEXT) String LOOKUP = "lookup";
+        }
+
+        protected Cursor search(final String query) throws Exception {
+            final List<Registration> registrations = VoltageApi.getRegistrations(query);
+            return DataUtils.getCursor(registrations);
         }
     }
 

@@ -1,8 +1,8 @@
 package io.voltage.app.models;
 
-import android.os.Bundle;
-
 import com.google.gson.annotations.SerializedName;
+
+import java.util.Map;
 
 public class GcmChecksum extends GcmSync {
     private interface Fields extends GcmSync.Fields {
@@ -12,9 +12,9 @@ public class GcmChecksum extends GcmSync {
     @SerializedName(Fields.CHECKSUM)
     private String mChecksum;
 
-    public GcmChecksum(final Bundle extras) {
-        super(extras);
-        mChecksum = extras.getString(Fields.CHECKSUM);
+    public GcmChecksum(final Map<String, String> data) {
+        super(data);
+        mChecksum = data.get(Fields.CHECKSUM);
     }
 
     public GcmChecksum(final String threadId, final String senderId, final String checksum) {

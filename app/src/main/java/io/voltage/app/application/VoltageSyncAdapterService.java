@@ -21,7 +21,7 @@ public class VoltageSyncAdapterService extends Service {
 		return mSyncAdapter.getSyncAdapterBinder();
 	}
 
-	public static class SyncAdapter extends AbstractThreadedSyncAdapter {
+	private static class SyncAdapter extends AbstractThreadedSyncAdapter {
 
 		private SyncAdapter(final Context context) {
 			super(context, true);

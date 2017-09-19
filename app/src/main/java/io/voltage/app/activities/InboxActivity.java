@@ -41,8 +41,6 @@ public class InboxActivity extends ColorActivity {
             }
         };
 
-        mDrawerLayout.setDrawerListener(mDrawerToggle);
-
         final ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
@@ -64,6 +62,15 @@ public class InboxActivity extends ColorActivity {
         final int darkColor = ColorUtils.darkenColor(color, 0.2f);
 
         findViewById(R.id.drawer_header).setBackgroundColor(darkColor);
+
+        mDrawerLayout.addDrawerListener(mDrawerToggle);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        mDrawerLayout.removeDrawerListener(mDrawerToggle);
     }
 
     @Override

@@ -14,11 +14,11 @@ public class MembersViewBinder implements ViewBinder {
 
     @Override
     public boolean setViewValue(final View view, final Cursor cursor, final Binding binding) {
-        if (view.getId() == R.id.user_name) {
-            return setUserNameViewValue((TextView) view, cursor, binding);
-
-        } else {
-            return false;
+        switch (view.getId()) {
+            case R.id.user_name:
+                return setUserNameViewValue((TextView) view, cursor, binding);
+            default:
+                return false;
         }
     }
 

@@ -24,8 +24,12 @@
     <string name="preference_version">VERSION</string>
     <string name="preference_user_name">USER NAME</string>
     <string name="preference_reg_id">REGISTRATION ID</string>
+    <string name="preference_reg_lookup">LOOKUP</string>
+
     <string name="preference_read_receipts">SEND READ RECEIPTS</string>
     <string name="preference_read_receipts_summary">Send a read receipt after viewing each message</string>
+    <string name="preference_publish_reg_id">PUBLISH INFORMATION</string>
+    <string name="preference_publish_reg_id_summary">Publish my anonymous registration information so that other users can search for me</string>
     <string name="preference_auto_play_gifs">AUTO PLAY GIFS</string>
     <string name="preference_auto_play_gifs_summary">Automatically play animated gifs within a conversation</string>
     <string name="preference_auto_add_users">AUTO ADD USERS</string>
@@ -42,6 +46,7 @@
     <string name="empty_no_more_members">NO ONE LEFT TO REMOVE</string>
     <string name="empty_no_members">THERE IS NO ONE HERE</string>
     <string name="empty_no_friends">YOUR FRIENDS LIST IS EMPTY :(</string>
+    <string name="empty_no_users_found">NO USERS FOUND</string>
     <string name="empty_send">SEND</string>
     <string name="empty_message">MESSAGE</string>
     <string name="empty_no_results">NO RESULTS</string>

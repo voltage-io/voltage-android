@@ -50,9 +50,8 @@ public class ConversationNewActivity extends FragmentActivity implements ViewPag
     @Override
     public void onBackPressed() {
         final ViewPager viewPager = (ViewPager) findViewById(R.id.view_pager);
-        final int currentItem = viewPager.getCurrentItem();
 
-        if (currentItem == 1) {
+        if (viewPager.getCurrentItem() == 1) {
             viewPager.setCurrentItem(0, true);
         } else {
             super.onBackPressed();
@@ -61,8 +60,7 @@ public class ConversationNewActivity extends FragmentActivity implements ViewPag
 
     public void proceed() {
         final ViewPager viewPager = (ViewPager) findViewById(R.id.view_pager);
-        final int nextItem = viewPager.getCurrentItem() + 1;
-        viewPager.setCurrentItem(nextItem, true);
+        viewPager.setCurrentItem(viewPager.getCurrentItem() + 1, true);
     }
 
     public void createThread(final String name, final Set<String> regIds) {

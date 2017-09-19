@@ -1,9 +1,10 @@
 package io.voltage.app.models;
 
-import android.os.Bundle;
-
 import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class GcmPayload {
     protected interface Fields {
@@ -56,15 +57,15 @@ public class GcmPayload {
         return new Gson().toJson(this);
     }
 
-    public Bundle getBundle() {
-        final Bundle bundle = new Bundle();
-        bundle.putString(Fields.TYPE, mType);
-        return bundle;
+    public Map<String, String> toMap() {
+        final Map<String, String> map = new HashMap<>();
+        map.put(Fields.TYPE, mType);
+        return map;
     }
 
-    public static Type getType(final Bundle extras) {
+    public static Type getType(final Map<String, String> data) {
         try {
-            final String type = extras.getString(Fields.TYPE);
+            final String type = data.get(Fields.TYPE);
             return Type.valueOf(type);
         } catch (final Exception e) {
             return Type.UNKNOWN;

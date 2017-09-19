@@ -1,8 +1,8 @@
 package io.voltage.app.models;
 
-import android.os.Bundle;
-
 import com.google.gson.annotations.SerializedName;
+
+import java.util.Map;
 
 public class GcmSyncStart extends GcmSync {
     private interface Fields extends GcmSync.Fields {
@@ -12,9 +12,9 @@ public class GcmSyncStart extends GcmSync {
     @SerializedName(Fields.COUNT)
     private String mCount;
 
-    public GcmSyncStart(final Bundle extras) {
-        super(extras);
-        mCount = extras.getString(Fields.COUNT);
+    public GcmSyncStart(final Map<String, String> data) {
+        super(data);
+        mCount = data.get(Fields.COUNT);
     }
 
     public GcmSyncStart(final String threadId, final String senderId, final int count) {

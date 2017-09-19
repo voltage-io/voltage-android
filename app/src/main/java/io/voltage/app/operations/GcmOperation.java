@@ -3,6 +3,7 @@ package io.voltage.app.operations;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Parcel;
+import android.text.TextUtils;
 
 import java.util.List;
 
@@ -17,9 +18,9 @@ import io.voltage.app.utils.Logger;
 
 public abstract class GcmOperation extends SimpleOperation {
 
-    protected final DatabaseHelper mDatabaseHelper = new DatabaseHelper();
+    protected final DatabaseHelper mDatabaseHelper = new DatabaseHelper.Default();
 
-    public GcmOperation(Uri uri) {
+    public GcmOperation(final Uri uri) {
         super(uri);
     }
 
@@ -42,11 +43,22 @@ public abstract class GcmOperation extends SimpleOperation {
 
         Logger.v("Response: " + gcmResponse);
 
-        mDatabaseHelper.updateRegistrationIds(context, regIds, gcmResponse);
+        final List<GcmResponse.Result> results = gcmResponse.getResults();
+        for (int i = 0; i < results.size(); i++) {
 
-        if (!gcmResponse.isSuccess()) {
-            throw new RuntimeException();
+            final GcmResponse.Result result = results.get(i);
+            final String newRegId = result.getRegistrationId();
+
+            if (!TextUtils.isEmpty(newRegId)) {
+                final String oldRegId = regIds.get(i);
+                mDatabaseHelper.updateRegistration(context, newRegId, oldRegId);
+
+                Logger.v("New registration id: " + newRegId);
+                Logger.v("Old registration id: " + oldRegId);
+            }
         }
+
+        if (!gcmResponse.hasSuccess()) throw new RuntimeException();
     }
 
 }

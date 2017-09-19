@@ -1,13 +1,13 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 23
-    buildToolsVersion '25.0.0'
+    compileSdkVersion 25
+    buildToolsVersion '25.0.2'
 
     defaultConfig {
         applicationId "io.voltage.app"
         minSdkVersion 16
-        targetSdkVersion 23
+        targetSdkVersion 25
     }
 
     signingConfigs {
@@ -27,20 +27,22 @@ android {
 }
 
 dependencies {
-    compile 'com.google.code.gson:gson:2.4'
+    compile 'com.google.code.gson:gson:2.7'
     compile 'com.facebook.fresco:fresco:0.9.0'
     compile 'com.squareup.retrofit2:retrofit:2.0.1'
     compile 'com.squareup.retrofit2:converter-gson:2.0.1'
+    compile 'com.squareup.okhttp3:logging-interceptor:3.3.1'
 
-    compile 'com.android.support:support-v4:23.0.1'
-    compile 'com.android.support:support-v13:23.0.1'
-    compile 'com.android.support:appcompat-v7:23.0.1'
-    compile 'com.android.support:preference-v7:23.0.1'
-    compile 'com.google.android.gms:play-services-gcm:8.4.0'
+    compile 'com.android.support:support-v4:25.3.1'
+    compile 'com.android.support:support-v13:25.3.1'
+    compile 'com.android.support:appcompat-v7:25.3.1'
+    compile 'com.android.support:preference-v7:25.3.1'
+    compile 'com.google.firebase:firebase-messaging:11.0.4'
+    compile 'com.google.android.gms:play-services-base:11.0.4'
 
-    compile('io.pivotal:arca-service:1.0-beta.5-SNAPSHOT')
-    compile('io.pivotal:arca-provider:1.0-beta.5-SNAPSHOT')
-    compile('io.pivotal:arca-fragments:1.0-beta.5-SNAPSHOT') {
-        exclude group: 'com.android.support'
-    }
+    compile 'io.pivotal:arca-service:1.0-beta.14-SNAPSHOT'
+    compile 'io.pivotal:arca-provider:1.0-beta.14-SNAPSHOT'
+    compile 'io.pivotal:arca-fragments:1.0-beta.14-SNAPSHOT'
 }
+
+apply plugin: 'com.google.gms.google-services'

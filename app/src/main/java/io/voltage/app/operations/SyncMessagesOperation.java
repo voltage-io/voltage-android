@@ -17,7 +17,7 @@ import io.voltage.app.models.Message;
 
 public class SyncMessagesOperation extends GcmOperation {
 
-    private final DatabaseHelper mDatabaseHelper = new DatabaseHelper();
+    private final DatabaseHelper mDatabaseHelper = new DatabaseHelper.Default();
 
     private final String mThreadId;
     private final String mRecipientId;

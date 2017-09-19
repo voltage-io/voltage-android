@@ -6,6 +6,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
+import com.google.firebase.iid.FirebaseInstanceId;
+
 import io.voltage.app.helpers.AccountHelper;
 
 @SuppressLint("CommitPrefEdits")
@@ -20,6 +22,7 @@ public class VoltagePreferences {
         String SEND_READ_RECEIPTS = "pref_key_send_read_receipts";
         String AUTO_PLAY_GIFS = "pref_key_auto_play_gifs";
         String AUTO_ADD_USERS = "pref_key_auto_add_users";
+        String PUBLISH_REG_ID = "pref_key_publish_reg_id";
         String USE_DARK_THEME = "pref_key_use_dark_theme";
     }
 
@@ -34,11 +37,7 @@ public class VoltagePreferences {
     }
 
     public static String getRegId(final Context context) {
-        return getSharedPreferences(context).getString(Property.REG_ID, "");
-    }
-
-    public static String getRegVersion(final Context context) {
-        return getSharedPreferences(context).getString(Property.APP_VERSION, "");
+        return FirebaseInstanceId.getInstance().getToken();
     }
 
     public static String getPrimaryColour(final Context context) {
@@ -62,6 +61,10 @@ public class VoltagePreferences {
         return getSharedPreferences(context).getBoolean(Property.AUTO_ADD_USERS, false);
     }
 
+    public static boolean shouldPublishRegId(final Context context) {
+        return getSharedPreferences(context).getBoolean(Property.PUBLISH_REG_ID, false);
+    }
+
     public static boolean isLightTheme(final Context context) {
         return getSharedPreferences(context).getBoolean(Property.USE_DARK_THEME, false);
     }
@@ -69,13 +72,6 @@ public class VoltagePreferences {
     public static void setPrimaryColour(final Context context, final String colour) {
         final SharedPreferences.Editor editor = getSharedPreferences(context).edit();
         editor.putString(Property.PRIMARY_COLOUR, colour);
-        editor.commit();
-    }
-
-    public static void storeRegistrationInfo(final Context context, final String regId) {
-        final SharedPreferences.Editor editor = getSharedPreferences(context).edit();
-        editor.putString(Property.APP_VERSION, VoltageApplication.getVersion(context));
-        editor.putString(Property.REG_ID, regId);
         editor.commit();
     }
 }

@@ -1,8 +1,8 @@
 package io.voltage.app.models;
 
-import android.os.Bundle;
-
 import com.google.gson.annotations.SerializedName;
+
+import java.util.Map;
 
 public class GcmMessage extends GcmPayload {
     protected interface Fields extends GcmPayload.Fields {
@@ -36,15 +36,15 @@ public class GcmMessage extends GcmPayload {
     @SerializedName(Fields.STATE)
     private String mState;
 
-    public GcmMessage(final Bundle extras) {
-        mMsgUuid = extras.getString(Fields.MSG_UUID);
-        mThreadId = extras.getString(Fields.THREAD_ID);
-        mSenderId = extras.getString(Fields.SENDER_ID);
-        mText = extras.getString(Fields.TEXT);
-        mTimestamp = extras.getString(Fields.TIMESTAMP);
-        mMetadata = extras.getString(Fields.METADATA);
-        mState = extras.getString(Fields.STATE);
-        setType(extras.getString(Fields.TYPE));
+    public GcmMessage(final Map<String, String> data) {
+        mMsgUuid = data.get(Fields.MSG_UUID);
+        mThreadId = data.get(Fields.THREAD_ID);
+        mSenderId = data.get(Fields.SENDER_ID);
+        mText = data.get(Fields.TEXT);
+        mTimestamp = data.get(Fields.TIMESTAMP);
+        mMetadata = data.get(Fields.METADATA);
+        mState = data.get(Fields.STATE);
+        setType(data.get(Fields.TYPE));
     }
 
     public GcmMessage(final Message message) {
@@ -58,16 +58,16 @@ public class GcmMessage extends GcmPayload {
         setType(message.getType());
     }
 
-    public Bundle getBundle() {
-        final Bundle bundle = super.getBundle();
-        bundle.putString(Fields.MSG_UUID, mMsgUuid);
-        bundle.putString(Fields.THREAD_ID, mThreadId);
-        bundle.putString(Fields.SENDER_ID, mSenderId);
-        bundle.putString(Fields.TEXT, mText);
-        bundle.putString(Fields.TIMESTAMP, mTimestamp);
-        bundle.putString(Fields.METADATA, mMetadata);
-        bundle.putString(Fields.STATE, mState);
-        return bundle;
+    public Map<String, String> toMap() {
+        final Map<String, String> map = super.toMap();
+        map.put(Fields.MSG_UUID, mMsgUuid);
+        map.put(Fields.THREAD_ID, mThreadId);
+        map.put(Fields.SENDER_ID, mSenderId);
+        map.put(Fields.TEXT, mText);
+        map.put(Fields.TIMESTAMP, mTimestamp);
+        map.put(Fields.METADATA, mMetadata);
+        map.put(Fields.STATE, mState);
+        return map;
     }
 
     public String getMsgUuid() {

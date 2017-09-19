@@ -1,9 +1,9 @@
 package io.voltage.app.models;
 
-import android.os.Bundle;
-
 import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
+
+import java.util.Map;
 
 public class GcmSyncMessage extends GcmSync {
     private interface Fields extends GcmSync.Fields {
@@ -13,11 +13,11 @@ public class GcmSyncMessage extends GcmSync {
     @SerializedName(Fields.MESSAGE)
     private GcmMessage mMessage;
 
-    public GcmSyncMessage(final Bundle extras) {
-        super(extras);
-        final String string = extras.getString(Fields.MESSAGE);
+    public GcmSyncMessage(final Map<String, String> data) {
+        super(data);
+        final String string = data.get(Fields.MESSAGE);
         mMessage = new Gson().fromJson(string, GcmMessage.class);
-        setType(extras.getString(Fields.TYPE));
+        setType(data.get(Fields.TYPE));
     }
 
     public GcmSyncMessage(final String threadId, final String senderId, final GcmMessage gcmMessage) {
@@ -30,7 +30,7 @@ public class GcmSyncMessage extends GcmSync {
         return mMessage != null ? mMessage.getTimestamp() : null;
     }
 
-    public Bundle getBundle() {
-        return mMessage != null ? mMessage.getBundle() : null;
+    public Map<String, String> toMap() {
+        return mMessage != null ? mMessage.toMap() : null;
     }
 }

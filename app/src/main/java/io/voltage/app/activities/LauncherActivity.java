@@ -11,18 +11,18 @@ import android.view.MotionEvent;
 import android.view.View;
 
 import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.google.android.gms.common.GoogleApiAvailability;
 
 import io.voltage.app.R;
-import io.voltage.app.application.VoltageGcmRegistration;
 import io.voltage.app.application.VoltagePreferences;
 
 public class LauncherActivity extends ColorActivity {
 
-	private static final int LAUNCH_MSG = 100;
+    private static final int LAUNCH_MSG = 100;
     private static final int LAUNCH_DURATION = 2000;
+    private static final int REQUEST_CODE = 3000;
 
-	private final LaunchHandler mHandler = new LaunchHandler(this);
+    private final LaunchHandler mHandler = new LaunchHandler(this);
 
     private int mResultCode;
 
@@ -44,11 +44,9 @@ public class LauncherActivity extends ColorActivity {
 	protected void onStart() {
 		super.onStart();
 
-        mResultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
+        mResultCode = GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(this);
 
         if (mResultCode == ConnectionResult.SUCCESS) {
-            new VoltageGcmRegistration(this).register();
-
             AccountActivity.newInstanceIfNotExists(this);
         } else {
             showErrorDialog();
@@ -67,8 +65,11 @@ public class LauncherActivity extends ColorActivity {
     @Override
     public boolean onTouchEvent(final MotionEvent event) {
         if (event.getAction() == MotionEvent.ACTION_DOWN) {
-            mHandler.removeMessages(LAUNCH_MSG);
-            mHandler.sendEmptyMessage(LAUNCH_MSG);
+
+            if (mResultCode == ConnectionResult.SUCCESS) {
+                mHandler.removeMessages(LAUNCH_MSG);
+                mHandler.sendEmptyMessage(LAUNCH_MSG);
+            }
         }
         return true;
     }
@@ -85,10 +86,10 @@ public class LauncherActivity extends ColorActivity {
     }
 
     private void showErrorDialog() {
-        final Dialog dialog = GooglePlayServicesUtil.getErrorDialog(mResultCode, this, 0);
+        final Dialog dialog = GoogleApiAvailability.getInstance().getErrorDialog(this, mResultCode, REQUEST_CODE);
         dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
             @Override
-            public void onDismiss(final DialogInterface dialog) {
+            public void onDismiss(DialogInterface dialog) {
                 finish();
             }
         });

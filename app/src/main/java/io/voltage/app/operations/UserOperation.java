@@ -15,7 +15,7 @@ import io.voltage.app.models.User;
 
 public class UserOperation extends GcmPayloadOperation {
 
-    private final DatabaseHelper mDatabaseHelper = new DatabaseHelper();
+    private final DatabaseHelper mDatabaseHelper = new DatabaseHelper.Default();
 
     private final String mUserId;
     private final String mRecipientId;
