@@ -265,8 +265,6 @@ public interface DatabaseHelper {
                 final String[] whereArgs = new String[]{state.getMsgUuid()};
                 final ContentValues values = DataUtils.getContentValues(state);
 
-                Logger.v("UPDATE EMSSAGE STATE: " + values);
-
                 final ContentResolver resolver = context.getContentResolver();
                 resolver.update(VoltageContentProvider.Uris.MESSAGES, values, where, whereArgs);
                 resolver.notifyChange(VoltageContentProvider.Uris.CONVERSATION, null);

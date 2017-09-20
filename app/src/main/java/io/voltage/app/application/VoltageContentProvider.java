@@ -15,11 +15,11 @@ import io.pivotal.arca.provider.Joins;
 import io.pivotal.arca.provider.OrderBy;
 import io.pivotal.arca.provider.SQLiteTable;
 import io.pivotal.arca.provider.SQLiteView;
+import io.pivotal.arca.provider.SearchDataset;
 import io.pivotal.arca.provider.Select;
 import io.pivotal.arca.provider.SelectFrom;
 import io.pivotal.arca.provider.Unique;
 import io.voltage.app.models.Registration;
-import io.voltage.app.utils.SearchDataset;
 
 public class VoltageContentProvider extends DatabaseProvider {
 
@@ -389,8 +389,8 @@ public class VoltageContentProvider extends DatabaseProvider {
             @Column(Column.Type.TEXT) String LOOKUP = "lookup";
         }
 
-        protected Cursor search(final String query) throws Exception {
-            final List<Registration> registrations = VoltageApi.getRegistrations(query);
+        public Cursor search(final String[] args) throws Exception {
+            final List<Registration> registrations = VoltageApi.getRegistrations(args[0]);
             return DataUtils.getCursor(registrations);
         }
     }
