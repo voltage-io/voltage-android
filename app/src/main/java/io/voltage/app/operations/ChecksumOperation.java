@@ -5,16 +5,23 @@ import android.os.Parcel;
 
 import java.util.List;
 
+import io.pivotal.arca.service.TaskOperation;
 import io.pivotal.arca.threading.Identifier;
 import io.voltage.app.application.VoltageContentProvider;
 import io.voltage.app.application.VoltagePreferences;
+import io.voltage.app.helpers.DatabaseHelper;
+import io.voltage.app.helpers.MessagingHelper;
 import io.voltage.app.models.GcmChecksum;
 import io.voltage.app.models.GcmPayload;
+import io.voltage.app.models.GcmResponse;
 import io.voltage.app.models.Participants;
 import io.voltage.app.models.Transactions;
 import io.voltage.app.utils.CryptoUtils;
 
-public class ChecksumOperation extends GcmPayloadOperation {
+public class ChecksumOperation extends TaskOperation<GcmResponse> {
+
+    private final MessagingHelper mMessagingHelper = new MessagingHelper.Default();
+    private final DatabaseHelper mDatabaseHelper = new DatabaseHelper.Default();
 
     private final String mThreadId;
 
@@ -40,19 +47,19 @@ public class ChecksumOperation extends GcmPayloadOperation {
     }
 
     @Override
-    public List<String> onCreateRecipientList(final Context context) {
-        final Participants participants = mDatabaseHelper.getParticipants(context, mThreadId);
-        return participants != null ? participants.getUserIdsList() : null;
-    }
+    public GcmResponse onExecute(final Context context) throws Exception {
 
-    @Override
-    public GcmPayload onCreateGcmPayload(final Context context) {
+        final Participants participants = mDatabaseHelper.getParticipants(context, mThreadId);
+        final List<String> regIds = participants != null ? participants.getUserIdsList() : null;
+
         final Transactions transactions = mDatabaseHelper.getTransactions(context, mThreadId);
 
         final String checksum = CryptoUtils.checksum(transactions);
         final String regId = VoltagePreferences.getRegId(context);
 
-        return new GcmChecksum(mThreadId, regId, checksum);
+        final GcmPayload gcmPayload = new GcmChecksum(mThreadId, regId, checksum);
+
+        return mMessagingHelper.sendGcmRequest(context, regIds, gcmPayload);
     }
 
     public static final Creator CREATOR = new Creator() {

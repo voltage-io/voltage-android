@@ -7,11 +7,11 @@ import android.os.Parcel;
 import io.pivotal.arca.dispatcher.ErrorBroadcaster;
 import io.pivotal.arca.provider.DataUtils;
 import io.pivotal.arca.service.ServiceError;
-import io.pivotal.arca.service.SimpleOperation;
+import io.pivotal.arca.service.TaskOperation;
 import io.voltage.app.application.VoltageApi;
 import io.voltage.app.application.VoltageContentProvider;
 
-public class RegistrationDeleteOperation extends SimpleOperation {
+public class RegistrationDeleteOperation extends TaskOperation<ContentValues> {
 
     private final String mRegId;
 
@@ -32,16 +32,16 @@ public class RegistrationDeleteOperation extends SimpleOperation {
     }
 
     @Override
-    public ContentValues[] onExecute(final Context context) throws Exception {
-        return new ContentValues[]{DataUtils.getContentValues(VoltageApi.deleteRegistration(mRegId))};
+    public ContentValues onExecute(final Context context) throws Exception {
+        return DataUtils.getContentValues(VoltageApi.deleteRegistration(mRegId));
     }
 
     @Override
-    public void onPostExecute(final Context context, final ContentValues[] values) throws Exception {
+    public void onPostExecute(final Context context, final ContentValues values) throws Exception {
 
-        values[0].remove(VoltageContentProvider.RegistrationTable.Columns.LOOKUP);
+        values.remove(VoltageContentProvider.RegistrationTable.Columns.LOOKUP);
 
-        context.getContentResolver().insert(getUri(), values[0]);
+        context.getContentResolver().insert(getUri(), values);
         context.getContentResolver().notifyChange(VoltageContentProvider.Uris.REGISTRATIONS, null);
     }
 

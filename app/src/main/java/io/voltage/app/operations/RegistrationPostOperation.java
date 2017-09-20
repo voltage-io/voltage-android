@@ -7,11 +7,11 @@ import android.os.Parcel;
 import io.pivotal.arca.dispatcher.ErrorBroadcaster;
 import io.pivotal.arca.provider.DataUtils;
 import io.pivotal.arca.service.ServiceError;
-import io.pivotal.arca.service.SimpleOperation;
+import io.pivotal.arca.service.TaskOperation;
 import io.voltage.app.application.VoltageApi;
 import io.voltage.app.application.VoltageContentProvider;
 
-public class RegistrationPostOperation extends SimpleOperation {
+public class RegistrationPostOperation extends TaskOperation<ContentValues> {
 
     private final String mRegId;
 
@@ -32,13 +32,13 @@ public class RegistrationPostOperation extends SimpleOperation {
     }
 
     @Override
-    public ContentValues[] onExecute(final Context context) throws Exception {
-        return new ContentValues[]{DataUtils.getContentValues(VoltageApi.postRegistration(mRegId))};
+    public ContentValues onExecute(final Context context) throws Exception {
+        return DataUtils.getContentValues(VoltageApi.postRegistration(mRegId));
     }
 
     @Override
-    public void onPostExecute(final Context context, final ContentValues[] values) throws Exception {
-        context.getContentResolver().insert(getUri(), values[0]);
+    public void onPostExecute(final Context context, final ContentValues values) throws Exception {
+        context.getContentResolver().insert(getUri(), values);
         context.getContentResolver().notifyChange(VoltageContentProvider.Uris.REGISTRATIONS, null);
     }
 

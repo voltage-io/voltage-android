@@ -6,13 +6,18 @@ import android.os.Parcel;
 import java.util.Collections;
 import java.util.List;
 
+import io.pivotal.arca.service.TaskOperation;
 import io.pivotal.arca.threading.Identifier;
 import io.voltage.app.application.VoltageContentProvider;
 import io.voltage.app.application.VoltagePreferences;
+import io.voltage.app.helpers.MessagingHelper;
 import io.voltage.app.models.GcmFriend;
 import io.voltage.app.models.GcmPayload;
+import io.voltage.app.models.GcmResponse;
 
-public class FriendOperation extends GcmPayloadOperation {
+public class FriendOperation extends TaskOperation<GcmResponse> {
+
+    private final MessagingHelper mMessagingHelper = new MessagingHelper.Default();
 
     private final String mRecipientId;
 
@@ -38,16 +43,16 @@ public class FriendOperation extends GcmPayloadOperation {
     }
 
     @Override
-    public List<String> onCreateRecipientList(final Context context) {
-        return Collections.singletonList(mRecipientId);
-    }
+    public GcmResponse onExecute(final Context context) throws Exception {
 
-    @Override
-    public GcmPayload onCreateGcmPayload(final Context context) {
+        final List<String> regIds = Collections.singletonList(mRecipientId);
+
         final String name = VoltagePreferences.getUserName(context);
         final String senderId = VoltagePreferences.getRegId(context);
 
-        return new GcmFriend(name, senderId);
+        final GcmPayload gcmPayload = new GcmFriend(name, senderId);
+
+        return mMessagingHelper.sendGcmRequest(context, regIds, gcmPayload);
     }
 
     public static final Creator CREATOR = new Creator() {

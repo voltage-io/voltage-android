@@ -3,27 +3,42 @@ package io.voltage.app.operations;
 import android.content.Context;
 import android.os.Parcel;
 
+import java.util.Collections;
 import java.util.List;
 
+import io.pivotal.arca.service.TaskOperation;
 import io.pivotal.arca.threading.Identifier;
+import io.voltage.app.application.VoltageContentProvider;
 import io.voltage.app.application.VoltagePreferences;
+import io.voltage.app.helpers.DatabaseHelper;
+import io.voltage.app.helpers.MessagingHelper;
 import io.voltage.app.models.GcmPayload;
+import io.voltage.app.models.GcmResponse;
 import io.voltage.app.models.GcmSyncStart;
 import io.voltage.app.models.Transactions;
 
-public class SyncStartOperation extends SyncOperation {
+public class SyncStartOperation extends TaskOperation<GcmResponse> {
 
+    private final MessagingHelper mMessagingHelper = new MessagingHelper.Default();
+    private final DatabaseHelper mDatabaseHelper = new DatabaseHelper.Default();
+
+    private final String mThreadId;
+    private final String mRecipientId;
     private final String mMsgUuid;
     private final int mMsgIndex;
 
-    public SyncStartOperation(final String threadId, final String senderId, final String msgUuid, final int msgIndex) {
-        super(threadId, senderId);
+    public SyncStartOperation(final String threadId, final String recipientId, final String msgUuid, final int msgIndex) {
+        super(VoltageContentProvider.Uris.TRANSACTIONS);
+        mThreadId = threadId;
+        mRecipientId = recipientId;
         mMsgUuid = msgUuid;
         mMsgIndex = msgIndex;
     }
 
     private SyncStartOperation(final Parcel in) {
         super(in);
+        mThreadId = in.readString();
+        mRecipientId = in.readString();
         mMsgUuid = in.readString();
         mMsgIndex = in.readInt();
     }
@@ -31,6 +46,8 @@ public class SyncStartOperation extends SyncOperation {
     @Override
     public void writeToParcel(final Parcel dest, final int flags) {
         super.writeToParcel(dest, flags);
+        dest.writeString(mThreadId);
+        dest.writeString(mRecipientId);
         dest.writeString(mMsgUuid);
         dest.writeInt(mMsgIndex);
     }
@@ -41,26 +58,27 @@ public class SyncStartOperation extends SyncOperation {
     }
 
     @Override
-    public GcmPayload onCreateGcmPayload(final Context context) {
-        final Transactions transactions = mDatabaseHelper.getTransactions(context, mThreadId);
+    public GcmResponse onExecute(final Context context) throws Exception {
 
-        final String regId = VoltagePreferences.getRegId(context);
+        final List<String> regIds = Collections.singletonList(mRecipientId);
+
+        final Transactions transactions = mDatabaseHelper.getTransactions(context, mThreadId);
         final List<String> list = transactions.getMsgUuidsList();
 
-        if (mMsgIndex < list.size()) {
-            return onCreateGcmSyncStart(list, regId);
-        } else {
+        if (mMsgIndex >= list.size()) {
             throw new RuntimeException("Transactions ahead of peer");
         }
-    }
 
-    private GcmPayload onCreateGcmSyncStart(final List<String> list, final String regId) {
+        final String regId = VoltagePreferences.getRegId(context);
+
         if (list.get(mMsgIndex).equals(mMsgUuid)) {
             final int count = list.size() - mMsgIndex - 1;
-            return new GcmSyncStart(mThreadId, regId, count);
+            final GcmPayload gcmPayload = new GcmSyncStart(mThreadId, regId, count);
+            return mMessagingHelper.sendGcmRequest(context, regIds, gcmPayload);
 
         } else {
-            return new GcmSyncStart(mThreadId, regId, list.size());
+            final GcmPayload gcmPayload = new GcmSyncStart(mThreadId, regId, list.size());
+            return mMessagingHelper.sendGcmRequest(context, regIds, gcmPayload);
         }
     }
 

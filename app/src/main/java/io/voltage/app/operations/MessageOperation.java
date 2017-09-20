@@ -6,17 +6,23 @@ import android.os.Parcelable;
 
 import java.util.List;
 
+import io.pivotal.arca.service.TaskOperation;
 import io.pivotal.arca.threading.Identifier;
 import io.voltage.app.application.VoltageContentProvider;
 import io.voltage.app.application.VoltageContentProvider.MessageTable;
+import io.voltage.app.helpers.DatabaseHelper;
+import io.voltage.app.helpers.MessagingHelper;
 import io.voltage.app.helpers.NotificationHelper;
 import io.voltage.app.models.GcmMessage;
 import io.voltage.app.models.GcmPayload;
+import io.voltage.app.models.GcmResponse;
 import io.voltage.app.models.Message;
 import io.voltage.app.models.Recipients;
 
-public class MessageOperation extends GcmPayloadOperation {
+public class MessageOperation extends TaskOperation<GcmResponse> {
 
+    private final MessagingHelper mMessagingHelper = new MessagingHelper.Default();
+    private final DatabaseHelper mDatabaseHelper = new DatabaseHelper.Default();
     private final NotificationHelper mNotificationHelper = new NotificationHelper.Default();
 
     private final String mMsgUuid;
@@ -43,15 +49,15 @@ public class MessageOperation extends GcmPayloadOperation {
     }
 
     @Override
-    public List<String> onCreateRecipientList(final Context context) {
-        final Recipients recipients = mDatabaseHelper.getRecipients(context, mMsgUuid);
-        return recipients != null ? recipients.getUserIdsList() : null;
-    }
+    public GcmResponse onExecute(final Context context) throws Exception {
 
-    @Override
-    public GcmPayload onCreateGcmPayload(final Context context) {
+        final Recipients recipients = mDatabaseHelper.getRecipients(context, mMsgUuid);
+        final List<String> regIds = recipients != null ? recipients.getUserIdsList() : null;
+
         final Message message = mDatabaseHelper.getMessage(context, mMsgUuid);
-        return new GcmMessage(message);
+        final GcmPayload gcmPayload = new GcmMessage(message);
+
+        return mMessagingHelper.sendGcmRequest(context, regIds, gcmPayload);
     }
 
     @Override

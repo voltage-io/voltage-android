@@ -6,14 +6,21 @@ import android.os.Parcel;
 import java.util.Collections;
 import java.util.List;
 
+import io.pivotal.arca.service.TaskOperation;
 import io.pivotal.arca.threading.Identifier;
 import io.voltage.app.application.VoltageContentProvider;
 import io.voltage.app.application.VoltagePreferences;
+import io.voltage.app.helpers.DatabaseHelper;
+import io.voltage.app.helpers.MessagingHelper;
 import io.voltage.app.models.GcmFriendRequest;
 import io.voltage.app.models.GcmPayload;
+import io.voltage.app.models.GcmResponse;
 import io.voltage.app.models.User;
 
-public class UserRequestOperation extends GcmPayloadOperation {
+public class UserRequestOperation extends TaskOperation<GcmResponse> {
+
+    private final MessagingHelper mMessagingHelper = new MessagingHelper.Default();
+    private final DatabaseHelper mDatabaseHelper = new DatabaseHelper.Default();
 
     private final String mUserId;
     private final String mRecipientId;
@@ -43,17 +50,17 @@ public class UserRequestOperation extends GcmPayloadOperation {
     }
 
     @Override
-    public List<String> onCreateRecipientList(final Context context) {
-        return Collections.singletonList(mRecipientId);
-    }
+    public GcmResponse onExecute(final Context context) throws Exception {
 
-    @Override
-    public GcmPayload onCreateGcmPayload(final Context context) {
+        final List<String> regIds = Collections.singletonList(mRecipientId);
+
         final User user = mDatabaseHelper.getUser(context, mUserId);
         final String regId = VoltagePreferences.getRegId(context);
 
         if (user == null) {
-            return new GcmFriendRequest(regId, mUserId);
+            final GcmPayload gcmPayload = new GcmFriendRequest(regId, mUserId);
+
+            return mMessagingHelper.sendGcmRequest(context, regIds, gcmPayload);
         } else {
             throw new RuntimeException("User already exists.");
         }

@@ -6,16 +6,20 @@ import android.os.Parcel;
 import java.util.Collections;
 import java.util.List;
 
+import io.pivotal.arca.service.TaskOperation;
 import io.pivotal.arca.threading.Identifier;
 import io.voltage.app.application.VoltageContentProvider;
 import io.voltage.app.helpers.DatabaseHelper;
+import io.voltage.app.helpers.MessagingHelper;
 import io.voltage.app.models.GcmMessageState;
 import io.voltage.app.models.GcmPayload;
+import io.voltage.app.models.GcmResponse;
 import io.voltage.app.models.Message;
 import io.voltage.app.models.MessageState;
 
-public class MessageStateOperation extends GcmPayloadOperation {
+public class MessageStateOperation extends TaskOperation<GcmResponse> {
 
+    private final MessagingHelper mMessagingHelper = new MessagingHelper.Default();
     private final DatabaseHelper mDatabaseHelper = new DatabaseHelper.Default();
 
     private final String mMsgUuid;
@@ -46,15 +50,15 @@ public class MessageStateOperation extends GcmPayloadOperation {
     }
 
     @Override
-    public List<String> onCreateRecipientList(final Context context) {
-        final Message message = mDatabaseHelper.getMessage(context, mMsgUuid);
-        return Collections.singletonList(message.getSenderId());
-    }
+    public GcmResponse onExecute(final Context context) throws Exception {
 
-    @Override
-    public GcmPayload onCreateGcmPayload(final Context context) {
+        final Message message = mDatabaseHelper.getMessage(context, mMsgUuid);
+        final List<String> regIds = Collections.singletonList(message.getSenderId());
+
         final MessageState messageState = new MessageState(mMsgUuid, mState);
-        return new GcmMessageState(messageState);
+        final GcmPayload gcmPayload = new GcmMessageState(messageState);
+
+        return mMessagingHelper.sendGcmRequest(context, regIds, gcmPayload);
     }
 
     public static final Creator CREATOR = new Creator() {
