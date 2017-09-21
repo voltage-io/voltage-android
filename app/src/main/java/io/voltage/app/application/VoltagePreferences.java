@@ -31,7 +31,7 @@ public class VoltagePreferences {
     }
 
     public static String getUserName(final Context context) {
-        final AccountHelper helper = new AccountHelper();
+        final AccountHelper helper = new AccountHelper.Default();
         final Account[] accounts = helper.getAccounts(context);
         return accounts.length > 0 ? accounts[0].name : "";
     }

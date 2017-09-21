@@ -9,26 +9,31 @@ import android.widget.EditText;
 
 import io.voltage.app.R;
 
-public class SearchHelper {
+public interface SearchHelper {
 
-    public void styleSearchView(final Menu menu, final SearchView.OnQueryTextListener listener) {
-        final MenuItem item = menu.findItem(R.id.menu_search);
-        final SearchView searchView = (SearchView) item.getActionView();
-        if (searchView != null) {
-            searchView.setOnQueryTextListener(listener);
-            searchView.setQuery("", true);
-            styleSearchViewText(searchView);
+    void styleSearchView(final Menu menu, final SearchView.OnQueryTextListener listener);
+
+    class Default implements SearchHelper {
+
+        public void styleSearchView(final Menu menu, final SearchView.OnQueryTextListener listener) {
+            final MenuItem item = menu.findItem(R.id.menu_search);
+            final SearchView searchView = (SearchView) item.getActionView();
+            if (searchView != null) {
+                searchView.setOnQueryTextListener(listener);
+                searchView.setQuery("", true);
+                styleSearchViewText(searchView);
+            }
         }
-    }
 
-    private void styleSearchViewText(final SearchView searchView) {
-        final String name = "android:id/search_src_text";
-        final Resources resources = searchView.getContext().getResources();
-        final int searchPlateId = resources.getIdentifier(name, null, null);
-        final EditText editText = (EditText) searchView.findViewById(searchPlateId);
-        if (editText != null) {
-            editText.setTextColor(Color.WHITE);
-            editText.setHint("");
+        private void styleSearchViewText(final SearchView searchView) {
+            final String name = "android:id/search_src_text";
+            final Resources resources = searchView.getContext().getResources();
+            final int searchPlateId = resources.getIdentifier(name, null, null);
+            final EditText editText = (EditText) searchView.findViewById(searchPlateId);
+            if (editText != null) {
+                editText.setTextColor(Color.WHITE);
+                editText.setHint("");
+            }
         }
     }
 }

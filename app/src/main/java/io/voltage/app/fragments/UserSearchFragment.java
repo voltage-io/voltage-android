@@ -4,6 +4,7 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
@@ -47,20 +48,21 @@ public class UserSearchFragment extends ArcaSimpleRecyclerViewFragment implement
         super.onViewCreated(view, savedInstanceState);
 
         setHasOptionsMenu(true);
-
-        onQueryTextChange("");
     }
 
     @Override
     public void onCreateOptionsMenu(final Menu menu, final MenuInflater inflater) {
         inflater.inflate(R.menu.fragment_user_list, menu);
 
-        new SearchHelper().styleSearchView(menu, this);
+        new SearchHelper.Default().styleSearchView(menu, this);
     }
 
     @Override
     public boolean onQueryTextChange(final String text) {
-        execute(new UserSearchQuery(text));
+        if (!TextUtils.isEmpty(text)) {
+            execute(new UserSearchQuery(text));
+            getViewManager().showProgressView();
+        }
         return true;
     }
 

@@ -10,10 +10,12 @@ import android.widget.Button;
 
 import io.voltage.app.R;
 import io.voltage.app.activities.BroadcastActivity;
+import io.voltage.app.activities.UserSearchActivity;
 import io.voltage.app.helpers.ShareHelper;
 
 public class UserNewFragment extends Fragment implements View.OnClickListener {
 
+    private Button mUserSearch;
     private Button mUserBroadcast;
     private Button mUserShare;
 
@@ -26,6 +28,9 @@ public class UserNewFragment extends Fragment implements View.OnClickListener {
     public void onViewCreated(final View view, final Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        mUserSearch = (Button) view.findViewById(R.id.user_search);
+        mUserSearch.setOnClickListener(this);
+
         mUserBroadcast = (Button) view.findViewById(R.id.user_broadcast);
         mUserBroadcast.setOnClickListener(this);
 
@@ -35,7 +40,10 @@ public class UserNewFragment extends Fragment implements View.OnClickListener {
 
     @Override
     public void onClick(final View view) {
-        if (view == mUserBroadcast) {
+        if (view == mUserSearch) {
+            UserSearchActivity.newInstance(getActivity());
+
+        } else if (view == mUserBroadcast) {
             BroadcastActivity.newInstance(getActivity());
 
         } else if (view == mUserShare) {

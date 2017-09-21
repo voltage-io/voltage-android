@@ -16,7 +16,7 @@ import io.voltage.app.helpers.AccountHelper;
 
 public class AccountFragment extends Fragment implements View.OnClickListener {
 
-    private final AccountHelper mHelper = new AccountHelper();
+    private final AccountHelper mHelper = new AccountHelper.Default();
 
     private TextView mTextView;
     private Button mButton;

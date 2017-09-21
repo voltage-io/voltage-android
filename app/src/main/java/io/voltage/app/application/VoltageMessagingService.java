@@ -67,7 +67,7 @@ public class VoltageMessagingService extends FirebaseMessagingService {
         }
     }
 
-    public static class Messenger {
+    private static class Messenger {
 
         private static final Map<String, GcmSyncMessageList> MESSAGES = new HashMap<>();
 

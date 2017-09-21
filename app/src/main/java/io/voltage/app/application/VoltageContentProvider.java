@@ -79,6 +79,9 @@ public class VoltageContentProvider extends DatabaseProvider {
             @Column(Column.Type.TEXT) String REG_ID = "reg_id";
             @Column(Column.Type.TEXT) String LOOKUP = "lookup";
         }
+
+        @Override public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {}
+        @Override public void onDowngrade(SQLiteDatabase db, int oldVersion, int newVersion) {}
     }
 
     public static class ThreadTable extends SQLiteTable {

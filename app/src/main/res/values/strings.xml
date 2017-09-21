@@ -11,6 +11,7 @@
     <string name="title_conversation_new">NEW CONVERSATION</string>
     <string name="title_conversation_edit">EDIT CONVERSATION</string>
     <string name="title_user_list">FRIENDS</string>
+    <string name="title_user_search">FRIENDS SEARCH</string>
     <string name="title_select_action">SELECT ACTION</string>
     <string name="title_delete_messages">DELETE MESSAGES</string>
     <string name="title_members_add">ADD MEMBERS</string>
@@ -80,10 +81,11 @@
     <string name="help_title">HOW DO I ADD A FRIEND?</string>
     <string name="help_text">In order to add someone as a friend, you need their registration id.\n\nThey can send you this information in two different ways:\n\nBroadcast it over NFC\n(Settings -> Broadcast)\n\nSend you a URL\n(Settings -> Share)</string>
 
-    <string name="user_new_two_ways">ADD A FRIEND IN ONE OF TWO WAYS:</string>
+    <string name="user_new_two_ways">ADD A FRIEND IN ONE OF THREE WAYS:</string>
+    <string name="user_search">Search publicly available users by their user lookup.</string>
     <string name="user_new_broadcast">Broadcast your registration information over NFC.</string>
-    <string name="user_new_or">- OR -</string>
     <string name="user_new_share">Share your registration information as a link.</string>
+    <string name="user_new_or">- OR -</string>
 
     <string name="select_user_name">Select a username</string>
 

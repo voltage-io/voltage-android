@@ -75,7 +75,7 @@ public class UserListFragment extends ArcaSimpleAdapterFragment implements Searc
     public void onCreateOptionsMenu(final Menu menu, final MenuInflater inflater) {
         inflater.inflate(R.menu.fragment_user_list, menu);
 
-        new SearchHelper().styleSearchView(menu, this);
+        new SearchHelper.Default().styleSearchView(menu, this);
     }
 
     @Override

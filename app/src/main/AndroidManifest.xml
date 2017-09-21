@@ -1,6 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="io.voltage.app"
-    android:versionCode="54"
+    android:versionCode="55"
     android:versionName="1.0.0">
 
     <uses-permission android:name="android.permission.NFC" />
@@ -115,6 +115,15 @@
         <activity
             android:name=".activities.UserNewActivity"
             android:parentActivityName=".activities.UserListActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".activities.UserListActivity" />
+        </activity>
+
+        <activity
+            android:name=".activities.UserSearchActivity"
+            android:parentActivityName=".activities.UserListActivity"
+            android:windowSoftInputMode="adjustResize|stateHidden">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".activities.UserListActivity" />
