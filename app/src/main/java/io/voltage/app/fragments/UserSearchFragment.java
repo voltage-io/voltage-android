@@ -48,6 +48,8 @@ public class UserSearchFragment extends ArcaSimpleRecyclerViewFragment implement
         super.onViewCreated(view, savedInstanceState);
 
         setHasOptionsMenu(true);
+
+        onQueryTextChange("");
     }
 
     @Override
@@ -62,6 +64,8 @@ public class UserSearchFragment extends ArcaSimpleRecyclerViewFragment implement
         if (!TextUtils.isEmpty(text)) {
             execute(new UserSearchQuery(text));
             getViewManager().showProgressView();
+        } else {
+            getViewManager().showEmptyView();
         }
         return true;
     }
