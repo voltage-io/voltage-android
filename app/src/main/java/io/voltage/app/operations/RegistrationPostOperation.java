@@ -38,8 +38,9 @@ public class RegistrationPostOperation extends TaskOperation<ContentValues> {
 
     @Override
     public void onPostExecute(final Context context, final ContentValues values) throws Exception {
+        context.getContentResolver().delete(getUri(), null, null);
         context.getContentResolver().insert(getUri(), values);
-        context.getContentResolver().notifyChange(VoltageContentProvider.Uris.REGISTRATIONS, null);
+        context.getContentResolver().notifyChange(getUri(), null);
     }
 
     @Override

@@ -41,8 +41,9 @@ public class RegistrationDeleteOperation extends TaskOperation<ContentValues> {
 
         values.remove(VoltageContentProvider.RegistrationTable.Columns.LOOKUP);
 
+        context.getContentResolver().delete(getUri(), null, null);
         context.getContentResolver().insert(getUri(), values);
-        context.getContentResolver().notifyChange(VoltageContentProvider.Uris.REGISTRATIONS, null);
+        context.getContentResolver().notifyChange(getUri(), null);
     }
 
     @Override
