@@ -107,7 +107,7 @@ public class VoltageContentProvider extends DatabaseProvider {
             @Column(Column.Type.TEXT) String REG_ID = "reg_id";
             @Column(Column.Type.TEXT) String NAME = "name";
             @Column(Column.Type.TEXT) String IMAGE = "image";
-            @Column(Column.Type.TEXT) String KEY = "key";
+            @Column(Column.Type.TEXT) String PUBLIC_KEY = "public_key";
         }
 
         @Override public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {}
@@ -325,6 +325,37 @@ public class VoltageContentProvider extends DatabaseProvider {
 
         @Joins({
             "INNER JOIN ThreadUserTable ON ThreadTable.id = ThreadUserTable.thread_id",
+            "LEFT JOIN UserTable ON ThreadUserTable.user_id = UserTable.reg_id"
+        })
+
+        public interface Columns {
+
+            @Select("ThreadTable._id")
+            public static final String _ID = "_id";
+
+            @Select("ThreadTable.id")
+            public static final String THREAD_ID = "thread_id";
+
+            @Select("ThreadTable.name")
+            public static final String THREAD_NAME = "thread_name";
+
+            @Select("ThreadTable._state")
+            public static final String THREAD_STATE = "thread_state";
+
+            @Select("ThreadUserTable.user_id")
+            public static final String USER_ID = "user_id";
+
+            @Select("UserTable.name")
+            public static final String USER_NAME = "user_name";
+        }
+    }
+
+    public static class NonMemberView extends SQLiteView {
+
+        @SelectFrom("ThreadTable")
+
+        @Joins({
+            "OUTER JOIN ThreadUserTable ON ThreadTable.id = ThreadUserTable.thread_id",
             "LEFT JOIN UserTable ON ThreadUserTable.user_id = UserTable.reg_id"
         })
 

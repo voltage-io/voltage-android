@@ -4,7 +4,7 @@
 
     <fragment
         android:id="@+id/fragment_members_remove"
-        android:name="io.voltage.app.fragments.MembersRemoveFragment"
+        android:name="io.voltage.app.activities.MembersRemoveActivity$MembersRemoveFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 

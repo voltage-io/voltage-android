@@ -1,5 +1,5 @@
 <fragment xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/fragment_user_add"
-    android:name="io.voltage.app.fragments.UserAddFragment"
+    android:name="io.voltage.app.activities.UserAddActivity$UserAddFragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent" />

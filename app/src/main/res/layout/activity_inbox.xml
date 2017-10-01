@@ -10,7 +10,7 @@
 
         <fragment
             android:id="@+id/fragment_inbox"
-            android:name="io.voltage.app.fragments.InboxFragment"
+            android:name="io.voltage.app.activities.InboxActivity$InboxFragment"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 
@@ -40,7 +40,7 @@
 
         <fragment
             android:id="@+id/fragment_drawer"
-            android:name="io.voltage.app.fragments.RegistrationFragment"
+            android:name="io.voltage.app.activities.InboxActivity$RegistrationFragment"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 

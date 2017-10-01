@@ -4,7 +4,7 @@
 
     <fragment
         android:id="@+id/fragment_members"
-        android:name="io.voltage.app.fragments.MembersFragment"
+        android:name="io.voltage.app.activities.MembersActivity$MembersFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 

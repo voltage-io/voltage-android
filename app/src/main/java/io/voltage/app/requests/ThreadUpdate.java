@@ -8,7 +8,7 @@ import io.voltage.app.application.VoltageContentProvider.ThreadTable;
 
 public class ThreadUpdate extends Update {
 
-    public ThreadUpdate(final String name, final String threadId) {
+    public ThreadUpdate(final String threadId, final String name) {
         super(VoltageContentProvider.Uris.THREADS, values(name));
 
         setWhere(ThreadTable.Columns.ID + "=?", threadId);

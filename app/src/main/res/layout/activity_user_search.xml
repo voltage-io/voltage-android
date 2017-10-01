@@ -4,7 +4,7 @@
 
     <fragment
         android:id="@+id/fragment_user_search"
-        android:name="io.voltage.app.fragments.UserSearchFragment"
+        android:name="io.voltage.app.activities.UserSearchActivity$UserSearchFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 

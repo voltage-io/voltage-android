@@ -17,6 +17,7 @@ public interface AccountHelper {
     Account getAccount(final Context context);
     Account[] getAccounts(final Context context);
     void setUsername(final Context context, final String name);
+    void requestSync(final Context context);
 
 
     class Default implements AccountHelper {
@@ -44,6 +45,20 @@ public interface AccountHelper {
             } else {
                 addAccount(context, name);
             }
+        }
+
+        public void requestSync(final Context context) {
+            final Account account = getAccount(context);
+            final String authority = VoltageContentProvider.AUTHORITY;
+
+            ContentResolver.requestSync(account, authority, createSyncBundle());
+        }
+
+        private Bundle createSyncBundle() {
+            final Bundle bundle = new Bundle();
+            bundle.putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, true);
+            bundle.putBoolean(ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
+            return bundle;
         }
 
         private void updateAccount(final Context context, final String name) {

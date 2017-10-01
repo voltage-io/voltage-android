@@ -11,4 +11,10 @@ public class MessageDelete extends Delete {
 
         setWhere(MessageTable.Columns.MSG_UUID + "=?", uuid);
     }
+
+    public MessageDelete() {
+        super(VoltageContentProvider.Uris.MESSAGES);
+
+        setWhere(MessageTable.Columns.MSG_UUID + " IS NULL");
+    }
 }

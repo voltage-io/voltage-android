@@ -3,12 +3,15 @@ package io.voltage.app.helpers;
 import android.content.ContentProviderOperation;
 import android.content.ContentValues;
 
+import java.util.UUID;
+
 import io.pivotal.arca.provider.DataUtils;
 import io.voltage.app.application.VoltageContentProvider;
 import io.voltage.app.application.VoltageContentProvider.MessageTable;
 import io.voltage.app.application.VoltageContentProvider.ThreadTable;
 import io.voltage.app.application.VoltageContentProvider.ThreadUserTable;
 import io.voltage.app.application.VoltageContentProvider.UserTable;
+import io.voltage.app.models.GcmPayload;
 import io.voltage.app.models.Message;
 import io.voltage.app.models.Thread;
 import io.voltage.app.models.ThreadUser;
@@ -18,6 +21,13 @@ public class OperationHelper {
     public ContentProviderOperation insertThreadOperation(final Thread thread) {
         return ContentProviderOperation.newInsert(VoltageContentProvider.Uris.THREADS)
                 .withValues(DataUtils.getContentValues(thread))
+                .build();
+    }
+
+    public ContentProviderOperation insertThreadOperation(final String threadId, final String name) {
+        return ContentProviderOperation.newInsert(VoltageContentProvider.Uris.THREADS)
+                .withValue(ThreadTable.Columns.ID, threadId)
+                .withValue(ThreadTable.Columns.NAME, name)
                 .build();
     }
 
@@ -36,6 +46,19 @@ public class OperationHelper {
     public ContentProviderOperation insertMessageOperation(final Message message) {
         return ContentProviderOperation.newInsert(VoltageContentProvider.Uris.MESSAGES)
                 .withValues(DataUtils.getContentValues(message))
+                .build();
+    }
+
+    public ContentProviderOperation insertMessageOperation(final String senderId, final String threadId, final String text, final String metadata, final GcmPayload.Type type) {
+        return ContentProviderOperation.newInsert(VoltageContentProvider.Uris.MESSAGES)
+                .withValue(MessageTable.Columns.TEXT, text)
+                .withValue(MessageTable.Columns.THREAD_ID, threadId)
+                .withValue(MessageTable.Columns.SENDER_ID, senderId)
+                .withValue(MessageTable.Columns.MSG_UUID, UUID.randomUUID().toString())
+                .withValue(MessageTable.Columns.TIMESTAMP, System.currentTimeMillis())
+                .withValue(MessageTable.Columns.METADATA, metadata)
+                .withValue(MessageTable.Columns.TYPE, type.name())
+                .withValue(MessageTable.Columns._STATE, MessageTable.State.SENDING)
                 .build();
     }
 

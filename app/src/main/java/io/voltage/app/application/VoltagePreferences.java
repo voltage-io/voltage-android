@@ -62,7 +62,7 @@ public class VoltagePreferences {
     }
 
     public static boolean shouldPublishRegId(final Context context) {
-        return getSharedPreferences(context).getBoolean(Property.PUBLISH_REG_ID, false);
+        return getSharedPreferences(context).getBoolean(Property.PUBLISH_REG_ID, true);
     }
 
     public static boolean isLightTheme(final Context context) {

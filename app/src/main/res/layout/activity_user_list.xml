@@ -3,7 +3,7 @@
     android:layout_height="match_parent">
 
     <fragment android:id="@+id/fragment_user_list"
-        android:name="io.voltage.app.fragments.UserListFragment"
+        android:name="io.voltage.app.activities.UserListActivity$UserListFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 

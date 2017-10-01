@@ -4,25 +4,43 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v13.app.FragmentStatePagerAdapter;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.view.ActionMode;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AbsListView;
+import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ListView;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
-import io.pivotal.arca.fragments.ArcaDispatcherFactory;
-import io.pivotal.arca.monitor.ArcaDispatcher;
+import io.pivotal.arca.adapters.Binding;
+import io.pivotal.arca.fragments.ArcaFragment;
+import io.pivotal.arca.fragments.ArcaFragmentBindings;
+import io.pivotal.arca.fragments.ArcaQueryFragment;
+import io.pivotal.arca.fragments.ArcaSimpleAdapterFragment;
 import io.voltage.app.R;
+import io.voltage.app.application.VoltageContentProvider;
+import io.voltage.app.application.VoltageContentProvider.UserTable;
 import io.voltage.app.application.VoltagePreferences;
-import io.voltage.app.fragments.ConversationNewNameFragment;
-import io.voltage.app.fragments.ConversationNewUsersFragment;
-import io.voltage.app.models.GcmPayload;
 import io.voltage.app.monitors.ConversationAddMonitor;
-import io.voltage.app.requests.MessageInsert;
-import io.voltage.app.requests.ThreadInsert;
-import io.voltage.app.requests.ThreadUserInsert;
+import io.voltage.app.requests.ThreadInsertBatch;
+import io.voltage.app.requests.UserQuery;
 
 public class ConversationNewActivity extends FragmentActivity implements ViewPager.OnPageChangeListener {
 
@@ -34,18 +52,31 @@ public class ConversationNewActivity extends FragmentActivity implements ViewPag
     private ConversationNewUsersFragment mUsersFragment = new ConversationNewUsersFragment();
     private ConversationNewNameFragment mNameFragment = new ConversationNewNameFragment();
 
+    private ViewPager mViewPager;
+
 	@Override
 	protected void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_conversation_new);
 		setTitle(R.string.title_conversation_new);
 
-        final FragmentManager fragmentManager = getFragmentManager();
-
-        final ViewPager viewPager = (ViewPager) findViewById(R.id.view_pager);
-        viewPager.setAdapter(new FragmentAdapter(fragmentManager, mUsersFragment, mNameFragment));
-        viewPager.setOnPageChangeListener(this);
+        mViewPager = (ViewPager) findViewById(R.id.view_pager);
+        mViewPager.setAdapter(new FragmentAdapter(getFragmentManager(), mUsersFragment, mNameFragment));
 	}
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        mViewPager.addOnPageChangeListener(this);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        mViewPager.removeOnPageChangeListener(this);
+    }
 
     @Override
     public void onBackPressed() {
@@ -59,33 +90,12 @@ public class ConversationNewActivity extends FragmentActivity implements ViewPag
     }
 
     public void proceed() {
-        final ViewPager viewPager = (ViewPager) findViewById(R.id.view_pager);
-        viewPager.setCurrentItem(viewPager.getCurrentItem() + 1, true);
-    }
-
-    public void createThread(final String name, final Set<String> regIds) {
-        final String threadId = UUID.randomUUID().toString();
-        final String senderId = VoltagePreferences.getRegId(this);
-
-        final ArcaDispatcher dispatcher = ArcaDispatcherFactory.generateDispatcher(this);
-        dispatcher.setRequestMonitor(new ConversationAddMonitor());
-
-        dispatcher.execute(new ThreadInsert(threadId, name));
-        dispatcher.execute(new MessageInsert(senderId, threadId, GcmPayload.Type.THREAD_CREATED.name(), name, GcmPayload.Type.THREAD_CREATED));
-        dispatcher.execute(new MessageInsert(senderId, threadId, GcmPayload.Type.USER_ADDED.name(), senderId, GcmPayload.Type.USER_ADDED));
-
-        for (final String regId : regIds) {
-            dispatcher.execute(new ThreadUserInsert(threadId, regId));
-            dispatcher.execute(new MessageInsert(senderId, threadId, GcmPayload.Type.USER_ADDED.name(), regId, GcmPayload.Type.USER_ADDED));
-        }
-
-        ConversationActivity.newInstance(this, threadId);
+        mViewPager.setCurrentItem(mViewPager.getCurrentItem() + 1, true);
     }
 
     @Override
     public void onPageSelected(final int position) {
-        final Set<String> regIds = mUsersFragment.getRegistrationIds();
-        mNameFragment.setRegistrationIds(regIds);
+        mNameFragment.setRegistrationIds(mUsersFragment.getRegistrationIds());
     }
 
     @Override
@@ -115,6 +125,173 @@ public class ConversationNewActivity extends FragmentActivity implements ViewPag
         @Override
         public Fragment getItem(int position) {
             return mFragments[position];
+        }
+    }
+
+
+    @ArcaFragment(
+        fragmentLayout = R.layout.fragment_conversation_new_users,
+        adapterItemLayout = R.layout.list_item_user_select
+    )
+    public static class ConversationNewUsersFragment extends ArcaSimpleAdapterFragment implements View.OnClickListener {
+
+        @ArcaFragmentBindings
+        private static final Collection<Binding> BINDINGS = Arrays.asList(
+            new Binding(R.id.user_name, VoltageContentProvider.UserTable.Columns.NAME)
+        );
+
+        private final Set<String> mRegIds = new HashSet<>();
+
+        private Button mEmptyButton;
+        private Button mNextButton;
+
+        @Override
+        public void onViewCreated(final View view, final Bundle savedInstanceState) {
+            super.onViewCreated(view, savedInstanceState);
+
+            final AbsListView listView = (AbsListView) view.findViewById(getAdapterViewId());
+            listView.setMultiChoiceModeListener(new ConversationChoiceListener());
+            listView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
+
+            mEmptyButton = (Button) view.findViewById(R.id.empty_button);
+            mEmptyButton.setOnClickListener(this);
+
+            mNextButton = (Button) view.findViewById(R.id.conversation_create);
+            mNextButton.setOnClickListener(this);
+
+            execute(new UserQuery());
+        }
+
+        @Override
+        public void onItemClick(final AdapterView<?> adapterView, final View view, final int position, final long id) {
+            final Cursor cursor = (Cursor) adapterView.getItemAtPosition(position);
+            final String regId = cursor.getString(cursor.getColumnIndex(UserTable.Columns.REG_ID));
+
+            final boolean checked = toggleChecked((AbsListView) adapterView, position);
+            final boolean areAnyChecked = updateRegIds(regId, checked);
+
+            mNextButton.setEnabled(areAnyChecked);
+        }
+
+        private boolean toggleChecked(final AbsListView listView, final int position) {
+            final boolean checked = !listView.isItemChecked(position);
+            listView.setItemChecked(position, checked);
+            return checked;
+        }
+
+        private boolean updateRegIds(final String regId, final boolean checked) {
+            if (checked) {
+                mRegIds.add(regId);
+            } else {
+                mRegIds.remove(regId);
+            }
+
+            return mRegIds.size() > 0;
+        }
+
+        @Override
+        public void onClick(final View view) {
+            if (view == mEmptyButton) {
+                UserNewActivity.newInstance(getActivity());
+
+            } else if (view == mNextButton) {
+                ((ConversationNewActivity)getActivity()).proceed();
+            }
+        }
+
+        public Set<String> getRegistrationIds() {
+            return mRegIds;
+        }
+
+        private static final class ConversationChoiceListener implements AbsListView.MultiChoiceModeListener {
+
+            @Override
+            public void onItemCheckedStateChanged(final ActionMode mode, final int position, final long id, final boolean checked) {
+
+            }
+
+            @Override
+            public boolean onCreateActionMode(final ActionMode mode, final Menu menu) {
+                return false;
+            }
+
+            @Override
+            public boolean onPrepareActionMode(final ActionMode mode, final Menu menu) {
+                return false;
+            }
+
+            @Override
+            public boolean onActionItemClicked(final ActionMode mode, final MenuItem item) {
+                return false;
+            }
+
+            @Override
+            public void onDestroyActionMode(final ActionMode mode) {
+
+            }
+        }
+    }
+
+    public static class ConversationNewNameFragment extends ArcaQueryFragment implements View.OnClickListener, TextWatcher {
+
+        private Button mCreateButton;
+        private EditText mConversationName;
+
+        private Set<String> mRegIds;
+
+        @Override
+        public View onCreateView(final LayoutInflater inflater, final ViewGroup container, final Bundle savedInstanceState) {
+            return inflater.inflate(R.layout.fragment_conversation_new_name, container, false);
+        }
+
+        @Override
+        public void onViewCreated(final View view, final Bundle savedInstanceState) {
+            super.onViewCreated(view, savedInstanceState);
+
+            mCreateButton = (Button) view.findViewById(R.id.conversation_create);
+            mCreateButton.setOnClickListener(this);
+
+            mConversationName = (EditText) view.findViewById(R.id.conversation_name);
+            mConversationName.addTextChangedListener(this);
+
+            setRequestMonitor(new ConversationAddMonitor());
+        }
+
+        public void setRegistrationIds(final Set<String> regIds) {
+            mRegIds = regIds;
+            checkRequirements();
+        }
+
+        private void checkRequirements() {
+            final boolean itemsChecked = mRegIds != null && mRegIds.size() > 0;
+            mCreateButton.setEnabled(itemsChecked);
+        }
+
+        @Override
+        public void onClick(final View view) {
+            final String name = mConversationName.getText().toString();
+
+            final String threadId = UUID.randomUUID().toString();
+            final String senderId = VoltagePreferences.getRegId(getActivity());
+
+            execute(new ThreadInsertBatch(threadId, senderId, name, mRegIds));
+
+            ConversationActivity.newInstance(getActivity(), threadId);
+        }
+
+        @Override
+        public void beforeTextChanged(final CharSequence sequence, final int start, final int count, final int after) {
+
+        }
+
+        @Override
+        public void onTextChanged(final CharSequence sequence, final int start, final int before, final int count) {
+
+        }
+
+        @Override
+        public void afterTextChanged(final Editable editable) {
+            checkRequirements();
         }
     }
 }
