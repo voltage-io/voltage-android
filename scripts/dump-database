@@ -10,7 +10,7 @@ main() {
 
 	adb shell run-as $package chmod 777 /data/data/$package/databases/$db_file_name
 
-	adb shell cp /data/data/$package/databases/$db_file_name /sdcard/
+	adb shell run-as $package cp /data/data/$package/databases/$db_file_name /sdcard/
 
 	adb pull /sdcard/$db_file_name
 }
