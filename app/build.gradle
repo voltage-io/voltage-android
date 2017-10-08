@@ -43,6 +43,9 @@ dependencies {
     compile 'io.pivotal:arca-service:1.0-beta.16-SNAPSHOT'
     compile 'io.pivotal:arca-provider:1.0-beta.16-SNAPSHOT'
     compile 'io.pivotal:arca-fragments:1.0-beta.16-SNAPSHOT'
+
+    testCompile 'junit:junit:4.12'
+    testCompile 'org.mockito:mockito-core:2.10.0'
 }
 
 apply plugin: 'com.google.gms.google-services'
