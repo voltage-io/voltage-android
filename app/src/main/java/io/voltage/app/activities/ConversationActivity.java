@@ -12,11 +12,9 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.text.TextUtils;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.CursorAdapter;
 import android.widget.TextView;
@@ -30,11 +28,10 @@ import io.pivotal.arca.dispatcher.QueryListener;
 import io.pivotal.arca.dispatcher.QueryResult;
 import io.pivotal.arca.fragments.ArcaDispatcherFactory;
 import io.pivotal.arca.fragments.ArcaFragment;
-import io.pivotal.arca.fragments.ArcaQueryFragment;
 import io.pivotal.arca.fragments.ArcaSimpleAdapterFragment;
+import io.pivotal.arca.fragments.ArcaSimpleDispatcherFragment;
 import io.pivotal.arca.monitor.ArcaDispatcher;
 import io.pivotal.arca.provider.DataUtils;
-import io.pivotal.arca.service.OperationService;
 import io.voltage.app.R;
 import io.voltage.app.adapters.ConversationAdapter;
 import io.voltage.app.adapters.ConversationAdapter.ViewType;
@@ -45,12 +42,10 @@ import io.voltage.app.application.VoltageContentProvider.ThreadTable;
 import io.voltage.app.application.VoltagePreferences;
 import io.voltage.app.binders.ConversationViewBinder;
 import io.voltage.app.helpers.FormatHelper;
-import io.voltage.app.helpers.NotificationHelper;
 import io.voltage.app.models.GcmPayload;
 import io.voltage.app.monitors.ConversationMonitor;
 import io.voltage.app.monitors.MessageSendMonitor;
 import io.voltage.app.monitors.ParticipantsMonitor;
-import io.voltage.app.operations.ChecksumOperation;
 import io.voltage.app.requests.ConversationQuery;
 import io.voltage.app.requests.MessageDelete;
 import io.voltage.app.requests.MessageInsert;
@@ -77,7 +72,6 @@ public class ConversationActivity extends ColorActivity implements QueryListener
     }
 
     private final FormatHelper mFormatHelper = new FormatHelper.Default();
-    private final NotificationHelper mNotificationHelper = new NotificationHelper.Default();
 
     private ArcaDispatcher mDispatcher;
 
@@ -126,10 +120,6 @@ public class ConversationActivity extends ColorActivity implements QueryListener
     private ConversationFragment getConversationFragment() {
         final FragmentManager manager = getFragmentManager();
         return (ConversationFragment) manager.findFragmentById(R.id.fragment_conversation);
-    }
-
-    public void clearNotifications() {
-        mNotificationHelper.cancelNotification(this, mThreadId);
     }
 
     private void muteConversation(final boolean isChecked) {
@@ -247,18 +237,9 @@ public class ConversationActivity extends ColorActivity implements QueryListener
             return true;
         }
 
-        @Override
-        public void onContentChanged(final QueryResult result) {
-            super.onContentChanged(result);
-
-            ((ConversationActivity) getActivity()).clearNotifications();
-        }
-
         public void setThreadId(final String threadId) {
             if (threadId != null) {
                 execute(new ConversationQuery(threadId));
-
-                OperationService.start(getActivity(), new ChecksumOperation(threadId));
             }
         }
 
@@ -286,6 +267,7 @@ public class ConversationActivity extends ColorActivity implements QueryListener
                 final Cursor cursor = (Cursor) getAdapterView().getItemAtPosition(position);
                 final String text = cursor.getString(cursor.getColumnIndex(ConversationView.Columns.TEXT));
                 final ClipboardManager clipboard = (ClipboardManager) getActivity().getSystemService(CLIPBOARD_SERVICE);
+
                 clipboard.setPrimaryClip(ClipData.newPlainText("text", text));
             }
 
@@ -307,7 +289,11 @@ public class ConversationActivity extends ColorActivity implements QueryListener
         }
     }
 
-    public static class MessageSendFragment extends ArcaQueryFragment implements View.OnClickListener {
+    @ArcaFragment(
+            fragmentLayout = R.layout.fragment_message_send,
+            monitor = MessageSendMonitor.class
+    )
+    public static class MessageSendFragment extends ArcaSimpleDispatcherFragment implements View.OnClickListener {
 
         private View mSendButton;
         private View mEmojiButton;
@@ -315,23 +301,16 @@ public class ConversationActivity extends ColorActivity implements QueryListener
         private String mThreadId;
 
         @Override
-        public View onCreateView(final LayoutInflater inflater, final ViewGroup container, final Bundle savedInstanceState) {
-            return inflater.inflate(R.layout.fragment_message_send, container, false);
-        }
-
-        @Override
         public void onViewCreated(final View view, final Bundle savedInstanceState) {
             super.onViewCreated(view, savedInstanceState);
+
+            mMessageView = (TextView) view.findViewById(R.id.message_send_text);
 
             mSendButton = view.findViewById(R.id.message_send_action);
             mSendButton.setOnClickListener(this);
 
             mEmojiButton = view.findViewById(R.id.message_emojis);
             mEmojiButton.setOnClickListener(this);
-
-            mMessageView = (TextView) view.findViewById(R.id.message_send_text);
-
-            setRequestMonitor(new MessageSendMonitor());
         }
 
         public void setThreadId(final String threadId) {

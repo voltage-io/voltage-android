@@ -12,11 +12,9 @@ import android.support.v4.view.ViewPager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.ActionMode;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -32,8 +30,8 @@ import java.util.UUID;
 import io.pivotal.arca.adapters.Binding;
 import io.pivotal.arca.fragments.ArcaFragment;
 import io.pivotal.arca.fragments.ArcaFragmentBindings;
-import io.pivotal.arca.fragments.ArcaQueryFragment;
 import io.pivotal.arca.fragments.ArcaSimpleAdapterFragment;
+import io.pivotal.arca.fragments.ArcaSimpleDispatcherFragment;
 import io.voltage.app.R;
 import io.voltage.app.application.VoltageContentProvider;
 import io.voltage.app.application.VoltageContentProvider.UserTable;
@@ -232,17 +230,16 @@ public class ConversationNewActivity extends FragmentActivity implements ViewPag
         }
     }
 
-    public static class ConversationNewNameFragment extends ArcaQueryFragment implements View.OnClickListener, TextWatcher {
+    @ArcaFragment(
+            fragmentLayout = R.layout.fragment_conversation_new_name,
+            monitor = ConversationAddMonitor.class
+    )
+    public static class ConversationNewNameFragment extends ArcaSimpleDispatcherFragment implements View.OnClickListener, TextWatcher {
 
         private Button mCreateButton;
         private EditText mConversationName;
 
         private Set<String> mRegIds;
-
-        @Override
-        public View onCreateView(final LayoutInflater inflater, final ViewGroup container, final Bundle savedInstanceState) {
-            return inflater.inflate(R.layout.fragment_conversation_new_name, container, false);
-        }
 
         @Override
         public void onViewCreated(final View view, final Bundle savedInstanceState) {
@@ -253,8 +250,6 @@ public class ConversationNewActivity extends FragmentActivity implements ViewPag
 
             mConversationName = (EditText) view.findViewById(R.id.conversation_name);
             mConversationName.addTextChangedListener(this);
-
-            setRequestMonitor(new ConversationAddMonitor());
         }
 
         public void setRegistrationIds(final Set<String> regIds) {

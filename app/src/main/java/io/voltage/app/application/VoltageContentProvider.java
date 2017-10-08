@@ -17,6 +17,7 @@ import io.pivotal.arca.provider.SQLiteTable;
 import io.pivotal.arca.provider.SQLiteView;
 import io.pivotal.arca.provider.SearchDataset;
 import io.pivotal.arca.provider.Select;
+import io.pivotal.arca.provider.SelectAs;
 import io.pivotal.arca.provider.SelectFrom;
 import io.pivotal.arca.provider.Unique;
 import io.voltage.app.models.Registration;
@@ -328,36 +329,7 @@ public class VoltageContentProvider extends DatabaseProvider {
             "LEFT JOIN UserTable ON ThreadUserTable.user_id = UserTable.reg_id"
         })
 
-        public interface Columns {
-
-            @Select("ThreadTable._id")
-            public static final String _ID = "_id";
-
-            @Select("ThreadTable.id")
-            public static final String THREAD_ID = "thread_id";
-
-            @Select("ThreadTable.name")
-            public static final String THREAD_NAME = "thread_name";
-
-            @Select("ThreadTable._state")
-            public static final String THREAD_STATE = "thread_state";
-
-            @Select("ThreadUserTable.user_id")
-            public static final String USER_ID = "user_id";
-
-            @Select("UserTable.name")
-            public static final String USER_NAME = "user_name";
-        }
-    }
-
-    public static class NonMemberView extends SQLiteView {
-
-        @SelectFrom("ThreadTable")
-
-        @Joins({
-            "OUTER JOIN ThreadUserTable ON ThreadTable.id = ThreadUserTable.thread_id",
-            "LEFT JOIN UserTable ON ThreadUserTable.user_id = UserTable.reg_id"
-        })
+        @OrderBy("UserTable.name")
 
         public interface Columns {
 
@@ -383,34 +355,33 @@ public class VoltageContentProvider extends DatabaseProvider {
 
     public static class TransactionView extends SQLiteView {
 
-        @SelectFrom("ThreadTable")
+        @SelectFrom(
+            "SELECT msg_uuid, thread_id, ThreadTable.* FROM MessageTable INNER JOIN ThreadTable " +
+                "ON ThreadTable.id = MessageTable.thread_id WHERE type != 'MESSAGE' ORDER BY timestamp"
+        )
 
-        @Joins({
-            "INNER JOIN (" +
-                "SELECT COUNT(*) count, GROUP_CONCAT(msg_uuid) msg_uuids, thread_id FROM (" +
-                    "SELECT msg_uuid, thread_id FROM MessageTable WHERE type != 'MESSAGE' ORDER BY timestamp" +
-                ") GROUP BY thread_id" +
-            ") as TransactionTable ON ThreadTable.id = TransactionTable.thread_id"
-        })
+        @SelectAs("TransactionTable")
+
+        @GroupBy("TransactionTable.thread_id")
 
         public interface Columns {
 
-            @Select("ThreadTable._id")
+            @Select("TransactionTable._id")
             public static final String _ID = "_id";
 
-            @Select("ThreadTable.id")
+            @Select("TransactionTable.thread_id")
             public static final String THREAD_ID = "thread_id";
 
-            @Select("ThreadTable.name")
+            @Select("TransactionTable.name")
             public static final String THREAD_NAME = "thread_name";
 
-            @Select("ThreadTable._state")
+            @Select("TransactionTable._state")
             public static final String THREAD_STATE = "thread_state";
 
-            @Select("TransactionTable.msg_uuids")
+            @Select("GROUP_CONCAT(TransactionTable.msg_uuid)")
             public static final String MSG_UUIDS = "msg_uuids";
 
-            @Select("TransactionTable.count")
+            @Select("COUNT(TransactionTable.msg_uuid)")
             public static final String COUNT = "count";
         }
     }

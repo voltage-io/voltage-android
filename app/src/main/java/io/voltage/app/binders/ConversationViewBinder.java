@@ -134,7 +134,7 @@ public class ConversationViewBinder implements ViewBinder {
         final String metaUser = cursor.getString(cursor.getColumnIndex(ConversationView.Columns.META_USER));
         final String metadata = cursor.getString(cursor.getColumnIndex(ConversationView.Columns.METADATA));
 
-        if (TextUtils.isEmpty(metaUser) && VoltagePreferences.getRegId(view.getContext()).equals(metadata)) {
+        if (VoltagePreferences.getRegId(view.getContext()).equals(metadata)) {
             return applyStyle(view, state, "You");
         }
 

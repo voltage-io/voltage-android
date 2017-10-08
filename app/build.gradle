@@ -40,9 +40,9 @@ dependencies {
     compile 'com.google.firebase:firebase-messaging:11.0.4'
     compile 'com.google.android.gms:play-services-base:11.0.4'
 
-    compile 'io.pivotal:arca-service:1.0-beta.15-SNAPSHOT'
-    compile 'io.pivotal:arca-provider:1.0-beta.15-SNAPSHOT'
-    compile 'io.pivotal:arca-fragments:1.0-beta.15-SNAPSHOT'
+    compile 'io.pivotal:arca-service:1.0-beta.16-SNAPSHOT'
+    compile 'io.pivotal:arca-provider:1.0-beta.16-SNAPSHOT'
+    compile 'io.pivotal:arca-fragments:1.0-beta.16-SNAPSHOT'
 }
 
 apply plugin: 'com.google.gms.google-services'

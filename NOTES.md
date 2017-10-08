@@ -29,6 +29,7 @@
 ###### [Option 1]
 * Generate a keypair for each user
 * Encrypt each message with the recipients public key
+* Problem is that each message can only ever be sent to one user at a time
 
 ###### [Option 2]
 * Generate a keypair for each user
