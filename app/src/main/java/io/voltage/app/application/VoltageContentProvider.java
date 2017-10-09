@@ -20,6 +20,7 @@ import io.pivotal.arca.provider.Select;
 import io.pivotal.arca.provider.SelectAs;
 import io.pivotal.arca.provider.SelectFrom;
 import io.pivotal.arca.provider.Unique;
+import io.pivotal.arca.provider.Where;
 import io.voltage.app.models.Registration;
 
 public class VoltageContentProvider extends DatabaseProvider {
@@ -197,10 +198,10 @@ public class VoltageContentProvider extends DatabaseProvider {
 
     public static class ConversationView extends SQLiteView {
 
-        @SelectFrom("ThreadTable")
+        @SelectFrom("MessageTable")
 
         @Joins({
-            "INNER JOIN MessageTable ON ThreadTable.id = MessageTable.thread_id",
+            "LEFT JOIN ThreadTable ON MessageTable.thread_id = ThreadTable.id",
             "LEFT JOIN UserTable ON MessageTable.sender_id = UserTable.reg_id",
             "LEFT JOIN UserTable as MetaUser ON MessageTable.metadata = MetaUser.reg_id"
         })
@@ -215,7 +216,7 @@ public class VoltageContentProvider extends DatabaseProvider {
             @Select("MessageTable.msg_uuid")
             public static final String MSG_UUID = "msg_uuid";
 
-            @Select("ThreadTable.id")
+            @Select("MessageTable.thread_id")
             public static final String THREAD_ID = "thread_id";
 
             @Select("ThreadTable.name")
@@ -249,21 +250,21 @@ public class VoltageContentProvider extends DatabaseProvider {
 
     public static class ParticipantView extends SQLiteView {
 
-        @SelectFrom("ThreadTable")
+        @SelectFrom("ThreadUserTable")
 
         @Joins({
-            "INNER JOIN ThreadUserTable ON ThreadTable.id = ThreadUserTable.thread_id",
+            "LEFT JOIN ThreadTable ON ThreadUserTable.thread_id = ThreadTable.id",
             "LEFT JOIN UserTable ON ThreadUserTable.user_id = UserTable.reg_id"
         })
 
-        @GroupBy("ThreadTable.id")
+        @GroupBy("ThreadUserTable.thread_id")
 
         public interface Columns {
 
-            @Select("ThreadTable._id")
+            @Select("ThreadUserTable._id")
             public static final String _ID = "_id";
 
-            @Select("ThreadTable.id")
+            @Select("ThreadUserTable.thread_id")
             public static final String THREAD_ID = "thread_id";
 
             @Select("ThreadTable.name")
@@ -285,9 +286,9 @@ public class VoltageContentProvider extends DatabaseProvider {
         @SelectFrom("MessageTable")
 
         @Joins({
-            "LEFT JOIN ThreadTable ON MessageTable.thread_id = ThreadTable.id",
-            "INNER JOIN ThreadUserTable ON ThreadTable.id = ThreadUserTable.thread_id",
-            "LEFT JOIN UserTable ON ThreadUserTable.user_id = UserTable.reg_id"
+            "INNER JOIN ThreadUserTable ON MessageTable.thread_id = ThreadUserTable.thread_id",
+            "LEFT JOIN UserTable ON ThreadUserTable.user_id = UserTable.reg_id",
+            "LEFT JOIN ThreadTable ON MessageTable.thread_id = ThreadTable.id"
         })
 
         @GroupBy("MessageTable.msg_uuid")
@@ -319,21 +320,23 @@ public class VoltageContentProvider extends DatabaseProvider {
 
     public static class MemberView extends SQLiteView {
 
-        @SelectFrom("ThreadTable")
+        @SelectFrom("ThreadUserTable")
 
         @Joins({
-            "INNER JOIN ThreadUserTable ON ThreadTable.id = ThreadUserTable.thread_id",
+            "LEFT JOIN ThreadTable ON ThreadUserTable.thread_id = ThreadTable.id",
             "LEFT JOIN UserTable ON ThreadUserTable.user_id = UserTable.reg_id"
         })
+
+        @Where("ThreadUserTable.user_id NOT IN (SELECT reg_id from RegistrationTable)")
 
         @OrderBy("UserTable.name")
 
         public interface Columns {
 
-            @Select("ThreadTable._id")
+            @Select("ThreadUserTable._id")
             public static final String _ID = "_id";
 
-            @Select("ThreadTable.id")
+            @Select("ThreadUserTable.thread_id")
             public static final String THREAD_ID = "thread_id";
 
             @Select("ThreadTable.name")
@@ -342,7 +345,7 @@ public class VoltageContentProvider extends DatabaseProvider {
             @Select("ThreadTable._state")
             public static final String THREAD_STATE = "thread_state";
 
-            @Select("ThreadUserTable.user_id")
+            @Select("UserTable.reg_id")
             public static final String USER_ID = "user_id";
 
             @Select("UserTable.name")
