@@ -152,19 +152,17 @@ public class VoltageContentProvider extends DatabaseProvider {
 
     public static class InboxView extends SQLiteView {
 
-        @SelectFrom("ThreadTable")
+        @SelectFrom("MessageTable")
 
         @Joins({
-            "LEFT JOIN ThreadUserTable ON ThreadTable.id = ThreadUserTable.thread_id",
+            "LEFT JOIN ThreadTable ON MessageTable.thread_id = ThreadTable.id",
+            "LEFT JOIN ThreadUserTable ON MessageTable.thread_id = ThreadUserTable.thread_id",
             "LEFT JOIN UserTable ON ThreadUserTable.user_id = UserTable.reg_id",
-            "INNER JOIN (" +
-                "SELECT MAX(timestamp) timestamp, thread_id, text, _state FROM MessageTable GROUP BY thread_id" +
-            ") as MessageTable ON ThreadTable.id = MessageTable.thread_id"
         })
 
-        @GroupBy("ThreadTable.id")
+        @GroupBy("MessageTable.thread_id")
 
-        @OrderBy("MessageTable.timestamp DESC")
+        @OrderBy("message_timestamp DESC")
 
         public interface Columns {
 
@@ -186,17 +184,16 @@ public class VoltageContentProvider extends DatabaseProvider {
             @Select("GROUP_CONCAT(DISTINCT UserTable.name)")
             public static final String USER_NAMES = "user_names";
 
+            @Select("MAX(MessageTable.timestamp)")
+            public static final String MESSAGE_TIMESTAMP = "message_timestamp";
+
             @Select("MessageTable.text")
             public static final String MESSAGE_TEXT = "message_text";
-
-            @Select("MessageTable.timestamp")
-            public static final String MESSAGE_TIMESTAMP = "message_timestamp";
 
             @Select("MessageTable._state")
             public static final String MESSAGE_STATE = "message_state";
         }
     }
-
 
     public static class ConversationView extends SQLiteView {
 
