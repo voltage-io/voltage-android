@@ -1,6 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="io.voltage.app"
-    android:versionCode="68"
+    android:versionCode="76"
     android:versionName="1.0.0">
 
     <uses-permission android:name="android.permission.NFC" />
@@ -213,10 +213,6 @@
                 <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
             </intent-filter>
         </service>
-
-        <service
-            android:name="io.pivotal.arca.service.OperationService"
-            android:exported="false" />
 
         <service
             android:name=".application.VoltageAuthenticatorService"

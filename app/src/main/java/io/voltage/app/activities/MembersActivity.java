@@ -22,7 +22,7 @@ import io.pivotal.arca.fragments.ArcaFragment;
 import io.pivotal.arca.fragments.ArcaFragmentBindings;
 import io.pivotal.arca.fragments.ArcaSimpleAdapterFragment;
 import io.voltage.app.R;
-import io.voltage.app.application.VoltageContentProvider;
+import io.voltage.app.application.VoltageContentProvider.MemberView;
 import io.voltage.app.binders.MembersViewBinder;
 import io.voltage.app.requests.MembersQuery;
 
@@ -68,13 +68,13 @@ public class MembersActivity extends FragmentActivity {
 
         @ArcaFragmentBindings
         private static final Collection<Binding> BINDINGS = Arrays.asList(
-            new Binding(R.id.user_name, VoltageContentProvider.MemberView.Columns.USER_NAME)
+            new Binding(R.id.user_name, MemberView.Columns.USER_NAME)
         );
 
         @Override
         public boolean onItemLongClick(final AdapterView<?> adapterView, final View view, final int position, final long id) {
             final Cursor cursor = (Cursor) adapterView.getItemAtPosition(position);
-            final String name = cursor.getString(cursor.getColumnIndex(VoltageContentProvider.MemberView.Columns.USER_NAME));
+            final String name = cursor.getString(cursor.getColumnIndex(MemberView.Columns.USER_NAME));
 
             return !TextUtils.isEmpty(name) || showActionsDialog(position);
         }
@@ -113,7 +113,7 @@ public class MembersActivity extends FragmentActivity {
 
             private void addFriend(final int position) {
                 final Cursor cursor = (Cursor) getAdapterView().getItemAtPosition(position);
-                final String userId = cursor.getString(cursor.getColumnIndex(VoltageContentProvider.MemberView.Columns.USER_ID));
+                final String userId = cursor.getString(cursor.getColumnIndex(MemberView.Columns.USER_ID));
 
                 UserAddParamsActivity.newInstance(getActivity(), userId);
             }

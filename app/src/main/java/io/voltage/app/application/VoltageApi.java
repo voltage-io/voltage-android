@@ -25,8 +25,8 @@ public class VoltageApi {
 
         @POST("/fcm/send")
         @Headers({
-            "Authorization: key=" + VoltageProperties.GCM_SERVER_KEY,
-            "Content-Type: application/json"
+            "Content-Type: application/json",
+            "Authorization: key=" + VoltageProperties.GCM_SERVER_KEY
         })
         Call<GcmResponse> sendMessage(@Body final GcmRequest request);
     }
@@ -47,17 +47,17 @@ public class VoltageApi {
         Call<List<Registration>> getRegistrations(@Query("search") final String search);
     }
 
-    private static final Retrofit GCM_SERVICE = new Retrofit.Builder()
+    private static final GcmService GCM_SERVICE = new Retrofit.Builder()
             .baseUrl(GcmService.SERVER_URL)
             .addConverterFactory(GsonConverterFactory.create())
             .client(createAuthClient())
-            .build();
+            .build().create(GcmService.class);
 
-    private static final Retrofit VOLTAGE_SERVICE = new Retrofit.Builder()
+    private static final VoltageService VOLTAGE_SERVICE = new Retrofit.Builder()
             .baseUrl(VoltageService.SERVER_URL)
             .addConverterFactory(GsonConverterFactory.create())
             .client(createAuthClient())
-            .build();
+            .build().create(VoltageService.class);
 
     private static OkHttpClient createAuthClient() {
         final HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
@@ -65,30 +65,27 @@ public class VoltageApi {
         return new OkHttpClient.Builder().addInterceptor(logging).build();
     }
 
+
     public static GcmResponse sendMessage(final GcmRequest request) throws IOException {
-        final GcmService service = GCM_SERVICE.create(GcmService.class);
-        final Call<GcmResponse> call = service.sendMessage(request);
+        final Call<GcmResponse> call = GCM_SERVICE.sendMessage(request);
         final Response<GcmResponse> response = call.execute();
         return response.body();
     }
 
     public static Registration postRegistration(final String regId) throws IOException {
-        final VoltageService service = VOLTAGE_SERVICE.create(VoltageService.class);
-        final Call<Registration> call = service.postRegistration(new Registration(regId));
+        final Call<Registration> call = VOLTAGE_SERVICE.postRegistration(new Registration(regId));
         final Response<Registration> response = call.execute();
         return response.body();
     }
 
     public static Registration deleteRegistration(final String regId) throws IOException {
-        final VoltageService service = VOLTAGE_SERVICE.create(VoltageService.class);
-        final Call<Registration> call = service.deleteRegistration(regId);
+        final Call<Registration> call = VOLTAGE_SERVICE.deleteRegistration(regId);
         final Response<Registration> response = call.execute();
         return response.body();
     }
 
     public static List<Registration> getRegistrations(final String search) throws IOException {
-        final VoltageService service = VOLTAGE_SERVICE.create(VoltageService.class);
-        final Call<List<Registration>> call = service.getRegistrations(search);
+        final Call<List<Registration>> call = VOLTAGE_SERVICE.getRegistrations(search);
         final Response<List<Registration>> response = call.execute();
         return response.body();
     }

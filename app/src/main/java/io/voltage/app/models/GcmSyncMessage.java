@@ -30,6 +30,10 @@ public class GcmSyncMessage extends GcmSync {
         return mMessage != null ? mMessage.getTimestamp() : null;
     }
 
+    public String getMsgUuid() {
+        return mMessage != null ? mMessage.getMsgUuid() : null;
+    }
+
     public Map<String, String> toMap() {
         return mMessage != null ? mMessage.toMap() : null;
     }

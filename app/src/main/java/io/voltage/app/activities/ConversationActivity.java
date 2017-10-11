@@ -32,6 +32,7 @@ import io.pivotal.arca.fragments.ArcaSimpleAdapterFragment;
 import io.pivotal.arca.fragments.ArcaSimpleDispatcherFragment;
 import io.pivotal.arca.monitor.ArcaDispatcher;
 import io.pivotal.arca.provider.DataUtils;
+import io.pivotal.arca.service.OperationService;
 import io.voltage.app.R;
 import io.voltage.app.adapters.ConversationAdapter;
 import io.voltage.app.adapters.ConversationAdapter.ViewType;
@@ -46,6 +47,7 @@ import io.voltage.app.models.GcmPayload;
 import io.voltage.app.monitors.ConversationMonitor;
 import io.voltage.app.monitors.MessageSendMonitor;
 import io.voltage.app.monitors.ParticipantsMonitor;
+import io.voltage.app.operations.ChecksumOperation;
 import io.voltage.app.requests.ConversationQuery;
 import io.voltage.app.requests.MessageDelete;
 import io.voltage.app.requests.MessageInsert;
@@ -91,11 +93,13 @@ public class ConversationActivity extends ColorActivity implements QueryListener
         } else {
             getMessageSendFragment().setThreadId(mThreadId);
             getConversationFragment().setThreadId(mThreadId);
-        }
 
-        mDispatcher = ArcaDispatcherFactory.generateDispatcher(this);
-        mDispatcher.setRequestMonitor(new ParticipantsMonitor());
-        mDispatcher.execute(new ParticipantsQuery(mThreadId), this);
+            mDispatcher = ArcaDispatcherFactory.generateDispatcher(this);
+            mDispatcher.setRequestMonitor(new ParticipantsMonitor());
+            mDispatcher.execute(new ParticipantsQuery(mThreadId), this);
+
+            OperationService.start(this, new ChecksumOperation(mThreadId));
+        }
     }
 
     @Override
@@ -129,7 +133,7 @@ public class ConversationActivity extends ColorActivity implements QueryListener
 
     private void leaveConversation() {
         final String regId = VoltagePreferences.getRegId(this);
-        mDispatcher.execute(new MessageInsert(regId, mThreadId, GcmPayload.Type.USER_LEFT.name(), regId, GcmPayload.Type.USER_LEFT));
+        mDispatcher.execute(new MessageInsert(mThreadId, regId, GcmPayload.Type.USER_LEFT.name(), regId, GcmPayload.Type.USER_LEFT));
         finish();
     }
 
@@ -332,7 +336,7 @@ public class ConversationActivity extends ColorActivity implements QueryListener
                 final String text = mMessageView.getText().toString();
                 final String senderId = VoltagePreferences.getRegId(getActivity());
 
-                execute(new MessageInsert(senderId, mThreadId, text, null, GcmPayload.Type.MESSAGE));
+                execute(new MessageInsert(mThreadId, senderId, text, null, GcmPayload.Type.MESSAGE));
 
                 mMessageView.setText("");
             }

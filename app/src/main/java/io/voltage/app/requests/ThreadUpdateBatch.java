@@ -18,11 +18,9 @@ public class ThreadUpdateBatch extends Batch {
 
     private static ArrayList<ContentProviderOperation> operations(final String threadId, final String senderId, final String name) {
         final OperationHelper helper = new OperationHelper();
-
         final ArrayList<ContentProviderOperation> list = new ArrayList<>();
         list.add(helper.updateThreadOperation(threadId, name));
-        list.add(helper.insertMessageOperation(senderId, threadId, GcmPayload.Type.THREAD_RENAMED.name(), name, GcmPayload.Type.THREAD_RENAMED));
-
+        list.add(helper.insertMessageOperation(threadId, senderId, GcmPayload.Type.THREAD_RENAMED.name(), name, GcmPayload.Type.THREAD_RENAMED));
         return list;
     }
 }

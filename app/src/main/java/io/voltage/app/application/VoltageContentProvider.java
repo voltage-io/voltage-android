@@ -37,8 +37,8 @@ public class VoltageContentProvider extends DatabaseProvider {
         Uri INBOX = Uri.withAppendedPath(BASE_URI, Paths.INBOX);
         Uri CONVERSATION = Uri.withAppendedPath(BASE_URI, Paths.CONVERSATION);
         Uri PARTICIPANTS = Uri.withAppendedPath(BASE_URI, Paths.PARTICIPANTS);
-        Uri RECIPIENTS = Uri.withAppendedPath(BASE_URI, Paths.RECIPIENTS);
         Uri MEMBERS = Uri.withAppendedPath(BASE_URI, Paths.MEMBERS);
+        Uri RECIPIENTS = Uri.withAppendedPath(BASE_URI, Paths.RECIPIENTS);
         Uri TRANSACTIONS = Uri.withAppendedPath(BASE_URI, Paths.TRANSACTIONS);
         Uri USER_SEARCH = Uri.withAppendedPath(BASE_URI, Paths.USER_SEARCH);
     }
@@ -52,8 +52,8 @@ public class VoltageContentProvider extends DatabaseProvider {
         String INBOX = "inbox";
         String CONVERSATION = "conversation";
         String PARTICIPANTS = "participants";
-        String RECIPIENTS = "recipients";
         String MEMBERS = "members";
+        String RECIPIENTS = "recipients";
         String TRANSACTIONS = "transactions";
         String USER_SEARCH = "user_search";
     }
@@ -68,8 +68,8 @@ public class VoltageContentProvider extends DatabaseProvider {
         registerDataset(AUTHORITY, Paths.INBOX, InboxView.class);
         registerDataset(AUTHORITY, Paths.CONVERSATION, ConversationView.class);
         registerDataset(AUTHORITY, Paths.PARTICIPANTS, ParticipantView.class);
-        registerDataset(AUTHORITY, Paths.RECIPIENTS, RecipientView.class);
         registerDataset(AUTHORITY, Paths.MEMBERS, MemberView.class);
+        registerDataset(AUTHORITY, Paths.RECIPIENTS, RecipientView.class);
         registerDataset(AUTHORITY, Paths.TRANSACTIONS, TransactionView.class);
         registerDataset(AUTHORITY, Paths.USER_SEARCH, UserSearchView.class);
         return true;
@@ -281,6 +281,41 @@ public class VoltageContentProvider extends DatabaseProvider {
         }
     }
 
+    public static class MemberView extends SQLiteView {
+
+        @SelectFrom("ThreadUserTable")
+
+        @Joins({
+            "LEFT JOIN ThreadTable ON ThreadUserTable.thread_id = ThreadTable.id",
+            "LEFT JOIN UserTable ON ThreadUserTable.user_id = UserTable.reg_id"
+        })
+
+        @Where("ThreadUserTable.user_id NOT IN (SELECT reg_id from RegistrationTable)")
+
+        @OrderBy("UserTable.name")
+
+        public interface Columns {
+
+            @Select("ThreadUserTable._id")
+            public static final String _ID = "_id";
+
+            @Select("ThreadUserTable.thread_id")
+            public static final String THREAD_ID = "thread_id";
+
+            @Select("ThreadTable.name")
+            public static final String THREAD_NAME = "thread_name";
+
+            @Select("ThreadTable._state")
+            public static final String THREAD_STATE = "thread_state";
+
+            @Select("UserTable.reg_id")
+            public static final String USER_ID = "user_id";
+
+            @Select("UserTable.name")
+            public static final String USER_NAME = "user_name";
+        }
+    }
+
     public static class RecipientView extends SQLiteView {
 
         @SelectFrom("MessageTable")
@@ -315,41 +350,6 @@ public class VoltageContentProvider extends DatabaseProvider {
 
             @Select("GROUP_CONCAT(DISTINCT UserTable.name)")
             public static final String USER_NAMES = "user_names";
-        }
-    }
-
-    public static class MemberView extends SQLiteView {
-
-        @SelectFrom("ThreadUserTable")
-
-        @Joins({
-            "LEFT JOIN ThreadTable ON ThreadUserTable.thread_id = ThreadTable.id",
-            "LEFT JOIN UserTable ON ThreadUserTable.user_id = UserTable.reg_id"
-        })
-
-        @Where("ThreadUserTable.user_id NOT IN (SELECT reg_id from RegistrationTable)")
-
-        @OrderBy("UserTable.name")
-
-        public interface Columns {
-
-            @Select("ThreadUserTable._id")
-            public static final String _ID = "_id";
-
-            @Select("ThreadUserTable.thread_id")
-            public static final String THREAD_ID = "thread_id";
-
-            @Select("ThreadTable.name")
-            public static final String THREAD_NAME = "thread_name";
-
-            @Select("ThreadTable._state")
-            public static final String THREAD_STATE = "thread_state";
-
-            @Select("UserTable.reg_id")
-            public static final String USER_ID = "user_id";
-
-            @Select("UserTable.name")
-            public static final String USER_NAME = "user_name";
         }
     }
 

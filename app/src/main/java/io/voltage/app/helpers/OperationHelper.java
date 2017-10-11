@@ -11,6 +11,7 @@ import io.voltage.app.application.VoltageContentProvider.MessageTable;
 import io.voltage.app.application.VoltageContentProvider.ThreadTable;
 import io.voltage.app.application.VoltageContentProvider.ThreadUserTable;
 import io.voltage.app.application.VoltageContentProvider.UserTable;
+import io.voltage.app.application.VoltageContentProvider.RegistrationTable;
 import io.voltage.app.models.GcmPayload;
 import io.voltage.app.models.Message;
 import io.voltage.app.models.Thread;
@@ -31,12 +32,6 @@ public class OperationHelper {
                 .build();
     }
 
-    public ContentProviderOperation deleteThreadUsersOperation(final Thread thread) {
-        return ContentProviderOperation.newDelete(VoltageContentProvider.Uris.THREAD_USERS)
-                .withSelection(ThreadUserTable.Columns.THREAD_ID + "=?", new String[]{thread.getId()})
-                .build();
-    }
-
     public ContentProviderOperation insertThreadUserOperation(final ThreadUser threadUser) {
         return ContentProviderOperation.newInsert(VoltageContentProvider.Uris.THREAD_USERS)
                 .withValues(DataUtils.getContentValues(threadUser))
@@ -49,7 +44,7 @@ public class OperationHelper {
                 .build();
     }
 
-    public ContentProviderOperation insertMessageOperation(final String senderId, final String threadId, final String text, final String metadata, final GcmPayload.Type type) {
+    public ContentProviderOperation insertMessageOperation(final String threadId, final String senderId, final String text, final String metadata, final GcmPayload.Type type) {
         return ContentProviderOperation.newInsert(VoltageContentProvider.Uris.MESSAGES)
                 .withValue(MessageTable.Columns.TEXT, text)
                 .withValue(MessageTable.Columns.THREAD_ID, threadId)
@@ -69,9 +64,20 @@ public class OperationHelper {
                 .build();
     }
 
+    public ContentProviderOperation insertRegistrationOperation(final String regId) {
+        return ContentProviderOperation.newInsert(VoltageContentProvider.Uris.REGISTRATIONS)
+                .withValue(RegistrationTable.Columns.REG_ID, regId)
+                .build();
+    }
+
     public ContentProviderOperation deleteThreadUserOperation(final String threadId, final String userId) {
         return ContentProviderOperation.newDelete(VoltageContentProvider.Uris.THREAD_USERS)
                 .withSelection(ThreadUserTable.Columns.THREAD_ID + "=?" + " AND " + ThreadUserTable.Columns.USER_ID + "=?", new String[]{threadId, userId})
+                .build();
+    }
+
+    public ContentProviderOperation deleteRegistrationOperation() {
+        return ContentProviderOperation.newDelete(VoltageContentProvider.Uris.REGISTRATIONS)
                 .build();
     }
 

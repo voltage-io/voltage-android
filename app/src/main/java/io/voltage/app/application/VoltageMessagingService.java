@@ -158,7 +158,8 @@ public class VoltageMessagingService extends FirebaseMessagingService {
             final Message message = new Message(gcmMessage);
             message.setState(MessageTable.State.UNREAD);
 
-            mDatabaseHelper.insertRecords(context, thread, threadUser, message);
+//            mDatabaseHelper.insertRecords(context, thread, threadUser, message);
+            mDatabaseHelper.insertMessage(context, message);
             mNotificationHelper.addNewMessageNotification(context, message);
 
             final String msgUuid = message.getMsgUuid();
@@ -203,12 +204,10 @@ public class VoltageMessagingService extends FirebaseMessagingService {
             final String threadId = gcmMessage.getThreadId();
             final String userId = gcmMessage.getMetadata();
 
-            if (!VoltagePreferences.getRegId(context).equals(userId)) {
-                mDatabaseHelper.insertThreadUser(context, threadId, userId);
+            mDatabaseHelper.insertThreadUser(context, threadId, userId);
 
-                if (VoltagePreferences.shouldAutoAddUsers(context)) {
-                    OperationService.start(context, new UserRequestOperation(userId, senderId));
-                }
+            if (VoltagePreferences.shouldAutoAddUser(context, userId)) {
+                OperationService.start(context, new UserRequestOperation(userId, senderId));
             }
         }
 
@@ -218,9 +217,7 @@ public class VoltageMessagingService extends FirebaseMessagingService {
             final String threadId = gcmMessage.getThreadId();
             final String userId = gcmMessage.getMetadata();
 
-            if (!VoltagePreferences.getRegId(context).equals(userId)) {
-                mDatabaseHelper.deleteThreadUser(context, threadId, userId);
-            }
+            mDatabaseHelper.deleteThreadUser(context, threadId, userId);
         }
 
         private void handleUserLeft(final Context context, final GcmMessage gcmMessage) {
@@ -328,7 +325,11 @@ public class VoltageMessagingService extends FirebaseMessagingService {
                 final String leftTimestamp = left.getTimestamp();
                 final String rightTimestamp = right.getTimestamp();
 
-                return leftTimestamp.compareTo(rightTimestamp);
+                final String leftUuid = left.getMsgUuid();
+                final String rightUuid = right.getMsgUuid();
+
+                final int result = leftTimestamp.compareTo(rightTimestamp);
+                return result != 0 ? result : leftUuid.compareTo(rightUuid);
             }
         }
 

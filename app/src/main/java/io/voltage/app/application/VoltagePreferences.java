@@ -61,6 +61,10 @@ public class VoltagePreferences {
         return getSharedPreferences(context).getBoolean(Property.AUTO_ADD_USERS, false);
     }
 
+    public static boolean shouldAutoAddUser(final Context context, final String userId) {
+        return shouldAutoAddUsers(context) && !getRegId(context).equals(userId);
+    }
+
     public static boolean shouldPublishRegId(final Context context) {
         return getSharedPreferences(context).getBoolean(Property.PUBLISH_REG_ID, true);
     }

@@ -5,6 +5,7 @@ import android.text.TextUtils;
 
 import java.util.List;
 
+import io.pivotal.arca.utils.ArrayUtils;
 import io.voltage.app.application.VoltageApi;
 import io.voltage.app.application.VoltagePreferences;
 import io.voltage.app.models.GcmPayload;
@@ -22,7 +23,7 @@ public interface MessagingHelper {
 
         public GcmResponse sendGcmRequest(final Context context, final List<String> regIds, final GcmPayload gcmPayload) throws Exception {
 
-            if (regIds == null) {
+            if (ArrayUtils.isEmpty(regIds)) {
                 throw new IllegalArgumentException("Message not being sent to any users.");
             }
 

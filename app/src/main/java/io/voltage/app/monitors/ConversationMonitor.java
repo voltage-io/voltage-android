@@ -10,11 +10,9 @@ import io.pivotal.arca.dispatcher.QueryResult;
 import io.pivotal.arca.dispatcher.Update;
 import io.pivotal.arca.dispatcher.UpdateResult;
 import io.pivotal.arca.monitor.RequestMonitor.AbstractRequestMonitor;
-import io.pivotal.arca.service.OperationService;
 import io.voltage.app.application.VoltageContentProvider;
 import io.voltage.app.helpers.AccountHelper;
 import io.voltage.app.helpers.NotificationHelper;
-import io.voltage.app.operations.ChecksumOperation;
 import io.voltage.app.requests.ConversationQuery;
 import io.voltage.app.requests.MessageUpdate;
 
@@ -22,16 +20,6 @@ public class ConversationMonitor extends AbstractRequestMonitor {
 
     private final NotificationHelper mNotificationHelper = new NotificationHelper.Default();
 
-    @Override
-    public int onPreExecute(Context context, Query request) {
-
-        if (request instanceof ConversationQuery) {
-            final String threadId = request.getWhereArgs()[0];
-            OperationService.start(context, new ChecksumOperation(threadId));
-        }
-
-        return Flags.DATA_VALID;
-    }
 
     @Override
     public int onPostExecute(final Context context, final Query request, final QueryResult result) {

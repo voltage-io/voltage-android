@@ -11,9 +11,6 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.os.IBinder;
 
-import io.pivotal.arca.dispatcher.QueryResult;
-import io.pivotal.arca.fragments.ArcaExecutorFactory;
-import io.pivotal.arca.monitor.ArcaExecutor;
 import io.pivotal.arca.service.OperationService;
 import io.voltage.app.application.VoltageContentProvider.MessageTable;
 import io.voltage.app.operations.MessageOperation;
@@ -38,20 +35,17 @@ public class VoltageSyncAdapterService extends Service {
         @Override
         public void onPerformSync(final Account account, final Bundle extras, final String authority, final ContentProviderClient provider, final SyncResult syncResult) {
 
-            final ArcaExecutor executor = ArcaExecutorFactory.generateExecutor(getContext());
-
-            final QueryResult result = executor.execute(new MessageQuery());
-            final Cursor cursor = result.getData();
+            final Cursor cursor = VoltageExecutor.execute(getContext(), new MessageQuery()).getData();
 
             while (cursor.moveToNext()) {
                 final String msgUuid = cursor.getString(cursor.getColumnIndex(MessageTable.Columns.MSG_UUID));
 
-                Logger.v("voltage.io sync - " + msgUuid);
+                Logger.v("[sync] " + msgUuid);
 
                 OperationService.start(getContext(), new MessageOperation(msgUuid));
             }
 
-            result.close();
+            cursor.close();
         }
     }
 }

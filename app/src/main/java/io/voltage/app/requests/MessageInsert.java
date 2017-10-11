@@ -5,17 +5,23 @@ import android.content.ContentValues;
 import java.util.UUID;
 
 import io.pivotal.arca.dispatcher.Insert;
+import io.pivotal.arca.provider.DataUtils;
 import io.voltage.app.application.VoltageContentProvider;
 import io.voltage.app.application.VoltageContentProvider.MessageTable;
 import io.voltage.app.models.GcmPayload;
+import io.voltage.app.models.Message;
 
 public class MessageInsert extends Insert {
 
-    public MessageInsert(final String senderId, final String threadId, final String text, final String metadata, final GcmPayload.Type type) {
-        super(VoltageContentProvider.Uris.MESSAGES, values(senderId, threadId, text, metadata, type));
+    public MessageInsert(final String threadId, final String senderId, final String text, final String metadata, final GcmPayload.Type type) {
+        super(VoltageContentProvider.Uris.MESSAGES, values(threadId, senderId, text, metadata, type));
     }
 
-    private static ContentValues values(final String senderId, final String threadId, final String text, final String metadata, final GcmPayload.Type type) {
+    public MessageInsert(final Message message) {
+        super(VoltageContentProvider.Uris.MESSAGES, DataUtils.getContentValues(message));
+    }
+
+    private static ContentValues values(final String threadId, final String senderId, final String text, final String metadata, final GcmPayload.Type type) {
         final ContentValues values = new ContentValues();
         values.put(MessageTable.Columns.TEXT, text);
         values.put(MessageTable.Columns.THREAD_ID, threadId);
