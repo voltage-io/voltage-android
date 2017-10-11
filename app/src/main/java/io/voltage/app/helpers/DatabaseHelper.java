@@ -16,15 +16,18 @@ import io.voltage.app.models.Participants;
 import io.voltage.app.models.Recipients;
 import io.voltage.app.models.Registration;
 import io.voltage.app.models.Thread;
+import io.voltage.app.models.ThreadUser;
 import io.voltage.app.models.Transactions;
 import io.voltage.app.models.User;
 import io.voltage.app.requests.MessageInsert;
+import io.voltage.app.requests.MessageInsertBatch;
 import io.voltage.app.requests.MessageQuery;
 import io.voltage.app.requests.MessageUpdate;
 import io.voltage.app.requests.ParticipantsQuery;
 import io.voltage.app.requests.RecipientsQuery;
 import io.voltage.app.requests.RegistrationQuery;
 import io.voltage.app.requests.RegistrationUpdateBatch;
+import io.voltage.app.requests.ThreadInsert;
 import io.voltage.app.requests.ThreadMetadataQuery;
 import io.voltage.app.requests.ThreadQuery;
 import io.voltage.app.requests.ThreadUpdate;
@@ -45,14 +48,16 @@ public interface DatabaseHelper {
     Transactions getTransactions(final Context context, final String threadId);
     Participants getParticipants(final Context context, final String threadId);
     Recipients getRecipients(final Context context, final String msgUuid);
-//    void insertRecords(final Context context, final Thread thread, final ThreadUser threadUser, final Message message);
+    void insertRecords(final Context context, final Thread thread, final ThreadUser threadUser, final Message message);
     void updateThread(final Context context, final String threadId, final String threadName);
+    void insertThread(final Context context, final String threadId, final String threadName);
     void insertThreadUser(final Context context, final String threadId, final String userId);
     void deleteThreadUser(final Context context, final String threadId, final String userId);
     void insertMessage(final Context context, final Message message);
     void updateMessageState(final Context context, final MessageState state);
     void updateMessageState(final Context context, final String msgUuid, final int state);
     void insertUser(final Context context, final User user);
+
     void updateRegistration(final Context context, final String regId, final String oldRegId);
 
 
@@ -90,11 +95,17 @@ public interface DatabaseHelper {
             return executeForObject(context, new RecipientsQuery(msgUuid), Recipients.class);
         }
 
-//        public void insertRecords(final Context context, final Thread thread, final ThreadUser threadUser, final Message message) {
-//            VoltageExecutor.execute(context, new MessageInsertBatch(thread, threadUser, message));
-//
-//            notify(context, VoltageContentProvider.Uris.CONVERSATION, VoltageContentProvider.Uris.INBOX);
-//        }
+        public void insertRecords(final Context context, final Thread thread, final ThreadUser threadUser, final Message message) {
+            VoltageExecutor.execute(context, new MessageInsertBatch(thread, threadUser, message));
+
+            notify(context, VoltageContentProvider.Uris.CONVERSATION, VoltageContentProvider.Uris.INBOX);
+        }
+
+        public void insertThread(final Context context, final String threadId, final String threadName) {
+            VoltageExecutor.execute(context, new ThreadInsert(threadId, threadName));
+
+            notify(context, VoltageContentProvider.Uris.CONVERSATION, VoltageContentProvider.Uris.INBOX);
+        }
 
         public void updateThread(final Context context, final String threadId, final String threadName) {
             VoltageExecutor.execute(context, new ThreadUpdate(threadId, threadName));

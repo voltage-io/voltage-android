@@ -23,7 +23,8 @@ public class ThreadInsert extends Insert {
     }
 
     private static ContentValues values(final String threadId, final String name) {
-        final ContentValues values = values(threadId);
+        final ContentValues values = new ContentValues();
+        values.put(ThreadTable.Columns.ID, threadId);
         values.put(ThreadTable.Columns.NAME, name);
         return values;
     }

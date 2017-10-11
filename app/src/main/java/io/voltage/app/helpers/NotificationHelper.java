@@ -80,7 +80,7 @@ public interface NotificationHelper {
 
         private boolean shouldNotify(final Context context, final String threadId) {
             final Thread thread = mDatabaseHelper.getThread(context, threadId);
-            return thread.getState() != ThreadTable.State.MUTED;
+            return thread == null || thread.getState() != ThreadTable.State.MUTED;
         }
 
         private void addNotification(final Context context, final PendingIntent intent, final String title, final String text, final int notificationId) {

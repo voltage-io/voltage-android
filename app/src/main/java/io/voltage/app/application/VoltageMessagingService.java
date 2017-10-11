@@ -158,8 +158,7 @@ public class VoltageMessagingService extends FirebaseMessagingService {
             final Message message = new Message(gcmMessage);
             message.setState(MessageTable.State.UNREAD);
 
-//            mDatabaseHelper.insertRecords(context, thread, threadUser, message);
-            mDatabaseHelper.insertMessage(context, message);
+            mDatabaseHelper.insertRecords(context, thread, threadUser, message);
             mNotificationHelper.addNewMessageNotification(context, message);
 
             final String msgUuid = message.getMsgUuid();
