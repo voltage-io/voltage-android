@@ -9,7 +9,6 @@ import io.voltage.app.models.Registration;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
-import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.http.Body;
@@ -67,26 +66,18 @@ public class VoltageApi {
 
 
     public static GcmResponse sendMessage(final GcmRequest request) throws IOException {
-        final Call<GcmResponse> call = GCM_SERVICE.sendMessage(request);
-        final Response<GcmResponse> response = call.execute();
-        return response.body();
+        return GCM_SERVICE.sendMessage(request).execute().body();
     }
 
     public static Registration postRegistration(final String regId) throws IOException {
-        final Call<Registration> call = VOLTAGE_SERVICE.postRegistration(new Registration(regId));
-        final Response<Registration> response = call.execute();
-        return response.body();
+        return VOLTAGE_SERVICE.postRegistration(new Registration(regId)).execute().body();
     }
 
     public static Registration deleteRegistration(final String regId) throws IOException {
-        final Call<Registration> call = VOLTAGE_SERVICE.deleteRegistration(regId);
-        final Response<Registration> response = call.execute();
-        return response.body();
+        return VOLTAGE_SERVICE.deleteRegistration(regId).execute().body();
     }
 
     public static List<Registration> getRegistrations(final String search) throws IOException {
-        final Call<List<Registration>> call = VOLTAGE_SERVICE.getRegistrations(search);
-        final Response<List<Registration>> response = call.execute();
-        return response.body();
+        return VOLTAGE_SERVICE.getRegistrations(search).execute().body();
     }
 }
