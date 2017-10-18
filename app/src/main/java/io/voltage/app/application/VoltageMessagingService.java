@@ -45,16 +45,7 @@ import io.voltage.app.utils.Logger;
 
 public class VoltageMessagingService extends FirebaseMessagingService {
 
-    private Messenger mMessenger;
-
-    @Override
-    public void onCreate() {
-        super.onCreate();
-
-        final DatabaseHelper.Default databaseHelper = new DatabaseHelper.Default();
-        final NotificationHelper.Default notificationHelper = new NotificationHelper.Default();
-        mMessenger = new Messenger(databaseHelper, notificationHelper);
-    }
+    private Messenger mMessenger = new Messenger();
 
     @Override
     public void onMessageReceived(final RemoteMessage message) {
@@ -71,13 +62,8 @@ public class VoltageMessagingService extends FirebaseMessagingService {
 
         private static final Map<String, GcmSyncMessageList> MESSAGES = new HashMap<>();
 
-        private final DatabaseHelper mDatabaseHelper;
-        private final NotificationHelper mNotificationHelper;
-
-        public Messenger(final DatabaseHelper databaseHelper, final NotificationHelper notificationHelper) {
-            mDatabaseHelper = databaseHelper;
-            mNotificationHelper = notificationHelper;
-        }
+        final DatabaseHelper.Default mDatabaseHelper = new DatabaseHelper.Default();
+        final NotificationHelper.Default mNotificationHelper = new NotificationHelper.Default();
 
         private void handleMessage(final Context context, final Map<String, String> data) {
 
