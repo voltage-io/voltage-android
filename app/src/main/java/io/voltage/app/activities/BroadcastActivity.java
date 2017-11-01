@@ -56,7 +56,8 @@ public class BroadcastActivity extends ColorActivity implements CreateNdefMessag
     private byte[] createPayload() {
         final String name = VoltagePreferences.getUserName(this);
         final String regId = VoltagePreferences.getRegId(this);
-        final NfcContent content = new NfcContent(name, regId);
+        final String publicKey = VoltagePreferences.getPublicKey(this);
+        final NfcContent content = new NfcContent(name, regId, publicKey);
         return new Gson().toJson(content).getBytes();
     }
 }

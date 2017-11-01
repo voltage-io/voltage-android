@@ -12,7 +12,7 @@ public class ThreadMetadataQuery extends Query {
     public ThreadMetadataQuery(final String threadId) {
         super(VoltageContentProvider.Uris.MESSAGES, ID);
 
-        setWhere(MessageTable.Columns.THREAD_ID + "=?" + " AND " + MessageTable.Columns.TYPE + "!=?", threadId, "MESSAGE");
+        setWhere(MessageTable.Columns.THREAD_ID + "=?" + " AND " + MessageTable.Columns.TYPE + "!='MESSAGE'", threadId);
 
         setSortOrder(MessageTable.Columns.TIMESTAMP);
     }

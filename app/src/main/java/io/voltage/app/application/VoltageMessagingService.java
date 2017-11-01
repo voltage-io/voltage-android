@@ -18,8 +18,8 @@ import io.voltage.app.helpers.DatabaseHelper;
 import io.voltage.app.helpers.NotificationHelper;
 import io.voltage.app.models.GcmChecksum;
 import io.voltage.app.models.GcmChecksumFailed;
-import io.voltage.app.models.GcmFriend;
 import io.voltage.app.models.GcmFriendRequest;
+import io.voltage.app.models.GcmFriendResponse;
 import io.voltage.app.models.GcmMessage;
 import io.voltage.app.models.GcmMessageState;
 import io.voltage.app.models.GcmPayload;
@@ -33,14 +33,13 @@ import io.voltage.app.models.Thread;
 import io.voltage.app.models.ThreadUser;
 import io.voltage.app.models.User;
 import io.voltage.app.operations.ChecksumReplyOperation;
+import io.voltage.app.operations.FriendRequestOperation;
+import io.voltage.app.operations.FriendResponseOperation;
 import io.voltage.app.operations.MessageStateOperation;
 import io.voltage.app.operations.SyncMessagesOperation;
 import io.voltage.app.operations.SyncReadyOperation;
 import io.voltage.app.operations.SyncRequestOperation;
 import io.voltage.app.operations.SyncStartOperation;
-import io.voltage.app.operations.UserOperation;
-import io.voltage.app.operations.UserRequestOperation;
-import io.voltage.app.utils.CryptoUtils;
 import io.voltage.app.utils.Logger;
 
 public class VoltageMessagingService extends FirebaseMessagingService {
@@ -73,43 +72,47 @@ public class VoltageMessagingService extends FirebaseMessagingService {
 
             switch (type) {
                 case MESSAGE:
-                    handleMessage(context, new GcmMessage(data));
+                    handleMessage(context, handleDecrypt(context, new GcmMessage(data)));
                     break;
 
                 case THREAD_CREATED:
-                    handleThreadCreated(context, new GcmMessage(data));
+                    handleThreadCreated(context, handleDecrypt(context, new GcmMessage(data)));
                     break;
 
                 case THREAD_RENAMED:
-                    handleThreadRenamed(context, new GcmMessage(data));
+                    handleThreadRenamed(context, handleDecrypt(context, new GcmMessage(data)));
                     break;
 
                 case THREAD_PROGRESS:
-                    handleThreadProgress(context, new GcmMessage(data));
+                    handleThreadProgress(context, handleDecrypt(context, new GcmMessage(data)));
+                    break;
+
+                case THREAD_KEY_ROTATED:
+                    handleThreadKeyRotated(context, handleDecrypt(context, new GcmMessage(data)));
                     break;
 
                 case USER_ADDED:
-                    handleUserAdded(context, new GcmMessage(data));
+                    handleUserAdded(context, handleDecrypt(context, new GcmMessage(data)));
                     break;
 
                 case USER_REMOVED:
-                    handleUserRemoved(context, new GcmMessage(data));
+                    handleUserRemoved(context, handleDecrypt(context, new GcmMessage(data)));
                     break;
 
                 case USER_LEFT:
-                    handleUserLeft(context, new GcmMessage(data));
+                    handleUserLeft(context, handleDecrypt(context, new GcmMessage(data)));
                     break;
 
                 case RECEIPT:
                     handleReceipt(context, new GcmMessageState(data));
                     break;
 
-                case FRIEND_ADDED:
-                    handleFriendAdded(context, new GcmFriend(data));
-                    break;
-
                 case FRIEND_REQUEST:
                     handleFriendRequest(context, new GcmFriendRequest(data));
+                    break;
+
+                case FRIEND_RESPONSE:
+                    handleFriendResponse(context, new GcmFriendResponse(data));
                     break;
 
                 case CHECKSUM:
@@ -136,6 +139,22 @@ public class VoltageMessagingService extends FirebaseMessagingService {
                     handleSyncMessage(context, new GcmSyncMessage(data));
                     break;
             }
+        }
+
+        private GcmMessage handleDecrypt(final Context context, final GcmMessage gcmMessage) {
+
+            if (gcmMessage.getType().equals("MESSAGE")) {
+                final String threadId = gcmMessage.getThreadId();
+                final Thread thread = mDatabaseHelper.getThread(context, threadId);
+
+                gcmMessage.attemptAesDecrypt(thread.getKey());
+            } else {
+                final String privateKey = VoltagePreferences.getPrivateKey(context);
+
+                gcmMessage.attemptRsaDecrypt(privateKey);
+            }
+
+            return gcmMessage;
         }
 
         private void handleMessage(final Context context, final GcmMessage gcmMessage) {
@@ -177,22 +196,35 @@ public class VoltageMessagingService extends FirebaseMessagingService {
             final String threadId = gcmMessage.getThreadId();
             final String senderId = gcmMessage.getSenderId();
 
-            final String msgUuid = CryptoUtils.checksum(threadId + ":" + senderId);
+            Logger.v("PROGRESS: " + threadId + ":" + senderId);
+        }
 
-            Logger.v("UUID: " + msgUuid);
+        private void handleThreadKeyRotated(final Context context, final GcmMessage gcmMessage) {
+            handleMessage(context, gcmMessage);
+
+            final String threadId = gcmMessage.getThreadId();
+            final String key = gcmMessage.getMetadata();
+
+            mDatabaseHelper.updateThreadKey(context, threadId, key);
         }
 
         private void handleUserAdded(final Context context, final GcmMessage gcmMessage) {
             handleMessage(context, gcmMessage);
 
-            final String senderId = gcmMessage.getSenderId();
             final String threadId = gcmMessage.getThreadId();
             final String userId = gcmMessage.getMetadata();
 
             mDatabaseHelper.insertThreadUser(context, threadId, userId);
 
             if (VoltagePreferences.shouldAutoAddUser(context, userId)) {
-                OperationService.start(context, new UserRequestOperation(userId, senderId));
+                autoAddUserCheck(context, userId);
+            }
+        }
+
+        private void autoAddUserCheck(final Context context, final String userId) {
+            final User user = mDatabaseHelper.getUser(context, userId);
+            if (user == null) {
+                OperationService.start(context, new FriendRequestOperation(userId));
             }
         }
 
@@ -220,18 +252,18 @@ public class VoltageMessagingService extends FirebaseMessagingService {
             mDatabaseHelper.updateMessageState(context, state);
         }
 
-        private void handleFriendAdded(final Context context, final GcmFriend gcmFriend) {
-            final User user = new User(gcmFriend);
+        private void handleFriendRequest(final Context context, final GcmFriendRequest gcmFriendRequest) {
+            final String senderId = gcmFriendRequest.getSenderId();
 
-            mDatabaseHelper.insertUser(context, user);
-            mNotificationHelper.addNewFriendNotification(context, user);
+            OperationService.start(context, new FriendResponseOperation(senderId));
         }
 
-        private void handleFriendRequest(final Context context, final GcmFriendRequest gcmRequest) {
-            final String senderId = gcmRequest.getSenderId();
-            final String regId = gcmRequest.getRegId();
+        private void handleFriendResponse(final Context context, final GcmFriendResponse gcmFriendResponse) {
+            final User user = new User(gcmFriendResponse);
 
-            OperationService.start(context, new UserOperation(regId, senderId));
+            mDatabaseHelper.insertUser(context, user);
+
+//            mNotificationHelper.addNewFriendNotification(context, user);
         }
 
         private void handleChecksum(final Context context, final GcmChecksum gcmChecksum) {

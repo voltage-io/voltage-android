@@ -3,9 +3,6 @@ package io.voltage.app.operations;
 import android.content.Context;
 import android.os.Parcel;
 
-import java.util.Collections;
-import java.util.List;
-
 import io.pivotal.arca.service.TaskOperation;
 import io.pivotal.arca.threading.Identifier;
 import io.voltage.app.application.VoltageContentProvider;
@@ -52,21 +49,19 @@ public class SyncRequestOperation extends TaskOperation<GcmResponse> {
     @Override
     public GcmResponse onExecute(final Context context) throws Exception {
 
-        final List<String> regIds = Collections.singletonList(mRecipientId);
+        final String regId = VoltagePreferences.getRegId(context);
 
         final Transactions transactions = mDatabaseHelper.getTransactions(context, mThreadId);
-
-        final String regId = VoltagePreferences.getRegId(context);
 
         if (transactions != null) {
             final int msgIndex = transactions.getCount() - 1;
             final String msgUuid = transactions.getMsgUuidsList().get(msgIndex);
 
             final GcmPayload gcmPayload = new GcmSyncRequest(mThreadId, regId, msgUuid, msgIndex);
-            return mMessagingHelper.sendGcmRequest(context, regIds, gcmPayload);
+            return mMessagingHelper.send(context, mRecipientId, gcmPayload);
         } else {
             final GcmPayload gcmPayload = new GcmSyncRequest(mThreadId, regId, null, 0);
-            return mMessagingHelper.sendGcmRequest(context, regIds, gcmPayload);
+            return mMessagingHelper.send(context, mRecipientId, gcmPayload);
         }
     }
 

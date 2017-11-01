@@ -3,9 +3,6 @@ package io.voltage.app.operations;
 import android.content.Context;
 import android.os.Parcel;
 
-import java.util.Collections;
-import java.util.List;
-
 import io.pivotal.arca.service.TaskOperation;
 import io.pivotal.arca.threading.Identifier;
 import io.voltage.app.application.VoltageContentProvider;
@@ -57,22 +54,21 @@ public class ChecksumReplyOperation extends TaskOperation<GcmResponse> {
     @Override
     public GcmResponse onExecute(final Context context) throws Exception {
 
-        final List<String> regIds = Collections.singletonList(mRecipientId);
-
         final Transactions transactions = mDatabaseHelper.getTransactions(context, mThreadId);
+        final String checksum = CryptoUtils.checksum(transactions);
 
-        if (transactions == null) {
+        if (checksum == null) {
             throw new RuntimeException("No transactions available");
         }
 
-        if (CryptoUtils.checksum(transactions).equals(mChecksum)) {
+        if (mChecksum.equals(checksum)) {
             throw new RuntimeException("Transactions already in sync");
         }
 
         final String regId = VoltagePreferences.getRegId(context);
         final GcmPayload gcmPayload = new GcmChecksumFailed(mThreadId, regId);
 
-        return mMessagingHelper.sendGcmRequest(context, regIds, gcmPayload);
+        return mMessagingHelper.send(context, mRecipientId, gcmPayload);
     }
 
     public static final Creator CREATOR = new Creator() {

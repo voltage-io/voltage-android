@@ -4,6 +4,8 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.Map;
 
+import io.voltage.app.utils.CryptoUtils;
+
 public class GcmMessage extends GcmPayload {
     protected interface Fields extends GcmPayload.Fields {
         String MSG_UUID = "msg_uuid";
@@ -96,5 +98,25 @@ public class GcmMessage extends GcmPayload {
 
     public String getState() {
         return mState;
+    }
+
+    public void attemptAesEncrypt(final String threadKey) {
+        mText = CryptoUtils.attemptAesEncrypt(threadKey, mText);
+        mMetadata = CryptoUtils.attemptAesEncrypt(threadKey, mMetadata);
+    }
+
+    public void attemptAesDecrypt(final String threadKey) {
+        mText = CryptoUtils.attemptAesDecrypt(threadKey, mText);
+        mMetadata = CryptoUtils.attemptAesDecrypt(threadKey, mMetadata);
+    }
+
+    public void attemptRsaEncrypt(final String publicKey) {
+        mText = CryptoUtils.attemptRsaEncrypt(publicKey, mText);
+        mMetadata = CryptoUtils.attemptRsaEncrypt(publicKey, mMetadata);
+    }
+
+    public void attemptRsaDecrypt(final String publicKey) {
+        mText = CryptoUtils.attemptRsaDecrypt(publicKey, mText);
+        mMetadata = CryptoUtils.attemptRsaDecrypt(publicKey, mMetadata);
     }
 }

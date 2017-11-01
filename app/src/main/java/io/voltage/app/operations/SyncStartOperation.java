@@ -3,7 +3,6 @@ package io.voltage.app.operations;
 import android.content.Context;
 import android.os.Parcel;
 
-import java.util.Collections;
 import java.util.List;
 
 import io.pivotal.arca.service.TaskOperation;
@@ -60,8 +59,6 @@ public class SyncStartOperation extends TaskOperation<GcmResponse> {
     @Override
     public GcmResponse onExecute(final Context context) throws Exception {
 
-        final List<String> regIds = Collections.singletonList(mRecipientId);
-
         final Transactions transactions = mDatabaseHelper.getTransactions(context, mThreadId);
         final List<String> list = transactions.getMsgUuidsList();
 
@@ -72,13 +69,12 @@ public class SyncStartOperation extends TaskOperation<GcmResponse> {
         final String regId = VoltagePreferences.getRegId(context);
 
         if (list.get(mMsgIndex).equals(mMsgUuid)) {
-            final int count = list.size() - mMsgIndex - 1;
-            final GcmPayload gcmPayload = new GcmSyncStart(mThreadId, regId, count);
-            return mMessagingHelper.sendGcmRequest(context, regIds, gcmPayload);
+            final GcmPayload gcmPayload = new GcmSyncStart(mThreadId, regId, list.size() - mMsgIndex - 1);
+            return mMessagingHelper.send(context, mRecipientId, gcmPayload);
 
         } else {
             final GcmPayload gcmPayload = new GcmSyncStart(mThreadId, regId, list.size());
-            return mMessagingHelper.sendGcmRequest(context, regIds, gcmPayload);
+            return mMessagingHelper.send(context, mRecipientId, gcmPayload);
         }
     }
 

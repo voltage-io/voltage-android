@@ -18,8 +18,9 @@ public class UserAddLinkActivity extends UserAddActivity {
             final Uri uri = getIntent().getData();
             final String userName = mShareHelper.getUserName(uri);
             final String regId = mShareHelper.getRegId(uri);
+            final String publicKey = mShareHelper.getPublicKey(uri);
 
-            setUserInfo(userName, regId);
+            setUserInfo(userName, regId, publicKey);
         }
     }
 }

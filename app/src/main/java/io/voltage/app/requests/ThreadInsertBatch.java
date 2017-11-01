@@ -14,17 +14,21 @@ import io.voltage.app.utils.Logger;
 
 public class ThreadInsertBatch extends Batch {
 
-    public ThreadInsertBatch(final String threadId, final String senderId, final String name, final Set<String> regIds) {
-        super(VoltageContentProvider.BASE_URI, operations(threadId, senderId, name, regIds));
+    public ThreadInsertBatch(final String threadId, final String threadKey, final String threadName, final String senderId, final Set<String> regIds) {
+        super(VoltageContentProvider.BASE_URI, operations(threadId, threadKey, threadName, senderId, regIds));
     }
 
-    private static ArrayList<ContentProviderOperation> operations(final String threadId, final String senderId, final String name, final Set<String> regIds) {
+    private static ArrayList<ContentProviderOperation> operations(final String threadId, final String threadKey, final String threadName, final String senderId, final Set<String> regIds) {
         final ArrayList<ContentProviderOperation> list = new ArrayList<>();
         try {
 
             final OperationHelper helper = new OperationHelper();
-            list.add(helper.insertThreadOperation(threadId, name));
-            list.add(helper.insertMessageOperation(threadId, senderId, GcmPayload.Type.THREAD_CREATED.name(), name, GcmPayload.Type.THREAD_CREATED));
+            list.add(helper.insertThreadOperation(threadId, threadName));
+            list.add(helper.insertMessageOperation(threadId, senderId, GcmPayload.Type.THREAD_CREATED.name(), threadName, GcmPayload.Type.THREAD_CREATED));
+
+            Thread.sleep(1); // sleep so timestamp is different than THREAD_CREATED for ordering
+            list.add(helper.updateThreadKeyOperation(threadId, threadKey));
+            list.add(helper.insertMessageOperation(threadId, senderId, GcmPayload.Type.THREAD_KEY_ROTATED.name(), threadKey, GcmPayload.Type.THREAD_KEY_ROTATED));
 
             if (!regIds.contains(senderId)) {
                 Thread.sleep(1); // sleep so timestamp is different than THREAD_CREATED for ordering

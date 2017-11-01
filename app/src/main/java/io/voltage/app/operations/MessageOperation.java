@@ -14,12 +14,11 @@ import io.voltage.app.helpers.DatabaseHelper;
 import io.voltage.app.helpers.MessagingHelper;
 import io.voltage.app.helpers.NotificationHelper;
 import io.voltage.app.models.GcmMessage;
-import io.voltage.app.models.GcmPayload;
 import io.voltage.app.models.GcmResponse;
 import io.voltage.app.models.Message;
 import io.voltage.app.models.Recipients;
 
-public class MessageOperation extends TaskOperation<GcmResponse> {
+public class MessageOperation extends TaskOperation<List<GcmResponse>> {
 
     private final MessagingHelper mMessagingHelper = new MessagingHelper.Default();
     private final DatabaseHelper mDatabaseHelper = new DatabaseHelper.Default();
@@ -49,15 +48,18 @@ public class MessageOperation extends TaskOperation<GcmResponse> {
     }
 
     @Override
-    public GcmResponse onExecute(final Context context) throws Exception {
-
-        final Recipients recipients = mDatabaseHelper.getRecipients(context, mMsgUuid);
-        final List<String> regIds = recipients != null ? recipients.getUserIdsList() : null;
+    public List<GcmResponse> onExecute(final Context context) throws Exception {
 
         final Message message = mDatabaseHelper.getMessage(context, mMsgUuid);
-        final GcmPayload gcmPayload = new GcmMessage(message);
+        final Recipients recipients = mDatabaseHelper.getRecipients(context, mMsgUuid);
 
-        return mMessagingHelper.sendGcmRequest(context, regIds, gcmPayload);
+        final GcmMessage gcmMessage = new GcmMessage(message);
+
+        if (gcmMessage.getType().equals("MESSAGE")) {
+            return mMessagingHelper.aesEncryptAndSend(context, recipients, gcmMessage);
+        } else {
+            return mMessagingHelper.rsaEncryptAndSend(context, recipients, gcmMessage);
+        }
     }
 
     @Override

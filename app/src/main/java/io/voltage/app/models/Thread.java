@@ -11,6 +11,9 @@ public class Thread {
     @ColumnName(ThreadTable.Columns.NAME)
     private String mName;
 
+    @ColumnName(ThreadTable.Columns.KEY)
+    private String mKey;
+
     @ColumnName(ThreadTable.Columns._STATE)
     private int mState;
 
@@ -26,6 +29,10 @@ public class Thread {
 
     public String getName() {
         return mName;
+    }
+
+    public String getKey() {
+        return mKey;
     }
 
     public int getState() {

@@ -19,11 +19,17 @@ public class Recipients {
     @ColumnName(RecipientView.Columns.THREAD_NAME)
     private String mThreadName;
 
+    @ColumnName(RecipientView.Columns.THREAD_KEY)
+    private String mThreadKey;
+
     @ColumnName(RecipientView.Columns.USER_IDS)
     private String mUserIds;
 
 	@ColumnName(RecipientView.Columns.USER_NAMES)
 	private String mUserNames;
+
+    @ColumnName(RecipientView.Columns.USER_PUBLIC_KEYS)
+    private String mUserPublicKeys;
 
     public Recipients() {}
 
@@ -39,6 +45,10 @@ public class Recipients {
         return mThreadName;
     }
 
+    public String getThreadKey() {
+        return mThreadKey;
+    }
+
     public String getUserIds() {
         return mUserIds;
     }
@@ -47,21 +57,31 @@ public class Recipients {
         return mUserNames;
     }
 
+    public String getUserPublicKeys() {
+        return mUserPublicKeys;
+    }
+
     public List<String> getUserIdsList() {
         if (mUserIds != null) {
-            final List<String> list = Arrays.asList(mUserIds.split(","));
-            return new ArrayList<String>(list);
+            return new ArrayList<String>(Arrays.asList(mUserIds.split(",")));
         } else {
-            return null;
+            return new ArrayList<String>();
         }
     }
 
     public List<String> getUserNamesList() {
         if (mUserNames != null) {
-            final List<String> list = Arrays.asList(mUserNames.split(","));
-            return new ArrayList<String>(list);
+            return new ArrayList<String>(Arrays.asList(mUserNames.split(",")));
         } else {
-            return null;
+            return new ArrayList<String>();
+        }
+    }
+
+    public List<String> getUserPublicKeysList() {
+        if (mUserPublicKeys != null) {
+            return new ArrayList<String>(Arrays.asList(mUserPublicKeys.split(",")));
+        } else {
+            return new ArrayList<String>();
         }
     }
 }

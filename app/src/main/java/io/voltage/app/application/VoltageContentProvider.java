@@ -109,6 +109,7 @@ public class VoltageContentProvider extends DatabaseProvider {
             @Column(Column.Type.TEXT) String REG_ID = "reg_id";
             @Column(Column.Type.TEXT) String NAME = "name";
             @Column(Column.Type.TEXT) String IMAGE = "image";
+            @ColumnOptions("DEFAULT ''")
             @Column(Column.Type.TEXT) String PUBLIC_KEY = "public_key";
         }
 
@@ -175,9 +176,6 @@ public class VoltageContentProvider extends DatabaseProvider {
 
             @Select("ThreadTable.name")
             public static final String THREAD_NAME = "thread_name";
-
-            @Select("ThreadTable._state")
-            public static final String THREAD_STATE = "thread_state";
 
             @Select("GROUP_CONCAT(DISTINCT ThreadUserTable.user_id)")
             public static final String USER_IDS = "user_ids";
@@ -273,10 +271,10 @@ public class VoltageContentProvider extends DatabaseProvider {
             @Select("ThreadTable._state")
             public static final String THREAD_STATE = "thread_state";
 
-            @Select("GROUP_CONCAT(DISTINCT ThreadUserTable.user_id)")
+            @Select("GROUP_CONCAT(ThreadUserTable.user_id)")
             public static final String USER_IDS = "user_ids";
 
-            @Select("GROUP_CONCAT(DISTINCT UserTable.name)")
+            @Select("GROUP_CONCAT(UserTable.name)")
             public static final String USER_NAMES = "user_names";
         }
     }
@@ -301,12 +299,6 @@ public class VoltageContentProvider extends DatabaseProvider {
 
             @Select("ThreadUserTable.thread_id")
             public static final String THREAD_ID = "thread_id";
-
-            @Select("ThreadTable.name")
-            public static final String THREAD_NAME = "thread_name";
-
-            @Select("ThreadTable._state")
-            public static final String THREAD_STATE = "thread_state";
 
             @Select("UserTable.reg_id")
             public static final String USER_ID = "user_id";
@@ -342,14 +334,17 @@ public class VoltageContentProvider extends DatabaseProvider {
             @Select("ThreadTable.name")
             public static final String THREAD_NAME = "thread_name";
 
-            @Select("ThreadTable._state")
-            public static final String THREAD_STATE = "thread_state";
+            @Select("ThreadTable.key")
+            public static final String THREAD_KEY = "thread_key";
 
-            @Select("GROUP_CONCAT(DISTINCT ThreadUserTable.user_id)")
+            @Select("GROUP_CONCAT(ThreadUserTable.user_id)")
             public static final String USER_IDS = "user_ids";
 
-            @Select("GROUP_CONCAT(DISTINCT UserTable.name)")
+            @Select("GROUP_CONCAT(UserTable.name)")
             public static final String USER_NAMES = "user_names";
+
+            @Select("GROUP_CONCAT(UserTable.public_key)")
+            public static final String USER_PUBLIC_KEYS = "user_public_keys";
         }
     }
 
@@ -374,9 +369,6 @@ public class VoltageContentProvider extends DatabaseProvider {
 
             @Select("TransactionTable.name")
             public static final String THREAD_NAME = "thread_name";
-
-            @Select("TransactionTable._state")
-            public static final String THREAD_STATE = "thread_state";
 
             @Select("GROUP_CONCAT(TransactionTable.msg_uuid)")
             public static final String MSG_UUIDS = "msg_uuids";

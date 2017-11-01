@@ -28,8 +28,9 @@ public class UserAddNfcActivity extends UserAddActivity {
             final NfcContent content = getNfcContent(intent);
             final String userName = content.getName();
             final String regId = content.getRegId();
+            final String publicKey = content.getPublicKey();
 
-            setUserInfo(userName, regId);
+            setUserInfo(userName, regId, publicKey);
         }
     }
 

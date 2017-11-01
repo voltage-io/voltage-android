@@ -5,18 +5,20 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+import android.util.Base64;
 
 import com.google.firebase.iid.FirebaseInstanceId;
 
-import io.voltage.app.helpers.AccountHelper;
+import java.security.KeyPair;
 
-@SuppressLint("CommitPrefEdits")
+import io.voltage.app.helpers.AccountHelper;
+import io.voltage.app.utils.CryptoUtils;
+import io.voltage.app.utils.Logger;
+
+@SuppressLint("ApplySharedPref")
 public class VoltagePreferences {
 
     public interface Property {
-        String REG_ID = "pref_key_reg_id";
-        String USER_NAME = "pref_key_user_name";
-        String APP_VERSION = "pref_key_app_version";
         String PRIMARY_COLOUR = "primary_colour";
         String SECONDARY_COLOUR = "secondary_colour";
         String SEND_READ_RECEIPTS = "pref_key_send_read_receipts";
@@ -24,6 +26,8 @@ public class VoltagePreferences {
         String AUTO_ADD_USERS = "pref_key_auto_add_users";
         String PUBLISH_REG_ID = "pref_key_publish_reg_id";
         String USE_DARK_THEME = "pref_key_use_dark_theme";
+        String PUBLIC_KEY = "pref_key_public_key";
+        String PRIVATE_KEY = "pref_key_private_key";
     }
 
     public static SharedPreferences getSharedPreferences(final Context context) {
@@ -38,6 +42,38 @@ public class VoltagePreferences {
 
     public static String getRegId(final Context context) {
         return FirebaseInstanceId.getInstance().getToken();
+    }
+
+    private static void generateKeyPair(final Context context) {
+        try {
+            final KeyPair keyPair = CryptoUtils.generateKeyPair();
+            final SharedPreferences.Editor editor = getSharedPreferences(context).edit();
+            editor.putString(Property.PRIVATE_KEY, Base64.encodeToString(keyPair.getPrivate().getEncoded(), Base64.NO_WRAP));
+            editor.putString(Property.PUBLIC_KEY, Base64.encodeToString(keyPair.getPublic().getEncoded(), Base64.NO_WRAP));
+            editor.commit();
+        } catch (final Exception e) {
+            Logger.ex(e);
+        }
+    }
+
+    public static String getPublicKey(final Context context) {
+        final String key = getSharedPreferences(context).getString(Property.PUBLIC_KEY, null);
+
+        if (key == null) {
+            generateKeyPair(context);
+        }
+
+        return getSharedPreferences(context).getString(Property.PUBLIC_KEY, null);
+    }
+
+    public static String getPrivateKey(final Context context) {
+        final String key = getSharedPreferences(context).getString(Property.PRIVATE_KEY, null);
+
+        if (key == null) {
+            generateKeyPair(context);
+        }
+
+        return getSharedPreferences(context).getString(Property.PRIVATE_KEY, null);
     }
 
     public static String getPrimaryColour(final Context context) {

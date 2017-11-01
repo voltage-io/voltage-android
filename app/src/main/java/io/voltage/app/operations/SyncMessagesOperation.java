@@ -4,7 +4,6 @@ import android.content.Context;
 import android.os.Parcel;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import io.pivotal.arca.service.TaskOperation;
@@ -17,6 +16,7 @@ import io.voltage.app.models.GcmMessage;
 import io.voltage.app.models.GcmResponse;
 import io.voltage.app.models.GcmSyncMessage;
 import io.voltage.app.models.Message;
+import io.voltage.app.models.User;
 
 public class SyncMessagesOperation extends TaskOperation<List<GcmResponse>> {
 
@@ -57,19 +57,18 @@ public class SyncMessagesOperation extends TaskOperation<List<GcmResponse>> {
     @Override
     public List<GcmResponse> onExecute(final Context context) throws Exception {
 
-        final List<String> regIds = Collections.singletonList(mRecipientId);
+        final User user = mDatabaseHelper.getUser(context, mRecipientId);
         final List<Message> messages = mDatabaseHelper.getThreadMetadata(context, mThreadId);
 
         final List<GcmResponse> responses = new ArrayList<>();
 
         for (int index = (messages.size() - mCount); index < messages.size(); index++) {
-            final Message message = messages.get(index);
-            final GcmMessage gcmMessage = new GcmMessage(message);
+
             final String regId = VoltagePreferences.getRegId(context);
+            final GcmMessage gcmMessage = new GcmMessage(messages.get(index));
+            final GcmSyncMessage gcmSyncMessage = new GcmSyncMessage(mThreadId, regId, gcmMessage);
 
-            final GcmSyncMessage gcmPayload = new GcmSyncMessage(mThreadId, regId, gcmMessage);
-
-            responses.add(mMessagingHelper.sendGcmRequest(context, regIds, gcmPayload));
+            responses.add(mMessagingHelper.rsaEncryptAndSend(context, user, gcmSyncMessage));
         }
 
         return responses;

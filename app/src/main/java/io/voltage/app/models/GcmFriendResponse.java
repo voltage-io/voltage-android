@@ -4,10 +4,11 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.Map;
 
-public class GcmFriend extends GcmPayload {
+public class GcmFriendResponse extends GcmPayload {
     private interface Fields extends GcmPayload.Fields {
         String NAME = "name";
         String REG_ID = "reg_id";
+        String PUBLIC_KEY = "public_key";
     }
 
     @SerializedName(Fields.NAME)
@@ -16,15 +17,20 @@ public class GcmFriend extends GcmPayload {
     @SerializedName(Fields.REG_ID)
     private String mRegId;
 
-    public GcmFriend(final Map<String, String> data) {
+    @SerializedName(Fields.PUBLIC_KEY)
+    private String mPublicKey;
+
+    public GcmFriendResponse(final Map<String, String> data) {
         mName = data.get(Fields.NAME);
         mRegId = data.get(Fields.REG_ID);
+        mPublicKey = data.get(Fields.PUBLIC_KEY);
     }
 
-    public GcmFriend(final String name, final String regId) {
+    public GcmFriendResponse(final String name, final String regId, final String publicKey) {
         mRegId = regId;
         mName = name;
-        setEnumType(Type.FRIEND_ADDED);
+        mPublicKey = publicKey;
+        setEnumType(Type.FRIEND_RESPONSE);
     }
 
     public String getName() {
@@ -33,5 +39,9 @@ public class GcmFriend extends GcmPayload {
 
     public String getRegId() {
         return mRegId;
+    }
+
+    public String getPublicKey() {
+        return mPublicKey;
     }
 }

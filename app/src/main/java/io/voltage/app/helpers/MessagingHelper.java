@@ -3,25 +3,68 @@ package io.voltage.app.helpers;
 import android.content.Context;
 import android.text.TextUtils;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import io.pivotal.arca.utils.ArrayUtils;
 import io.voltage.app.application.VoltageApi;
 import io.voltage.app.application.VoltagePreferences;
+import io.voltage.app.models.GcmMessage;
 import io.voltage.app.models.GcmPayload;
 import io.voltage.app.models.GcmRequest;
 import io.voltage.app.models.GcmResponse;
+import io.voltage.app.models.GcmSyncMessage;
+import io.voltage.app.models.Recipients;
+import io.voltage.app.models.User;
 import io.voltage.app.utils.Logger;
 
 public interface MessagingHelper {
 
-    GcmResponse sendGcmRequest(final Context context, final List<String> regIds, final GcmPayload gcmPayload) throws Exception;
+    List<GcmResponse> aesEncryptAndSend(final Context context, final Recipients recipients, final GcmMessage gcmMessage) throws Exception;
+    List<GcmResponse> rsaEncryptAndSend(final Context context, final Recipients recipients, final GcmMessage gcmMessage) throws Exception;
+    GcmResponse rsaEncryptAndSend(final Context context, final User user, final GcmSyncMessage gcmSyncMessage) throws Exception;
+    GcmResponse send(final Context context, final String regId, final GcmPayload gcmPayload) throws Exception;
+    GcmResponse send(final Context context, final List<String> regIds, final GcmPayload gcmPayload) throws Exception;
+
 
     class Default implements MessagingHelper {
 
         protected final DatabaseHelper mDatabaseHelper = new DatabaseHelper.Default();
 
-        public GcmResponse sendGcmRequest(final Context context, final List<String> regIds, final GcmPayload gcmPayload) throws Exception {
+
+        public List<GcmResponse> aesEncryptAndSend(final Context context, final Recipients recipients, final GcmMessage gcmMessage) throws Exception {
+            gcmMessage.attemptAesEncrypt(recipients.getThreadKey());
+
+            return Collections.singletonList(send(context, recipients.getUserIdsList(), gcmMessage));
+        }
+
+        public List<GcmResponse> rsaEncryptAndSend(final Context context, final Recipients recipients, final GcmMessage gcmMessage) throws Exception {
+            final ArrayList<GcmResponse> responses = new ArrayList<>();
+
+            final List<String> regIds = recipients.getUserIdsList();
+            final List<String> publicKeys = recipients.getUserPublicKeysList();
+
+            for (int i = 0; i < regIds.size(); i++) {
+                gcmMessage.attemptRsaEncrypt(publicKeys.get(i));
+
+                responses.add(send(context, regIds.get(i), gcmMessage));
+            }
+            return responses;
+        }
+
+        public GcmResponse rsaEncryptAndSend(final Context context, final User user, final GcmSyncMessage gcmSyncMessage) throws Exception {
+            gcmSyncMessage.attemptRsaEncrypt(user.getPublicKey());
+
+            return send(context, user.getRegId(), gcmSyncMessage);
+        }
+
+
+        public GcmResponse send(final Context context, final String regId, final GcmPayload gcmPayload) throws Exception {
+            return send(context, Collections.singletonList(regId), gcmPayload);
+        }
+
+        public GcmResponse send(final Context context, final List<String> regIds, final GcmPayload gcmPayload) throws Exception {
 
             if (ArrayUtils.isEmpty(regIds)) {
                 throw new IllegalArgumentException("Message not being sent to any users.");

@@ -37,4 +37,10 @@ public class GcmSyncMessage extends GcmSync {
     public Map<String, String> toMap() {
         return mMessage != null ? mMessage.toMap() : null;
     }
+
+    public void attemptRsaEncrypt(final String publicKey) {
+        if (mMessage != null) {
+            mMessage.attemptRsaEncrypt(publicKey);
+        }
+    }
 }

@@ -14,11 +14,12 @@ public class GcmPayload {
     public enum Type {
         MESSAGE,
         RECEIPT,
-        FRIEND_ADDED,
         FRIEND_REQUEST,
+        FRIEND_RESPONSE,
         THREAD_CREATED,
         THREAD_RENAMED,
         THREAD_PROGRESS,
+        THREAD_KEY_ROTATED,
         CHECKSUM,
         CHECKSUM_FAILED,
         SYNC_REQUEST,

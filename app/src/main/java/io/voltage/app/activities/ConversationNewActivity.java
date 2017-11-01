@@ -39,6 +39,7 @@ import io.voltage.app.application.VoltagePreferences;
 import io.voltage.app.monitors.ConversationAddMonitor;
 import io.voltage.app.requests.ThreadInsertBatch;
 import io.voltage.app.requests.UserQuery;
+import io.voltage.app.utils.CryptoUtils;
 
 public class ConversationNewActivity extends FragmentActivity implements ViewPager.OnPageChangeListener {
 
@@ -267,9 +268,10 @@ public class ConversationNewActivity extends FragmentActivity implements ViewPag
             final String name = mConversationName.getText().toString();
 
             final String threadId = UUID.randomUUID().toString();
+            final String threadKey = CryptoUtils.generateThreadKey();
             final String senderId = VoltagePreferences.getRegId(getActivity());
 
-            execute(new ThreadInsertBatch(threadId, senderId, name, mRegIds));
+            execute(new ThreadInsertBatch(threadId, threadKey, name, senderId, mRegIds));
 
             ConversationActivity.newInstance(getActivity(), threadId);
         }

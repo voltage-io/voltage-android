@@ -3,9 +3,6 @@ package io.voltage.app.operations;
 import android.content.Context;
 import android.os.Parcel;
 
-import java.util.Collections;
-import java.util.List;
-
 import io.pivotal.arca.service.TaskOperation;
 import io.pivotal.arca.threading.Identifier;
 import io.voltage.app.application.VoltageContentProvider;
@@ -53,12 +50,11 @@ public class MessageStateOperation extends TaskOperation<GcmResponse> {
     public GcmResponse onExecute(final Context context) throws Exception {
 
         final Message message = mDatabaseHelper.getMessage(context, mMsgUuid);
-        final List<String> regIds = Collections.singletonList(message.getSenderId());
 
         final MessageState messageState = new MessageState(mMsgUuid, mState);
         final GcmPayload gcmPayload = new GcmMessageState(messageState);
 
-        return mMessagingHelper.sendGcmRequest(context, regIds, gcmPayload);
+        return mMessagingHelper.send(context, message.getSenderId(), gcmPayload);
     }
 
     public static final Creator CREATOR = new Creator() {

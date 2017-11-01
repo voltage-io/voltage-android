@@ -3,8 +3,6 @@ package io.voltage.app.operations;
 import android.content.Context;
 import android.os.Parcel;
 
-import java.util.List;
-
 import io.pivotal.arca.service.TaskOperation;
 import io.pivotal.arca.threading.Identifier;
 import io.voltage.app.application.VoltageContentProvider;
@@ -50,16 +48,13 @@ public class ChecksumOperation extends TaskOperation<GcmResponse> {
     public GcmResponse onExecute(final Context context) throws Exception {
 
         final Participants participants = mDatabaseHelper.getParticipants(context, mThreadId);
-        final List<String> regIds = participants != null ? participants.getUserIdsList() : null;
-
         final Transactions transactions = mDatabaseHelper.getTransactions(context, mThreadId);
-
         final String checksum = CryptoUtils.checksum(transactions);
-        final String regId = VoltagePreferences.getRegId(context);
 
+        final String regId = VoltagePreferences.getRegId(context);
         final GcmPayload gcmPayload = new GcmChecksum(mThreadId, regId, checksum);
 
-        return mMessagingHelper.sendGcmRequest(context, regIds, gcmPayload);
+        return mMessagingHelper.send(context, participants.getUserIdsList(), gcmPayload);
     }
 
     public static final Creator CREATOR = new Creator() {

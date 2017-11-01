@@ -9,6 +9,7 @@ public class UserAddParamsActivity extends UserAddActivity {
     private interface Extras {
         String NAME = "name";
         String REG_ID = "reg_id";
+        String PUBLIC_KEY = "public_key";
     }
 
     public static void newInstance(final Context context, final String regId) {
@@ -27,8 +28,9 @@ public class UserAddParamsActivity extends UserAddActivity {
         if (extras != null && extras.containsKey(Extras.REG_ID)) {
             final String name = extras.getString(Extras.NAME);
             final String regId = extras.getString(Extras.REG_ID);
+            final String publicKey = extras.getString(Extras.PUBLIC_KEY);
 
-            setUserInfo(name, regId);
+            setUserInfo(name, regId, publicKey);
         }
     }
 }

@@ -21,10 +21,11 @@ public abstract class UserAddActivity extends ColorActivity {
 		setTitle(R.string.title_user_add);
 	}
 
-    protected void setUserInfo(final String userName, final String regId) {
+    protected void setUserInfo(final String userName, final String regId, final String publicKey) {
         final UserAddFragment fragment = getFragment();
         fragment.setRegistrationId(regId);
         fragment.setUserName(userName);
+        fragment.setPublicKey(publicKey);
     }
 
     private UserAddFragment getFragment() {
@@ -40,6 +41,7 @@ public abstract class UserAddActivity extends ColorActivity {
 
         private TextView mNameView;
         private TextView mRegIdView;
+        private TextView mPublicKeyView;
         private Button mAddUser;
 
         @Override
@@ -48,6 +50,7 @@ public abstract class UserAddActivity extends ColorActivity {
 
             mNameView = (TextView) view.findViewById(R.id.user_add_name);
             mRegIdView = (TextView) view.findViewById(R.id.user_add_reg_id);
+            mPublicKeyView = (TextView) view.findViewById(R.id.user_add_public_key);
 
             mAddUser = (Button) view.findViewById(R.id.user_add_button);
             mAddUser.setOnClickListener(this);
@@ -57,8 +60,9 @@ public abstract class UserAddActivity extends ColorActivity {
         public void onClick(final View view) {
             final String name = mNameView.getText().toString();
             final String regId = mRegIdView.getText().toString();
+            final String publicKey = mPublicKeyView.getText().toString();
 
-            execute(new UserInsert(name, regId));
+            execute(new UserInsert(name, regId, publicKey));
 
             getActivity().finish();
         }
@@ -69,6 +73,10 @@ public abstract class UserAddActivity extends ColorActivity {
 
         public void setUserName(final String userName) {
             mNameView.setText(userName);
+        }
+
+        public void setPublicKey(final String publicKey) {
+            mPublicKeyView.setText(publicKey);
         }
     }
 }

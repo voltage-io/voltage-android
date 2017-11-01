@@ -8,10 +8,10 @@ import java.util.UUID;
 import io.pivotal.arca.provider.DataUtils;
 import io.voltage.app.application.VoltageContentProvider;
 import io.voltage.app.application.VoltageContentProvider.MessageTable;
+import io.voltage.app.application.VoltageContentProvider.RegistrationTable;
 import io.voltage.app.application.VoltageContentProvider.ThreadTable;
 import io.voltage.app.application.VoltageContentProvider.ThreadUserTable;
 import io.voltage.app.application.VoltageContentProvider.UserTable;
-import io.voltage.app.application.VoltageContentProvider.RegistrationTable;
 import io.voltage.app.models.GcmPayload;
 import io.voltage.app.models.Message;
 import io.voltage.app.models.Thread;
@@ -124,6 +124,16 @@ public class OperationHelper {
     public ContentProviderOperation updateThreadOperation(final String threadId, final String threadName) {
         final ContentValues values = new ContentValues();
         values.put(ThreadTable.Columns.NAME, threadName);
+
+        return ContentProviderOperation.newUpdate(VoltageContentProvider.Uris.THREADS)
+                .withSelection(ThreadTable.Columns.ID + "=?", new String[]{threadId})
+                .withValues(values)
+                .build();
+    }
+
+    public ContentProviderOperation updateThreadKeyOperation(final String threadId, final String key) {
+        final ContentValues values = new ContentValues();
+        values.put(ThreadTable.Columns.KEY, key);
 
         return ContentProviderOperation.newUpdate(VoltageContentProvider.Uris.THREADS)
                 .withSelection(ThreadTable.Columns.ID + "=?", new String[]{threadId})
