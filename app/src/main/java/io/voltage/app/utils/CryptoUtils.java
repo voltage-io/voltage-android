@@ -13,6 +13,7 @@ import java.security.MessageDigest;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.SecureRandom;
+import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.Arrays;
 
@@ -42,7 +43,7 @@ public class CryptoUtils {
     public static String checksum(final Transactions transactions) {
         try {
             if (transactions == null) return null;
-            return digest(transactions.getMsgUuids(), Algorithm.SHA_256);
+            return digest(transactions.getMsgUuids());
         } catch (final Exception e) {
             Logger.ex(e);
             return null;
@@ -52,7 +53,7 @@ public class CryptoUtils {
     public static String attemptAesEncrypt(final String keyString, final String text) {
         try {
             if (text == null) return null;
-            return encrypt(decodeSecretKey(keyString), text, Algorithm.AES_CBC);
+            return encryptAes(decodeSecretKey(keyString), text);
         } catch (final Exception e) {
             Logger.ex(e);
             return text;
@@ -62,7 +63,7 @@ public class CryptoUtils {
     public static String attemptAesDecrypt(final String keyString, final String encrypted) {
         try {
             if (encrypted == null) return null;
-            return decrypt(decodeSecretKey(keyString), encrypted, Algorithm.AES_CBC);
+            return decryptAes(decodeSecretKey(keyString), encrypted);
         } catch (final Exception e) {
             Logger.ex(e);
             return encrypted;
@@ -72,18 +73,17 @@ public class CryptoUtils {
     public static String attemptRsaEncrypt(final String keyString, final String text) {
         try {
             if (text == null) return null;
-            return encrypt(decodePublicKey(keyString), text, Algorithm.RSA);
+            return encryptRsa(decodePublicKey(keyString), text);
         } catch (final Exception e) {
             Logger.ex(e);
             return text;
         }
     }
 
-
     public static String attemptRsaDecrypt(final String keyString, final String encrypted) {
         try {
             if (encrypted == null) return null;
-            return decrypt(decodePrivateKey(keyString), encrypted, Algorithm.RSA);
+            return decryptRsa(decodePrivateKey(keyString), encrypted);
         } catch (final Exception e) {
             Logger.ex(e);
             return encrypted;
@@ -126,23 +126,39 @@ public class CryptoUtils {
     private static PrivateKey decodePrivateKey(final String keyString) throws Exception {
         final byte[] decoded = Base64.decode(keyString, Base64.NO_WRAP);
         final KeyFactory factory = KeyFactory.getInstance(Algorithm.RSA);
-        return factory.generatePrivate(new X509EncodedKeySpec(decoded));
+        return factory.generatePrivate(new PKCS8EncodedKeySpec(decoded));
     }
 
-    private static String encrypt(final Key key, final String text, final String algorithm) throws Exception {
+    private static String encryptAes(final Key key, final String text) throws Exception {
         final byte[] input = text.getBytes(UTF8_CHARSET);
-        final Cipher cipher = Cipher.getInstance(algorithm);
+        final Cipher cipher = Cipher.getInstance(Algorithm.AES_CBC);
         final byte[] iv = generateVector();
         cipher.init(Cipher.ENCRYPT_MODE, key, new IvParameterSpec(iv));
         final byte[] bytes = cipher.doFinal(input);
         return Base64.encodeToString(concat(iv, bytes), Base64.NO_WRAP);
     }
 
-    private static String decrypt(final Key key, final String encrypted, final String algorithm) throws Exception {
+    private static String decryptAes(final Key key, final String encrypted) throws Exception {
         final byte[] input = Base64.decode(encrypted, Base64.NO_WRAP);
-        final Cipher cipher = Cipher.getInstance(algorithm);
+        final Cipher cipher = Cipher.getInstance(Algorithm.AES_CBC);
         cipher.init(Cipher.DECRYPT_MODE, key, new IvParameterSpec(vectorRange(input)));
         final byte[] bytes = cipher.doFinal(payloadRange(input));
+        return new String(bytes, UTF8_CHARSET);
+    }
+
+    private static String encryptRsa(final Key key, final String text) throws Exception {
+        final byte[] input = text.getBytes(UTF8_CHARSET);
+        final Cipher cipher = Cipher.getInstance(Algorithm.RSA);
+        cipher.init(Cipher.ENCRYPT_MODE, key);
+        final byte[] bytes = cipher.doFinal(input);
+        return Base64.encodeToString(bytes, Base64.NO_WRAP);
+    }
+
+    private static String decryptRsa(final Key key, final String encrypted) throws Exception {
+        final byte[] input = Base64.decode(encrypted, Base64.NO_WRAP);
+        final Cipher cipher = Cipher.getInstance(Algorithm.RSA);
+        cipher.init(Cipher.DECRYPT_MODE, key);
+        final byte[] bytes = cipher.doFinal(input);
         return new String(bytes, UTF8_CHARSET);
     }
 
@@ -169,30 +185,10 @@ public class CryptoUtils {
         return output.toByteArray();
     }
 
-    private static String digest(final String input, final String algorithm) throws Exception {
-        final MessageDigest digest = MessageDigest.getInstance(algorithm);
+    private static String digest(final String input) throws Exception {
+        final MessageDigest digest = MessageDigest.getInstance(Algorithm.SHA_256);
         digest.update(input.getBytes(UTF8_CHARSET));
         return Base64.encodeToString(digest.digest(), Base64.NO_WRAP);
     }
-
-
-    // =================================================
-
-
-//    public static String createUuid(final String message) {
-//        final byte[] bytes = encode(message, Algorithm.MD5);
-//        final StringBuilder hexString = toHexadecimal(bytes);
-//        hexString.insert('-', 8).insert('-', 12);
-//        hexString.insert('-', 16).insert('-', 20);
-//        return StringUtils.left(hexString.toString(), 36);
-//    }
-//
-//    private static StringBuilder toHexadecimal(final byte[] bytes) {
-//        final StringBuilder hexString = new StringBuilder();
-//        for (final byte b : bytes) {
-//            hexString.append(Integer.toHexString(0xFF & b));
-//        }
-//        return hexString;
-//    }
 
 }

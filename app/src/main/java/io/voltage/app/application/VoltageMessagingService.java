@@ -216,12 +216,6 @@ public class VoltageMessagingService extends FirebaseMessagingService {
 
             mDatabaseHelper.insertThreadUser(context, threadId, userId);
 
-            if (VoltagePreferences.shouldAutoAddUser(context, userId)) {
-                autoAddUserCheck(context, userId);
-            }
-        }
-
-        private void autoAddUserCheck(final Context context, final String userId) {
             final User user = mDatabaseHelper.getUser(context, userId);
             if (user == null) {
                 OperationService.start(context, new FriendRequestOperation(userId));
@@ -259,11 +253,14 @@ public class VoltageMessagingService extends FirebaseMessagingService {
         }
 
         private void handleFriendResponse(final Context context, final GcmFriendResponse gcmFriendResponse) {
-            final User user = new User(gcmFriendResponse);
+            final String regId = gcmFriendResponse.getRegId();
 
-            mDatabaseHelper.insertUser(context, user);
-
-//            mNotificationHelper.addNewFriendNotification(context, user);
+            final User user = mDatabaseHelper.getUser(context, regId);
+            if (user == null) {
+                mDatabaseHelper.insertUser(context, new User(gcmFriendResponse));
+            } else {
+                mDatabaseHelper.updateUser(context, new User(gcmFriendResponse));
+            }
         }
 
         private void handleChecksum(final Context context, final GcmChecksum gcmChecksum) {

@@ -98,9 +98,8 @@ public class UserEditActivity extends ColorActivity {
         @Override
         public void onClick(final View view) {
             final String name = mNameView.getText().toString();
-            final String regId = mRegIdView.getText().toString();
 
-            execute(new UserUpdate(name, regId, mRegId));
+            execute(new UserUpdate(name, mRegId));
 
             getActivity().finish();
         }

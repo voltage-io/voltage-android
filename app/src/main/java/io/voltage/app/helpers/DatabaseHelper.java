@@ -28,15 +28,16 @@ import io.voltage.app.requests.RecipientsQuery;
 import io.voltage.app.requests.RegistrationQuery;
 import io.voltage.app.requests.RegistrationUpdateBatch;
 import io.voltage.app.requests.ThreadInsert;
+import io.voltage.app.requests.ThreadKeyUpdate;
 import io.voltage.app.requests.ThreadMetadataQuery;
 import io.voltage.app.requests.ThreadQuery;
 import io.voltage.app.requests.ThreadUpdate;
-import io.voltage.app.requests.ThreadKeyUpdate;
 import io.voltage.app.requests.ThreadUserDelete;
 import io.voltage.app.requests.ThreadUserInsert;
 import io.voltage.app.requests.TransactionsQuery;
 import io.voltage.app.requests.UserInsert;
 import io.voltage.app.requests.UserQuery;
+import io.voltage.app.requests.UserUpdate;
 import io.voltage.app.utils.Logger;
 
 public interface DatabaseHelper {
@@ -152,6 +153,12 @@ public interface DatabaseHelper {
 
         public void insertUser(final Context context, final User user) {
             VoltageExecutor.execute(context, new UserInsert(user.getName(), user.getRegId(), user.getPublicKey()));
+
+            notify(context, VoltageContentProvider.Uris.USERS);
+        }
+
+        public void updateUser(final Context context, final User user) {
+            VoltageExecutor.execute(context, new UserUpdate(user.getName(), user.getRegId(), user.getPublicKey()));
 
             notify(context, VoltageContentProvider.Uris.USERS);
         }

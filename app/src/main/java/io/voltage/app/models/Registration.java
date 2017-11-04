@@ -20,6 +20,8 @@ public class Registration {
     @ColumnName(RegistrationTable.Columns.LOOKUP)
     private String mLookup;
 
+    public Registration() {}
+
     public Registration(final String regId) {
         mRegId = regId;
     }

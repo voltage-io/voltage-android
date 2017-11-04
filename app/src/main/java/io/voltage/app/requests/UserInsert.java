@@ -16,7 +16,7 @@ public class UserInsert extends Insert {
         final ContentValues values = new ContentValues();
         values.put(UserTable.Columns.NAME, name);
         values.put(UserTable.Columns.REG_ID, regId);
-        values.put(UserTable.Columns.PUBLIC_KEY, regId);
+        values.put(UserTable.Columns.PUBLIC_KEY, publicKey);
         return values;
     }
 }

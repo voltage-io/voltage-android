@@ -42,11 +42,10 @@ public class FriendResponseOperation extends TaskOperation<GcmResponse> {
     @Override
     public GcmResponse onExecute(final Context context) throws Exception {
 
-        final String name = VoltagePreferences.getUserName(context);
         final String regId = VoltagePreferences.getRegId(context);
         final String publicKey = VoltagePreferences.getPublicKey(context);
 
-        final GcmPayload gcmPayload = new GcmFriendResponse(name, regId, publicKey);
+        final GcmPayload gcmPayload = new GcmFriendResponse(regId, publicKey);
 
         return mMessagingHelper.send(context, mUserId, gcmPayload);
     }

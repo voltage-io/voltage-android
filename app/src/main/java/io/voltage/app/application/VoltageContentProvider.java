@@ -105,11 +105,10 @@ public class VoltageContentProvider extends DatabaseProvider {
 
     public static class UserTable extends SQLiteTable {
         public interface Columns extends SQLiteTable.Columns {
-            @Unique(Unique.OnConflict.IGNORE)
+            @Unique(Unique.OnConflict.REPLACE)
             @Column(Column.Type.TEXT) String REG_ID = "reg_id";
+            @ColumnOptions("DEFAULT (hex(randomblob(3)))")
             @Column(Column.Type.TEXT) String NAME = "name";
-            @Column(Column.Type.TEXT) String IMAGE = "image";
-            @ColumnOptions("DEFAULT ''")
             @Column(Column.Type.TEXT) String PUBLIC_KEY = "public_key";
         }
 
@@ -154,197 +153,121 @@ public class VoltageContentProvider extends DatabaseProvider {
 
     public static class InboxView extends SQLiteView {
 
-        @SelectFrom("MessageTable")
+        @SelectFrom("MessageTable m")
 
         @Joins({
-            "LEFT JOIN ThreadTable ON MessageTable.thread_id = ThreadTable.id",
-            "LEFT JOIN ThreadUserTable ON MessageTable.thread_id = ThreadUserTable.thread_id",
-            "LEFT JOIN UserTable ON ThreadUserTable.user_id = UserTable.reg_id",
+            "LEFT JOIN ThreadTable t ON m.thread_id = t.id",
+            "LEFT JOIN ThreadUserTable tu ON m.thread_id = tu.thread_id",
+            "LEFT JOIN UserTable u ON tu.user_id = u.reg_id",
         })
 
-        @GroupBy("MessageTable.thread_id")
+        @GroupBy("m.thread_id")
 
         @OrderBy("message_timestamp DESC")
 
         public interface Columns {
-
-            @Select("ThreadTable._id")
-            public static final String _ID = "_id";
-
-            @Select("ThreadTable.id")
-            public static final String THREAD_ID = "thread_id";
-
-            @Select("ThreadTable.name")
-            public static final String THREAD_NAME = "thread_name";
-
-            @Select("GROUP_CONCAT(DISTINCT ThreadUserTable.user_id)")
-            public static final String USER_IDS = "user_ids";
-
-            @Select("GROUP_CONCAT(DISTINCT UserTable.name)")
-            public static final String USER_NAMES = "user_names";
-
-            @Select("MAX(MessageTable.timestamp)")
-            public static final String MESSAGE_TIMESTAMP = "message_timestamp";
-
-            @Select("MessageTable.text")
-            public static final String MESSAGE_TEXT = "message_text";
-
-            @Select("MessageTable._state")
-            public static final String MESSAGE_STATE = "message_state";
+            @Select("t._id") String _ID = "_id";
+            @Select("t.id") String THREAD_ID = "thread_id";
+            @Select("t.name") String THREAD_NAME = "thread_name";
+            @Select("GROUP_CONCAT(DISTINCT tu.user_id)") String USER_IDS = "user_ids";
+            @Select("GROUP_CONCAT(DISTINCT u.name)") String USER_NAMES = "user_names";
+            @Select("MAX(m.timestamp)") String MESSAGE_TIMESTAMP = "message_timestamp";
+            @Select("m.text") String MESSAGE_TEXT = "message_text";
+            @Select("m._state") String MESSAGE_STATE = "message_state";
         }
     }
 
     public static class ConversationView extends SQLiteView {
 
-        @SelectFrom("MessageTable")
+        @SelectFrom("MessageTable m")
 
         @Joins({
-            "LEFT JOIN ThreadTable ON MessageTable.thread_id = ThreadTable.id",
-            "LEFT JOIN UserTable ON MessageTable.sender_id = UserTable.reg_id",
-            "LEFT JOIN UserTable as MetaUser ON MessageTable.metadata = MetaUser.reg_id"
+            "LEFT JOIN ThreadTable t ON m.thread_id = t.id",
+            "LEFT JOIN UserTable u ON m.sender_id = u.reg_id",
+            "LEFT JOIN UserTable mu ON m.metadata = mu.reg_id"
         })
 
-        @OrderBy("MessageTable.timestamp")
+        @OrderBy("m.timestamp")
 
         public interface Columns {
-
-            @Select("MessageTable._id")
-            public static final String _ID = "_id";
-
-            @Select("MessageTable.msg_uuid")
-            public static final String MSG_UUID = "msg_uuid";
-
-            @Select("MessageTable.thread_id")
-            public static final String THREAD_ID = "thread_id";
-
-            @Select("ThreadTable.name")
-            public static final String THREAD_NAME = "thread_name";
-
-            @Select("MessageTable.sender_id")
-            public static final String SENDER_ID = "sender_id";
-
-            @Select("UserTable.name")
-            public static final String SENDER_NAME = "sender_name";
-
-            @Select("MessageTable.text")
-            public static final String TEXT = "text";
-
-            @Select("MessageTable.metadata")
-            public static final String METADATA = "metadata";
-
-            @Select("MessageTable.timestamp")
-            public static final String TIMESTAMP = "timestamp";
-
-            @Select("MetaUser.name")
-            public static final String META_USER = "meta_user";
-
-            @Select("MessageTable.type")
-            public static final String TYPE = "type";
-
-            @Select("MessageTable._state")
-            public static final String _STATE = "_state";
+            @Select("m._id") String _ID = "_id";
+            @Select("m.msg_uuid") String MSG_UUID = "msg_uuid";
+            @Select("m.thread_id") String THREAD_ID = "thread_id";
+            @Select("t.name") String THREAD_NAME = "thread_name";
+            @Select("m.sender_id") String SENDER_ID = "sender_id";
+            @Select("u.name") String SENDER_NAME = "sender_name";
+            @Select("m.text") String TEXT = "text";
+            @Select("m.metadata") String METADATA = "metadata";
+            @Select("m.timestamp") String TIMESTAMP = "timestamp";
+            @Select("mu.name") String META_USER = "meta_user";
+            @Select("m.type") String TYPE = "type";
+            @Select("m._state") String _STATE = "_state";
         }
     }
 
     public static class ParticipantView extends SQLiteView {
 
-        @SelectFrom("ThreadUserTable")
+        @SelectFrom("ThreadUserTable tu")
 
         @Joins({
-            "LEFT JOIN ThreadTable ON ThreadUserTable.thread_id = ThreadTable.id",
-            "LEFT JOIN UserTable ON ThreadUserTable.user_id = UserTable.reg_id"
+            "LEFT JOIN ThreadTable t ON tu.thread_id = t.id",
+            "LEFT JOIN UserTable u ON tu.user_id = u.reg_id"
         })
 
-        @GroupBy("ThreadUserTable.thread_id")
+        @GroupBy("tu.thread_id")
 
         public interface Columns {
-
-            @Select("ThreadUserTable._id")
-            public static final String _ID = "_id";
-
-            @Select("ThreadUserTable.thread_id")
-            public static final String THREAD_ID = "thread_id";
-
-            @Select("ThreadTable.name")
-            public static final String THREAD_NAME = "thread_name";
-
-            @Select("ThreadTable._state")
-            public static final String THREAD_STATE = "thread_state";
-
-            @Select("GROUP_CONCAT(ThreadUserTable.user_id)")
-            public static final String USER_IDS = "user_ids";
-
-            @Select("GROUP_CONCAT(UserTable.name)")
-            public static final String USER_NAMES = "user_names";
+            @Select("tu._id") String _ID = "_id";
+            @Select("tu.thread_id") String THREAD_ID = "thread_id";
+            @Select("t.name") String THREAD_NAME = "thread_name";
+            @Select("t._state") String THREAD_STATE = "thread_state";
+            @Select("GROUP_CONCAT(tu.user_id)") String USER_IDS = "user_ids";
+            @Select("GROUP_CONCAT(u.name)") String USER_NAMES = "user_names";
         }
     }
 
     public static class MemberView extends SQLiteView {
 
-        @SelectFrom("ThreadUserTable")
+        @SelectFrom("ThreadUserTable tu")
 
         @Joins({
-            "LEFT JOIN ThreadTable ON ThreadUserTable.thread_id = ThreadTable.id",
-            "LEFT JOIN UserTable ON ThreadUserTable.user_id = UserTable.reg_id"
+            "LEFT JOIN ThreadTable t ON tu.thread_id = t.id",
+            "LEFT JOIN UserTable u ON tu.user_id = u.reg_id"
         })
 
-        @Where("ThreadUserTable.user_id NOT IN (SELECT reg_id from RegistrationTable)")
+        @Where("tu.user_id NOT IN (SELECT reg_id from RegistrationTable)")
 
-        @OrderBy("UserTable.name")
+        @OrderBy("u.name")
 
         public interface Columns {
-
-            @Select("ThreadUserTable._id")
-            public static final String _ID = "_id";
-
-            @Select("ThreadUserTable.thread_id")
-            public static final String THREAD_ID = "thread_id";
-
-            @Select("UserTable.reg_id")
-            public static final String USER_ID = "user_id";
-
-            @Select("UserTable.name")
-            public static final String USER_NAME = "user_name";
+            @Select("tu._id") String _ID = "_id";
+            @Select("tu.thread_id") String THREAD_ID = "thread_id";
+            @Select("u.reg_id") String USER_ID = "user_id";
+            @Select("u.name") String USER_NAME = "user_name";
         }
     }
 
     public static class RecipientView extends SQLiteView {
 
-        @SelectFrom("MessageTable")
+        @SelectFrom("MessageTable m")
 
         @Joins({
-            "INNER JOIN ThreadUserTable ON MessageTable.thread_id = ThreadUserTable.thread_id",
-            "LEFT JOIN UserTable ON ThreadUserTable.user_id = UserTable.reg_id",
-            "LEFT JOIN ThreadTable ON MessageTable.thread_id = ThreadTable.id"
+            "INNER JOIN ThreadUserTable tu ON m.thread_id = tu.thread_id",
+            "LEFT JOIN UserTable u ON tu.user_id = u.reg_id",
+            "LEFT JOIN ThreadTable t ON m.thread_id = t.id"
         })
 
-        @GroupBy("MessageTable.msg_uuid")
+        @GroupBy("m.msg_uuid")
 
         public interface Columns {
-
-            @Select("MessageTable._id")
-            public static final String _ID = "_id";
-
-            @Select("MessageTable.msg_uuid")
-            public static final String MSG_UUID = "msg_uuid";
-
-            @Select("ThreadTable.id")
-            public static final String THREAD_ID = "thread_id";
-
-            @Select("ThreadTable.name")
-            public static final String THREAD_NAME = "thread_name";
-
-            @Select("ThreadTable.key")
-            public static final String THREAD_KEY = "thread_key";
-
-            @Select("GROUP_CONCAT(ThreadUserTable.user_id)")
-            public static final String USER_IDS = "user_ids";
-
-            @Select("GROUP_CONCAT(UserTable.name)")
-            public static final String USER_NAMES = "user_names";
-
-            @Select("GROUP_CONCAT(UserTable.public_key)")
-            public static final String USER_PUBLIC_KEYS = "user_public_keys";
+            @Select("m._id") String _ID = "_id";
+            @Select("m.msg_uuid") String MSG_UUID = "msg_uuid";
+            @Select("t.id") String THREAD_ID = "thread_id";
+            @Select("t.name") String THREAD_NAME = "thread_name";
+            @Select("t.key") String THREAD_KEY = "thread_key";
+            @Select("GROUP_CONCAT(tu.user_id)") String USER_IDS = "user_ids";
+            @Select("GROUP_CONCAT(u.name)") String USER_NAMES = "user_names";
+            @Select("GROUP_CONCAT(u.public_key)") String USER_PUBLIC_KEYS = "user_public_keys";
         }
     }
 
@@ -355,26 +278,16 @@ public class VoltageContentProvider extends DatabaseProvider {
                 "ON ThreadTable.id = MessageTable.thread_id WHERE type != 'MESSAGE' ORDER BY timestamp"
         )
 
-        @SelectAs("TransactionTable")
+        @SelectAs("t")
 
-        @GroupBy("TransactionTable.thread_id")
+        @GroupBy("t.thread_id")
 
         public interface Columns {
-
-            @Select("TransactionTable._id")
-            public static final String _ID = "_id";
-
-            @Select("TransactionTable.thread_id")
-            public static final String THREAD_ID = "thread_id";
-
-            @Select("TransactionTable.name")
-            public static final String THREAD_NAME = "thread_name";
-
-            @Select("GROUP_CONCAT(TransactionTable.msg_uuid)")
-            public static final String MSG_UUIDS = "msg_uuids";
-
-            @Select("COUNT(TransactionTable.msg_uuid)")
-            public static final String COUNT = "count";
+            @Select("t._id") String _ID = "_id";
+            @Select("t.thread_id") String THREAD_ID = "thread_id";
+            @Select("t.name") String THREAD_NAME = "thread_name";
+            @Select("GROUP_CONCAT(t.msg_uuid)") String MSG_UUIDS = "msg_uuids";
+            @Select("COUNT(t.msg_uuid)") String COUNT = "count";
         }
     }
 
