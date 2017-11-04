@@ -102,21 +102,17 @@ public class GcmMessage extends GcmPayload {
 
     public void attemptAesEncrypt(final String threadKey) {
         mText = CryptoUtils.attemptAesEncrypt(threadKey, mText);
-        mMetadata = CryptoUtils.attemptAesEncrypt(threadKey, mMetadata);
     }
 
     public void attemptAesDecrypt(final String threadKey) {
         mText = CryptoUtils.attemptAesDecrypt(threadKey, mText);
-        mMetadata = CryptoUtils.attemptAesDecrypt(threadKey, mMetadata);
     }
 
     public void attemptRsaEncrypt(final String publicKey) {
-        mText = CryptoUtils.attemptRsaEncrypt(publicKey, mText);
         mMetadata = CryptoUtils.attemptRsaEncrypt(publicKey, mMetadata);
     }
 
     public void attemptRsaDecrypt(final String publicKey) {
-        mText = CryptoUtils.attemptRsaDecrypt(publicKey, mText);
         mMetadata = CryptoUtils.attemptRsaDecrypt(publicKey, mMetadata);
     }
 }
