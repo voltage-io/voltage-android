@@ -7,13 +7,11 @@ Voltage is a messaging application that uses push notifications to deliver messa
 
 # Features
 
-60 COLOUR CHOICES means a personalized messaging experience.
-
-GROUP MESSAGING lets you organize your conversations amongst friends.
+ENCRYPTION means your messages are private.
 
 OPEN SOURCE means you know what you're getting.
 
-ENCRYPTION means your messages are private [Coming soon].
+60 COLOUR CHOICES means a personalized messaging experience.
 
 CROSS PLATFORM communication (iOS support) [Coming soon].
 
