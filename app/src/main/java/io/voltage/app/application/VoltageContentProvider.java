@@ -167,12 +167,19 @@ public class VoltageContentProvider extends DatabaseProvider {
 
         public interface Columns {
             @Select("t._id") String _ID = "_id";
+
             @Select("t.id") String THREAD_ID = "thread_id";
+
             @Select("t.name") String THREAD_NAME = "thread_name";
+
             @Select("GROUP_CONCAT(DISTINCT tu.user_id)") String USER_IDS = "user_ids";
+
             @Select("GROUP_CONCAT(DISTINCT u.name)") String USER_NAMES = "user_names";
+
             @Select("MAX(m.timestamp)") String MESSAGE_TIMESTAMP = "message_timestamp";
+
             @Select("m.text") String MESSAGE_TEXT = "message_text";
+
             @Select("m._state") String MESSAGE_STATE = "message_state";
         }
     }
@@ -191,16 +198,27 @@ public class VoltageContentProvider extends DatabaseProvider {
 
         public interface Columns {
             @Select("m._id") String _ID = "_id";
+
             @Select("m.msg_uuid") String MSG_UUID = "msg_uuid";
+
             @Select("m.thread_id") String THREAD_ID = "thread_id";
+
             @Select("t.name") String THREAD_NAME = "thread_name";
+
             @Select("m.sender_id") String SENDER_ID = "sender_id";
+
             @Select("u.name") String SENDER_NAME = "sender_name";
+
             @Select("m.text") String TEXT = "text";
+
             @Select("m.metadata") String METADATA = "metadata";
+
             @Select("m.timestamp") String TIMESTAMP = "timestamp";
+
             @Select("mu.name") String META_USER = "meta_user";
+
             @Select("m.type") String TYPE = "type";
+
             @Select("m._state") String _STATE = "_state";
         }
     }
@@ -218,10 +236,15 @@ public class VoltageContentProvider extends DatabaseProvider {
 
         public interface Columns {
             @Select("tu._id") String _ID = "_id";
+
             @Select("tu.thread_id") String THREAD_ID = "thread_id";
+
             @Select("t.name") String THREAD_NAME = "thread_name";
+
             @Select("t._state") String THREAD_STATE = "thread_state";
+
             @Select("GROUP_CONCAT(tu.user_id)") String USER_IDS = "user_ids";
+
             @Select("GROUP_CONCAT(u.name)") String USER_NAMES = "user_names";
         }
     }
@@ -241,8 +264,11 @@ public class VoltageContentProvider extends DatabaseProvider {
 
         public interface Columns {
             @Select("tu._id") String _ID = "_id";
+
             @Select("tu.thread_id") String THREAD_ID = "thread_id";
+
             @Select("u.reg_id") String USER_ID = "user_id";
+
             @Select("u.name") String USER_NAME = "user_name";
         }
     }
@@ -261,12 +287,19 @@ public class VoltageContentProvider extends DatabaseProvider {
 
         public interface Columns {
             @Select("m._id") String _ID = "_id";
+
             @Select("m.msg_uuid") String MSG_UUID = "msg_uuid";
+
             @Select("t.id") String THREAD_ID = "thread_id";
+
             @Select("t.name") String THREAD_NAME = "thread_name";
+
             @Select("t.key") String THREAD_KEY = "thread_key";
+
             @Select("GROUP_CONCAT(tu.user_id)") String USER_IDS = "user_ids";
+
             @Select("GROUP_CONCAT(u.name)") String USER_NAMES = "user_names";
+
             @Select("GROUP_CONCAT(u.public_key)") String USER_PUBLIC_KEYS = "user_public_keys";
         }
     }
@@ -284,9 +317,13 @@ public class VoltageContentProvider extends DatabaseProvider {
 
         public interface Columns {
             @Select("t._id") String _ID = "_id";
+
             @Select("t.thread_id") String THREAD_ID = "thread_id";
+
             @Select("t.name") String THREAD_NAME = "thread_name";
+
             @Select("GROUP_CONCAT(t.msg_uuid)") String MSG_UUIDS = "msg_uuids";
+
             @Select("COUNT(t.msg_uuid)") String COUNT = "count";
         }
     }
