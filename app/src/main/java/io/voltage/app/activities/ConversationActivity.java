@@ -10,7 +10,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.os.Vibrator;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -221,8 +220,6 @@ public class ConversationActivity extends ColorActivity implements QueryListener
 
         @Override
         public boolean onItemLongClick(final AdapterView<?> adapterView, final View view, final int position, final long id) {
-            ((Vibrator) getActivity().getSystemService(VIBRATOR_SERVICE)).vibrate(40);
-
             final Cursor cursor = (Cursor) adapterView.getItemAtPosition(position);
             final String senderId = cursor.getString(cursor.getColumnIndex(ConversationView.Columns.SENDER_ID));
 
