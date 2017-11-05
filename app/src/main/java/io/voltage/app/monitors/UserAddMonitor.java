@@ -7,6 +7,8 @@ import io.pivotal.arca.dispatcher.Insert;
 import io.pivotal.arca.dispatcher.InsertResult;
 import io.pivotal.arca.monitor.RequestMonitor.AbstractRequestMonitor;
 import io.voltage.app.application.VoltageContentProvider;
+import io.voltage.app.helpers.AccountHelper;
+import io.voltage.app.requests.UserInsert;
 
 public class UserAddMonitor extends AbstractRequestMonitor {
 
@@ -15,7 +17,11 @@ public class UserAddMonitor extends AbstractRequestMonitor {
         final ContentResolver resolver = context.getContentResolver();
         resolver.notifyChange(VoltageContentProvider.Uris.USERS, null);
         resolver.notifyChange(VoltageContentProvider.Uris.INBOX, null);
+
+        if (request instanceof UserInsert) {
+            new AccountHelper.Default().requestSync(context);
+        }
+
         return Flags.DATA_VALID;
     }
-
 }

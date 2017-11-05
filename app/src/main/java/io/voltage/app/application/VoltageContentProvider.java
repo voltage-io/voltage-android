@@ -109,6 +109,7 @@ public class VoltageContentProvider extends DatabaseProvider {
             @Column(Column.Type.TEXT) String REG_ID = "reg_id";
             @ColumnOptions("DEFAULT (hex(randomblob(3)))")
             @Column(Column.Type.TEXT) String NAME = "name";
+            @ColumnOptions("DEFAULT ''")
             @Column(Column.Type.TEXT) String PUBLIC_KEY = "public_key";
         }
 
@@ -156,9 +157,9 @@ public class VoltageContentProvider extends DatabaseProvider {
         @SelectFrom("MessageTable m")
 
         @Joins({
-            "LEFT JOIN ThreadTable t ON m.thread_id = t.id",
-            "LEFT JOIN ThreadUserTable tu ON m.thread_id = tu.thread_id",
-            "LEFT JOIN UserTable u ON tu.user_id = u.reg_id",
+            "LEFT JOIN ThreadTable t ON t.id = m.thread_id",
+            "LEFT JOIN ThreadUserTable tu ON tu.thread_id = m.thread_id",
+            "LEFT JOIN UserTable u ON u.reg_id = tu.user_id",
         })
 
         @GroupBy("m.thread_id")
@@ -189,9 +190,9 @@ public class VoltageContentProvider extends DatabaseProvider {
         @SelectFrom("MessageTable m")
 
         @Joins({
-            "LEFT JOIN ThreadTable t ON m.thread_id = t.id",
-            "LEFT JOIN UserTable u ON m.sender_id = u.reg_id",
-            "LEFT JOIN UserTable mu ON m.metadata = mu.reg_id"
+            "LEFT JOIN ThreadTable t ON t.id = m.thread_id",
+            "LEFT JOIN UserTable u ON u.reg_id = m.sender_id",
+            "LEFT JOIN UserTable mu ON mu.reg_id = m.metadata"
         })
 
         @OrderBy("m.timestamp")
@@ -228,8 +229,8 @@ public class VoltageContentProvider extends DatabaseProvider {
         @SelectFrom("ThreadUserTable tu")
 
         @Joins({
-            "LEFT JOIN ThreadTable t ON tu.thread_id = t.id",
-            "LEFT JOIN UserTable u ON tu.user_id = u.reg_id"
+            "LEFT JOIN ThreadTable t ON t.id = tu.thread_id",
+            "LEFT JOIN UserTable u ON u.reg_id = tu.user_id"
         })
 
         @GroupBy("tu.thread_id")
@@ -254,8 +255,8 @@ public class VoltageContentProvider extends DatabaseProvider {
         @SelectFrom("ThreadUserTable tu")
 
         @Joins({
-            "LEFT JOIN ThreadTable t ON tu.thread_id = t.id",
-            "LEFT JOIN UserTable u ON tu.user_id = u.reg_id"
+            "LEFT JOIN ThreadTable t ON t.id = tu.thread_id",
+            "LEFT JOIN UserTable u ON u.reg_id = tu.user_id"
         })
 
         @Where("tu.user_id NOT IN (SELECT reg_id from RegistrationTable)")
@@ -278,9 +279,9 @@ public class VoltageContentProvider extends DatabaseProvider {
         @SelectFrom("MessageTable m")
 
         @Joins({
-            "INNER JOIN ThreadUserTable tu ON m.thread_id = tu.thread_id",
-            "LEFT JOIN UserTable u ON tu.user_id = u.reg_id",
-            "LEFT JOIN ThreadTable t ON m.thread_id = t.id"
+            "INNER JOIN ThreadUserTable tu ON tu.thread_id = m.thread_id",
+            "LEFT JOIN UserTable u ON u.reg_id = tu.user_id",
+            "LEFT JOIN ThreadTable t ON t.id = m.thread_id"
         })
 
         @GroupBy("m.msg_uuid")

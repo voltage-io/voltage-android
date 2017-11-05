@@ -34,27 +34,52 @@ public interface MessagingHelper {
 
 
         public List<GcmResponse> aesEncryptAndSend(final Context context, final Recipients recipients, final GcmMessage gcmMessage) throws Exception {
-            gcmMessage.attemptAesEncrypt(recipients.getThreadKey());
+            final String threadKey = recipients.getThreadKey();
+
+            if (TextUtils.isEmpty(threadKey)) {
+                throw new IllegalStateException("Missing symmetric key for thread: " + gcmMessage.getThreadId());
+            }
+
+            gcmMessage.attemptAesEncrypt(threadKey);
 
             return Collections.singletonList(send(context, recipients.getUserIdsList(), gcmMessage));
         }
 
         public List<GcmResponse> rsaEncryptAndSend(final Context context, final Recipients recipients, final GcmMessage gcmMessage) throws Exception {
+            final ArrayList<String> errors = new ArrayList<>();
             final ArrayList<GcmResponse> responses = new ArrayList<>();
 
             final List<String> regIds = recipients.getUserIdsList();
             final List<String> publicKeys = recipients.getUserPublicKeysList();
 
             for (int i = 0; i < regIds.size(); i++) {
-                gcmMessage.attemptRsaEncrypt(publicKeys.get(i));
+                final String regId = regIds.get(i);
+                final String publicKey = publicKeys.get(i);
 
-                responses.add(send(context, regIds.get(i), gcmMessage));
+                if (!TextUtils.isEmpty(publicKey)) {
+                    gcmMessage.attemptRsaEncrypt(publicKey);
+
+                    responses.add(send(context, regId, gcmMessage));
+                } else {
+                    errors.add(regId);
+                }
             }
+
+            if (errors.size() > 0) {
+                throw new IllegalStateException("Missing public key for users: " + errors);
+            }
+
             return responses;
         }
 
         public GcmResponse rsaEncryptAndSend(final Context context, final User user, final GcmSyncMessage gcmSyncMessage) throws Exception {
-            gcmSyncMessage.attemptRsaEncrypt(user.getPublicKey());
+            final String publicKey = user.getPublicKey();
+
+            if (TextUtils.isEmpty(publicKey)) {
+                throw new IllegalStateException("Missing public key for user: " + user.getRegId());
+            }
+
+            gcmSyncMessage.attemptRsaEncrypt(publicKey);
 
             return send(context, user.getRegId(), gcmSyncMessage);
         }

@@ -1,5 +1,6 @@
 package io.voltage.app.utils;
 
+import android.text.TextUtils;
 import android.util.Base64;
 
 import java.io.ByteArrayOutputStream;
@@ -43,7 +44,7 @@ public class CryptoUtils {
     public static String checksum(final Transactions transactions) {
         try {
             if (transactions == null) return null;
-            return digest(transactions.getMsgUuids());
+            return shasum(transactions.getMsgUuids());
         } catch (final Exception e) {
             Logger.ex(e);
             return null;
@@ -52,8 +53,13 @@ public class CryptoUtils {
 
     public static String attemptAesEncrypt(final String keyString, final String text) {
         try {
-            if (text == null) return null;
-            return encryptAes(decodeSecretKey(keyString), text);
+            if (TextUtils.isEmpty(text)) return null;
+            Logger.d("[AES_ENCRYPT text]: " + text);
+            Logger.d("[AES_ENCRYPT keyString]: " + keyString);
+            final SecretKeySpec key = decodeSecretKey(keyString);
+            final String encrypted = encryptAes(key, text);
+            Logger.d("[AES_ENCRYPT encrypted]: " + encrypted);
+            return encrypted;
         } catch (final Exception e) {
             Logger.ex(e);
             return text;
@@ -62,8 +68,13 @@ public class CryptoUtils {
 
     public static String attemptAesDecrypt(final String keyString, final String encrypted) {
         try {
-            if (encrypted == null) return null;
-            return decryptAes(decodeSecretKey(keyString), encrypted);
+            if (TextUtils.isEmpty(encrypted)) return null;
+            Logger.d("[AES_DECRYPT encrypted]: " + encrypted);
+            Logger.d("[AES_DECRYPT keyString]: " + keyString);
+            final SecretKeySpec key = decodeSecretKey(keyString);
+            final String decrypted = decryptAes(key, encrypted);
+            Logger.d("[AES_DECRYPT decrypted]: " + decrypted);
+            return decrypted;
         } catch (final Exception e) {
             Logger.ex(e);
             return encrypted;
@@ -72,8 +83,13 @@ public class CryptoUtils {
 
     public static String attemptRsaEncrypt(final String keyString, final String text) {
         try {
-            if (text == null) return null;
-            return encryptRsa(decodePublicKey(keyString), text);
+            if (TextUtils.isEmpty(text)) return null;
+            Logger.d("[RSA_ENCRYPT text]: " + text);
+            Logger.d("[RSA_ENCRYPT keyString]: " + keyString);
+            final PublicKey key = decodePublicKey(keyString);
+            final String encrypted = encryptRsa(key, text);
+            Logger.d("[RSA_ENCRYPT encrypted]: " + encrypted);
+            return encrypted;
         } catch (final Exception e) {
             Logger.ex(e);
             return text;
@@ -82,8 +98,13 @@ public class CryptoUtils {
 
     public static String attemptRsaDecrypt(final String keyString, final String encrypted) {
         try {
-            if (encrypted == null) return null;
-            return decryptRsa(decodePrivateKey(keyString), encrypted);
+            if (TextUtils.isEmpty(encrypted)) return null;
+            Logger.d("[RSA_DECRYPT encrypted]: " + encrypted);
+            Logger.d("[RSA_DECRYPT keyString]: " + keyString);
+            final PrivateKey key = decodePrivateKey(keyString);
+            final String decrypted = decryptRsa(key, encrypted);
+            Logger.d("[RSA_DECRYPT decrypted]: " + decrypted);
+            return decrypted;
         } catch (final Exception e) {
             Logger.ex(e);
             return encrypted;
@@ -93,7 +114,10 @@ public class CryptoUtils {
     public static KeyPair generateKeyPair() {
         try {
             final KeyPairGenerator rsa = KeyPairGenerator.getInstance(Algorithm.RSA);
-            return rsa.generateKeyPair();
+            final KeyPair keyPair = rsa.generateKeyPair();
+            Logger.d("[GENERATED PRIVATE_KEY]: " + Base64.encodeToString(keyPair.getPrivate().getEncoded(), Base64.NO_WRAP));
+            Logger.d("[GENERATED PUBLIC_KEY]: " + Base64.encodeToString(keyPair.getPublic().getEncoded(), Base64.NO_WRAP));
+            return keyPair;
         } catch (final Exception e) {
             Logger.ex(e);
             return null;
@@ -105,11 +129,19 @@ public class CryptoUtils {
             final KeyGenerator generator = KeyGenerator.getInstance(Algorithm.AES);
             generator.init(KEY_LENGTH);
             final byte[] key = generator.generateKey().getEncoded();
-            return Base64.encodeToString(key, Base64.NO_WRAP);
+            final String threadKey = Base64.encodeToString(key, Base64.NO_WRAP);
+            Logger.d("[GENERATED THREAD_KEY]: " + threadKey);
+            return threadKey;
         } catch (final Exception e) {
             Logger.ex(e);
             return null;
         }
+    }
+
+    private static String shasum(final String input) throws Exception {
+        final MessageDigest digest = MessageDigest.getInstance(Algorithm.SHA_256);
+        digest.update(input.getBytes(UTF8_CHARSET));
+        return Base64.encodeToString(digest.digest(), Base64.NO_WRAP);
     }
 
     private static SecretKeySpec decodeSecretKey(final String keyString) throws Exception {
@@ -184,11 +216,4 @@ public class CryptoUtils {
         }
         return output.toByteArray();
     }
-
-    private static String digest(final String input) throws Exception {
-        final MessageDigest digest = MessageDigest.getInstance(Algorithm.SHA_256);
-        digest.update(input.getBytes(UTF8_CHARSET));
-        return Base64.encodeToString(digest.digest(), Base64.NO_WRAP);
-    }
-
 }
