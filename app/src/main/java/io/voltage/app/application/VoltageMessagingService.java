@@ -216,6 +216,12 @@ public class VoltageMessagingService extends FirebaseMessagingService {
 
             mDatabaseHelper.insertThreadUser(context, threadId, userId);
 
+            if (!VoltagePreferences.getRegId(context).equals(userId)) {
+                handleUserCheck(context, userId);
+            }
+        }
+
+        private void handleUserCheck(final Context context, final String userId) {
             final User user = mDatabaseHelper.getUser(context, userId);
             if (user == null) {
                 OperationService.start(context, new FriendRequestOperation(userId));

@@ -63,6 +63,8 @@ public class VoltageSyncAdapterService extends Service {
         private void syncMessages() {
             final Cursor cursor = VoltageExecutor.execute(getContext(), new MessageQuery()).getData();
 
+            Logger.v("[sync messages count] " + cursor.getCount());
+
             while (cursor.moveToNext()) {
                 final String msgUuid = cursor.getString(cursor.getColumnIndex(MessageTable.Columns.MSG_UUID));
 
