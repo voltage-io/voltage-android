@@ -35,6 +35,7 @@ import io.voltage.app.requests.ThreadUpdate;
 import io.voltage.app.requests.ThreadUserDelete;
 import io.voltage.app.requests.ThreadUserInsert;
 import io.voltage.app.requests.TransactionsQuery;
+import io.voltage.app.requests.UserDelete;
 import io.voltage.app.requests.UserInsert;
 import io.voltage.app.requests.UserQuery;
 import io.voltage.app.requests.UserUpdate;
@@ -59,9 +60,8 @@ public interface DatabaseHelper {
     void updateMessageState(final Context context, final MessageState state);
     void updateMessageState(final Context context, final String msgUuid, final int state);
     void insertUser(final Context context, final User user);
-
+    void deleteUser(final Context context, final String regId);
     void updateRegistration(final Context context, final String regId, final String oldRegId);
-
 
     class Default implements DatabaseHelper {
 
@@ -159,6 +159,12 @@ public interface DatabaseHelper {
 
         public void updateUser(final Context context, final User user) {
             VoltageExecutor.execute(context, new UserUpdate(user.getName(), user.getRegId(), user.getPublicKey()));
+
+            notify(context, VoltageContentProvider.Uris.USERS);
+        }
+
+        public void deleteUser(final Context context, final String regId) {
+            VoltageExecutor.execute(context, new UserDelete(regId));
 
             notify(context, VoltageContentProvider.Uris.USERS);
         }

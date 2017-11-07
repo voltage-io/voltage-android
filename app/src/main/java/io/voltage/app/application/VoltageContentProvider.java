@@ -280,7 +280,7 @@ public class VoltageContentProvider extends DatabaseProvider {
 
         @Joins({
             "INNER JOIN ThreadUserTable tu ON tu.thread_id = m.thread_id",
-            "LEFT JOIN UserTable u ON u.reg_id = tu.user_id",
+            "INNER JOIN UserTable u ON u.reg_id = tu.user_id",
             "LEFT JOIN ThreadTable t ON t.id = m.thread_id"
         })
 

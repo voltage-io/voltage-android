@@ -66,6 +66,10 @@ public class GcmResponse {
             return mRegistrationId;
         }
 
+        public String getError() {
+            return mError;
+        }
+
         @Override
         public String toString() {
             return new Gson().toJson(this);

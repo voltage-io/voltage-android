@@ -46,7 +46,7 @@ public interface MessagingHelper {
         }
 
         public List<GcmResponse> rsaEncryptAndSend(final Context context, final Recipients recipients, final GcmMessage gcmMessage) throws Exception {
-            final ArrayList<String> errors = new ArrayList<>();
+            final ArrayList<Error> errors = new ArrayList<>();
             final ArrayList<GcmResponse> responses = new ArrayList<>();
 
             final List<String> regIds = recipients.getUserIdsList();
@@ -56,17 +56,18 @@ public interface MessagingHelper {
                 final String regId = regIds.get(i);
                 final String publicKey = publicKeys.get(i);
 
-                if (!TextUtils.isEmpty(publicKey)) {
-                    gcmMessage.attemptRsaEncrypt(publicKey);
-
-                    responses.add(send(context, regId, gcmMessage));
-                } else {
-                    errors.add(regId);
+                if (TextUtils.isEmpty(publicKey)) {
+                    errors.add(new Error("Missing public key for user: " + regId));
+                    continue;
                 }
+
+                gcmMessage.attemptRsaEncrypt(publicKey);
+
+                responses.add(send(context, regId, gcmMessage));
             }
 
             if (errors.size() > 0) {
-                throw new IllegalStateException("Missing public key for users: " + errors);
+                throw new IllegalStateException(errors.toString());
             }
 
             return responses;
@@ -121,6 +122,10 @@ public interface MessagingHelper {
 
                     Logger.v("New registration id: " + newRegId);
                     Logger.v("Old registration id: " + oldRegId);
+                }
+
+                if ("InvalidRegistration".equals(result.getError())) {
+                    mDatabaseHelper.deleteUser(context, regIds.get(i));
                 }
             }
 
