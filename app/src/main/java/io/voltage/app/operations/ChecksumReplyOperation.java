@@ -61,7 +61,7 @@ public class ChecksumReplyOperation extends TaskOperation<GcmResponse> {
             throw new RuntimeException("No transactions available");
         }
 
-        if (mChecksum.equals(checksum)) {
+        if (checksum.equals(mChecksum)) {
             throw new RuntimeException("Transactions already in sync");
         }
 
