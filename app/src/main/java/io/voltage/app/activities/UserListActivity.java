@@ -6,7 +6,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.os.Vibrator;
 import android.support.v7.widget.SearchView;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -83,7 +82,6 @@ public class UserListActivity extends ColorActivity {
 
         @Override
         public boolean onItemLongClick(final AdapterView<?> parent, final View view, final int position, final long id) {
-            ((Vibrator) getActivity().getSystemService(VIBRATOR_SERVICE)).vibrate(40);
 
             return showActionsDialog(position);
         }

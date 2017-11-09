@@ -7,7 +7,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.os.Vibrator;
 import android.support.v4.app.FragmentActivity;
 import android.text.TextUtils;
 import android.view.View;
@@ -80,8 +79,6 @@ public class MembersActivity extends FragmentActivity {
         }
 
         private boolean showActionsDialog(final int position) {
-            ((Vibrator) getActivity().getSystemService(VIBRATOR_SERVICE)).vibrate(40);
-
             final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
             builder.setItems(R.array.members_actions, new MemberClickListener(position));
             builder.setTitle(R.string.title_select_action);
