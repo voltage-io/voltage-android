@@ -65,9 +65,6 @@ public class MessageOperation extends TaskOperation<List<GcmResponse>> {
     @Override
     public void onComplete(final Context context, final Results results) {
         if (results.hasFailedTasks()) {
-            final Message message = mDatabaseHelper.getMessage(context, mMsgUuid);
-            mNotificationHelper.addMessageNotSentNotification(context, message);
-
             mDatabaseHelper.updateMessageState(context, mMsgUuid, MessageTable.State.ERROR);
         } else {
             mDatabaseHelper.updateMessageState(context, mMsgUuid, MessageTable.State.DEFAULT);

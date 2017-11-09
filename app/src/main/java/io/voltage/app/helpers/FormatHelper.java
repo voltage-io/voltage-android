@@ -9,7 +9,6 @@ import io.voltage.app.models.Participants;
 
 public interface FormatHelper {
 
-    String getUserName(final String name);
     String getThreadName(final String threadName, final String userNames);
     String getThreadName(final Context context, final String threadId);
     int getNotificationId(final String idString);
@@ -18,7 +17,7 @@ public interface FormatHelper {
     class Default implements FormatHelper {
         private final DatabaseHelper mDatabaseHelper = new DatabaseHelper.Default();
 
-        public String getUserName(final String name) {
+        private String getUserName(final String name) {
             return !TextUtils.isEmpty(name) ? name : "UNKNOWN";
         }
 

@@ -124,8 +124,11 @@ public interface MessagingHelper {
                     Logger.v("Old registration id: " + oldRegId);
                 }
 
-                if ("InvalidRegistration".equals(result.getError())) {
-                    mDatabaseHelper.deleteUser(context, regIds.get(i));
+                final String[] errors = {"InvalidRegistration", "NotRegistered"};
+                for (final String error : errors) {
+                    if (error.equals(result.getError())) {
+                        mDatabaseHelper.deleteUser(context, regIds.get(i));
+                    }
                 }
             }
 
