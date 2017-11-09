@@ -1,6 +1,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="?android:attr/selectableItemBackground"
     android:orientation="vertical"
     android:padding="15dp">
 
@@ -10,6 +11,6 @@
         android:layout_height="wrap_content"
         android:layout_margin="2dp"
         android:textColor="#777"
-        android:textSize="17sp" />
+        android:textSize="17sp"/>
 
 </LinearLayout>
