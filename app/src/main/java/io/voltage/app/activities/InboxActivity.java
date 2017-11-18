@@ -20,6 +20,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import com.google.firebase.perf.metrics.AddTrace;
+
 import java.util.Arrays;
 import java.util.Collection;
 
@@ -51,6 +53,7 @@ public class InboxActivity extends ColorActivity {
 	}
 
 	@Override
+    @AddTrace(name = "InboxActivity:onCreate")
 	protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_inbox);
@@ -80,6 +83,7 @@ public class InboxActivity extends ColorActivity {
     }
 
     @Override
+    @AddTrace(name = "InboxActivity:onResume")
     protected void onResume() {
         super.onResume();
 
@@ -92,6 +96,7 @@ public class InboxActivity extends ColorActivity {
     }
 
     @Override
+    @AddTrace(name = "InboxActivity:onPause")
     protected void onPause() {
         super.onPause();
 
@@ -166,6 +171,7 @@ public class InboxActivity extends ColorActivity {
         }
 
         @Override
+        @AddTrace(name = "InboxActivity:onItemClick")
         public void onItemClick(final RecyclerView recyclerView, final View view, final int position, final long id) {
             final Cursor cursor = (Cursor) getRecyclerViewAdapter().getItem(position);
             final String threadId = cursor.getString(cursor.getColumnIndex(InboxView.Columns.THREAD_ID));
@@ -174,6 +180,7 @@ public class InboxActivity extends ColorActivity {
         }
 
         @Override
+        @AddTrace(name = "InboxActivity:onItemLongClick")
         public void onItemLongClick(final RecyclerView recyclerView, final View view, final int position, final long id) {
             ((Vibrator) getActivity().getSystemService(VIBRATOR_SERVICE)).vibrate(40);
 
@@ -206,6 +213,7 @@ public class InboxActivity extends ColorActivity {
                 dialog.dismiss();
             }
 
+            @AddTrace(name = "InboxActivity:deleteThread")
             private void deleteThread(final int position) {
                 final Cursor cursor = (Cursor) getRecyclerViewAdapter().getItem(position);
                 final String threadId = cursor.getString(cursor.getColumnIndex(InboxView.Columns.THREAD_ID));
@@ -213,6 +221,7 @@ public class InboxActivity extends ColorActivity {
                 execute(new ThreadMessagesDelete(threadId));
             }
 
+            @AddTrace(name = "InboxActivity:renameThread")
             private void renameThread(final int position) {
                 final Cursor cursor = (Cursor) getRecyclerViewAdapter().getItem(position);
                 final String threadId = cursor.getString(cursor.getColumnIndex(InboxView.Columns.THREAD_ID));

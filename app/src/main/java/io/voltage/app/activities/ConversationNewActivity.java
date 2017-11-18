@@ -21,6 +21,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 
+import com.google.firebase.perf.metrics.AddTrace;
+
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
@@ -54,6 +56,7 @@ public class ConversationNewActivity extends FragmentActivity implements ViewPag
     private ViewPager mViewPager;
 
 	@Override
+    @AddTrace(name = "ConversationNewActivity:onCreate")
 	protected void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_conversation_new);
@@ -88,11 +91,13 @@ public class ConversationNewActivity extends FragmentActivity implements ViewPag
         }
     }
 
+    @AddTrace(name = "ConversationNewActivity:proceed")
     public void proceed() {
         mViewPager.setCurrentItem(mViewPager.getCurrentItem() + 1, true);
     }
 
     @Override
+    @AddTrace(name = "ConversationNewActivity:onPageSelected")
     public void onPageSelected(final int position) {
         mNameFragment.setRegistrationIds(mUsersFragment.getRegistrationIds());
     }
@@ -145,6 +150,7 @@ public class ConversationNewActivity extends FragmentActivity implements ViewPag
         private Button mNextButton;
 
         @Override
+        @AddTrace(name = "ConversationNewActivity:onViewCreated")
         public void onViewCreated(final View view, final Bundle savedInstanceState) {
             super.onViewCreated(view, savedInstanceState);
 
@@ -162,6 +168,7 @@ public class ConversationNewActivity extends FragmentActivity implements ViewPag
         }
 
         @Override
+        @AddTrace(name = "ConversationNewActivity:onItemClick")
         public void onItemClick(final AdapterView<?> adapterView, final View view, final int position, final long id) {
             final Cursor cursor = (Cursor) adapterView.getItemAtPosition(position);
             final String regId = cursor.getString(cursor.getColumnIndex(UserTable.Columns.REG_ID));
@@ -264,6 +271,7 @@ public class ConversationNewActivity extends FragmentActivity implements ViewPag
         }
 
         @Override
+        @AddTrace(name = "ConversationNewActivity:onClick")
         public void onClick(final View view) {
             final String name = mConversationName.getText().toString();
 

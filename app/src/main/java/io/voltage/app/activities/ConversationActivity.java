@@ -19,6 +19,8 @@ import android.widget.CursorAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.perf.metrics.AddTrace;
+
 import java.util.Arrays;
 import java.util.Collection;
 
@@ -80,6 +82,7 @@ public class ConversationActivity extends ColorActivity implements QueryListener
     private int mThreadState;
 
 	@Override
+    @AddTrace(name = "ConversationActivity:onCreate")
 	protected void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_conversation);
@@ -102,6 +105,7 @@ public class ConversationActivity extends ColorActivity implements QueryListener
     }
 
     @Override
+    @AddTrace(name = "ConversationActivity:onRequestComplete")
     public void onRequestComplete(final QueryResult result) {
         final Cursor cursor = result.getData();
 
@@ -125,11 +129,13 @@ public class ConversationActivity extends ColorActivity implements QueryListener
         return (ConversationFragment) manager.findFragmentById(R.id.fragment_conversation);
     }
 
+    @AddTrace(name = "ConversationActivity:muteConversation")
     private void muteConversation(final boolean isChecked) {
         final int state = !isChecked ? ThreadTable.State.MUTED : ThreadTable.State.DEFAULT;
         mDispatcher.execute(new ThreadUpdate(mThreadId, state));
     }
 
+    @AddTrace(name = "ConversationActivity:leaveConversation")
     private void leaveConversation() {
         final String regId = VoltagePreferences.getRegId(this);
         mDispatcher.execute(new MessageInsert(mThreadId, regId, GcmPayload.Type.USER_LEFT.name(), regId, GcmPayload.Type.USER_LEFT));
@@ -264,6 +270,7 @@ public class ConversationActivity extends ColorActivity implements QueryListener
                 dialog.dismiss();
             }
 
+            @AddTrace(name =  "ConversationActivity:copyTextToClipboard")
             private void copyTextToClipboard(final int position) {
                 final Cursor cursor = (Cursor) getAdapterView().getItemAtPosition(position);
                 final String text = cursor.getString(cursor.getColumnIndex(ConversationView.Columns.TEXT));
@@ -272,6 +279,7 @@ public class ConversationActivity extends ColorActivity implements QueryListener
                 clipboard.setPrimaryClip(ClipData.newPlainText("text", text));
             }
 
+            @AddTrace(name = "ConversationActivity:deleteMessage")
             private void deleteMessage(final int position) {
                 final Cursor cursor = (Cursor) getAdapterView().getItemAtPosition(position);
                 final String uuid = cursor.getString(cursor.getColumnIndex(ConversationView.Columns.MSG_UUID));
@@ -279,6 +287,7 @@ public class ConversationActivity extends ColorActivity implements QueryListener
                 execute(new MessageDelete(uuid));
             }
 
+            @AddTrace(name = "ConversationActivity:resendMessage")
             private void resendMessage(final int position) {
                 final Cursor cursor = (Cursor) getAdapterView().getItemAtPosition(position);
                 final ContentValues values = DataUtils.getContentValues(cursor, MessageTable.class, position);
@@ -328,6 +337,7 @@ public class ConversationActivity extends ColorActivity implements QueryListener
             }
         }
 
+        @AddTrace(name = "ConversationActivity:sendMessage")
         private void sendMessage() {
             if (mMessageView.getText().length() > 0) {
                 final String text = mMessageView.getText().toString();
@@ -339,6 +349,7 @@ public class ConversationActivity extends ColorActivity implements QueryListener
             }
         }
 
+        @AddTrace(name = "ConversationActivity:showEmojis")
         public void showEmojis() {
             final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
             builder.setItems(R.array.emojicons, new DialogInterface.OnClickListener() {
