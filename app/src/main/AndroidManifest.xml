@@ -197,6 +197,9 @@
             android:name=".activities.HelpActivity"
             android:theme="@android:style/Theme.Holo.Light.Dialog.NoActionBar" />
 
+        <activity
+            android:name=".activities.CrashListActivity"/>
+
         <provider
             android:name=".application.VoltageContentProvider"
             android:authorities="io.voltage.app.application.VoltageContentProvider"

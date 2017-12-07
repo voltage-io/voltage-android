@@ -56,6 +56,7 @@
     <string name="menu_remove">Remove</string>
     <string name="menu_share">Share</string>
     <string name="menu_all_friends">All Friends</string>
+    <string name="menu_crash_list">Crashes</string>
     <string name="menu_add_friend">Add Friend</string>
     <string name="menu_broadcast">Broadcast</string>
     <string name="menu_settings">Settings</string>

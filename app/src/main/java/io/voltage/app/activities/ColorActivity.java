@@ -10,15 +10,31 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
+import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.TextView;
 
+import java.lang.Thread.UncaughtExceptionHandler;
+
+import io.voltage.app.application.VoltageExceptionHandler;
 import io.voltage.app.application.VoltagePreferences;
 import io.voltage.app.utils.ColorUtils;
 import io.voltage.app.utils.DisplayUtils;
 
-public class ColorActivity extends AppCompatActivity implements OnSharedPreferenceChangeListener {
+public abstract class ColorActivity extends AppCompatActivity implements OnSharedPreferenceChangeListener {
+
+    private static void handleUncaughtException(final Context context) {
+        final UncaughtExceptionHandler handler = Thread.getDefaultUncaughtExceptionHandler();
+        Thread.setDefaultUncaughtExceptionHandler(new VoltageExceptionHandler(context, handler));
+    }
+
+    @Override
+    protected void onCreate(final Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        handleUncaughtException(this);
+    }
 
     @Override
     protected void onResume() {

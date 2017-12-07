@@ -138,6 +138,10 @@ public class InboxActivity extends ColorActivity {
                 UserListActivity.newInstance(this);
                 return true;
 
+            case R.id.menu_crash_list:
+                CrashListActivity.newInstance(this);
+                return true;
+
             case R.id.menu_settings:
                 SettingsActivity.newInstance(this);
                 return true;

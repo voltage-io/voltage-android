@@ -29,6 +29,7 @@ public class VoltageContentProvider extends DatabaseProvider {
     public static final Uri BASE_URI = Uri.parse("content://" + AUTHORITY);
 
     public interface Uris {
+        Uri CRASHES = Uri.withAppendedPath(BASE_URI, Paths.CRASHES);
         Uri REGISTRATIONS = Uri.withAppendedPath(BASE_URI, Paths.REGISTRATIONS);
         Uri THREADS = Uri.withAppendedPath(BASE_URI, Paths.THREADS);
         Uri USERS =  Uri.withAppendedPath(BASE_URI, Paths.USERS);
@@ -44,6 +45,7 @@ public class VoltageContentProvider extends DatabaseProvider {
     }
 
     private interface Paths {
+        String CRASHES = "crashes";
         String REGISTRATIONS = "registrations";
         String THREADS = "threads";
         String USERS = "users";
@@ -60,6 +62,7 @@ public class VoltageContentProvider extends DatabaseProvider {
 
     @Override
     public boolean onCreate() {
+        registerDataset(AUTHORITY, Paths.CRASHES, CrashTable.class);
         registerDataset(AUTHORITY, Paths.REGISTRATIONS, RegistrationTable.class);
         registerDataset(AUTHORITY, Paths.THREADS, ThreadTable.class);
         registerDataset(AUTHORITY, Paths.USERS, UserTable.class);
@@ -73,6 +76,14 @@ public class VoltageContentProvider extends DatabaseProvider {
         registerDataset(AUTHORITY, Paths.TRANSACTIONS, TransactionView.class);
         registerDataset(AUTHORITY, Paths.USER_SEARCH, UserSearchView.class);
         return true;
+    }
+
+    public static class CrashTable extends SQLiteTable {
+        public interface Columns extends SQLiteTable.Columns {
+            @Unique(Unique.OnConflict.REPLACE)
+            @Column(Column.Type.TEXT) String ID = "id";
+            @Column(Column.Type.TEXT) String TRACE = "trace";
+        }
     }
 
     public static class RegistrationTable extends SQLiteTable {
