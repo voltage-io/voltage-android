@@ -2,13 +2,13 @@ apply plugin: 'com.android.application'
 apply plugin: 'com.google.firebase.firebase-perf'
 
 android {
-    compileSdkVersion 26
-    buildToolsVersion '26.0.2'
+    compileSdkVersion 27
+    buildToolsVersion '27.0.1'
 
     defaultConfig {
         applicationId "io.voltage.app"
         minSdkVersion 16
-        targetSdkVersion 26
+        targetSdkVersion 27
     }
 
     signingConfigs {
@@ -39,19 +39,19 @@ dependencies {
     compile 'com.squareup.retrofit2:converter-gson:2.0.1'
     compile 'com.squareup.okhttp3:logging-interceptor:3.3.1'
 
-    compile 'com.android.support:support-v4:26.1.0'
-    compile 'com.android.support:support-v13:26.1.0'
-    compile 'com.android.support:appcompat-v7:26.1.0'
-    compile 'com.android.support:preference-v7:26.1.0'
+    compile 'com.android.support:support-v4:27.0.2'
+    compile 'com.android.support:support-v13:27.0.2'
+    compile 'com.android.support:appcompat-v7:27.0.2'
+    compile 'com.android.support:preference-v7:27.0.2'
 
-    compile 'com.google.firebase:firebase-perf:11.6.0'
-    compile 'com.google.firebase:firebase-core:11.6.0'
-    compile 'com.google.firebase:firebase-messaging:11.6.0'
-    compile 'com.google.android.gms:play-services-base:11.6.0'
+    compile 'com.google.firebase:firebase-perf:11.6.2'
+    compile 'com.google.firebase:firebase-core:11.6.2'
+    compile 'com.google.firebase:firebase-messaging:11.6.2'
+    compile 'com.google.android.gms:play-services-base:11.6.2'
 
-    compile 'io.pivotal:arca-service:1.0-beta.16-SNAPSHOT'
-    compile 'io.pivotal:arca-provider:1.0-beta.16-SNAPSHOT'
-    compile 'io.pivotal:arca-fragments:1.0-beta.16-SNAPSHOT'
+    compile 'io.pivotal:arca-service:1.1.2'
+    compile 'io.pivotal:arca-provider:1.1.2'
+    compile 'io.pivotal:arca-fragments:1.1.2'
 
     testCompile 'junit:junit:4.12'
     testCompile 'org.mockito:mockito-core:2.10.0'

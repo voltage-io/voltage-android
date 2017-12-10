@@ -12,7 +12,7 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.text.TextUtils;
 
-import io.pivotal.arca.service.OperationService;
+import io.pivotal.arca.service.BackgroundService;
 import io.voltage.app.application.VoltageContentProvider.MessageTable;
 import io.voltage.app.application.VoltageContentProvider.UserTable;
 import io.voltage.app.operations.FriendRequestOperation;
@@ -53,7 +53,7 @@ public class VoltageSyncAdapterService extends Service {
                 if (TextUtils.isEmpty(publicKey)) {
                     Logger.v("[sync user] " + regId);
 
-                    OperationService.start(getContext(), new FriendRequestOperation(regId));
+                    BackgroundService.start(getContext(), new FriendRequestOperation(regId));
                 }
             }
 
@@ -70,12 +70,10 @@ public class VoltageSyncAdapterService extends Service {
 
                 Logger.v("[sync message] " + msgUuid);
 
-                OperationService.start(getContext(), new MessageOperation(msgUuid));
+                BackgroundService.start(getContext(), new MessageOperation(msgUuid));
             }
 
             cursor.close();
         }
-
-
     }
 }

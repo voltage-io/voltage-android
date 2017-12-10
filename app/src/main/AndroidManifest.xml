@@ -46,96 +46,56 @@
         <activity
             android:name=".activities.ConversationActivity"
             android:parentActivityName=".activities.InboxActivity"
-            android:windowSoftInputMode="adjustResize|stateHidden">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activities.InboxActivity" />
-        </activity>
+            android:windowSoftInputMode="adjustResize|stateHidden" />
 
         <activity
             android:name=".activities.ConversationNewActivity"
             android:noHistory="true"
             android:parentActivityName=".activities.InboxActivity"
             android:theme="@style/VoltageTheme.Dialog"
-            android:windowSoftInputMode="adjustResize|stateHidden">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activities.InboxActivity" />
-        </activity>
+            android:windowSoftInputMode="adjustResize|stateHidden" />
 
         <activity
             android:name=".activities.ConversationEditActivity"
-            android:parentActivityName=".activities.InboxActivity">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activities.InboxActivity" />
-        </activity>
+            android:parentActivityName=".activities.InboxActivity" />
 
         <activity
             android:name=".activities.MembersActivity"
             android:noHistory="true"
             android:parentActivityName=".activities.InboxActivity"
             android:theme="@style/VoltageTheme.Dialog"
-            android:windowSoftInputMode="adjustResize|stateHidden">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activities.InboxActivity" />
-        </activity>
+            android:windowSoftInputMode="adjustResize|stateHidden" />
 
         <activity
             android:name=".activities.MembersAddActivity"
             android:noHistory="true"
             android:parentActivityName=".activities.InboxActivity"
             android:theme="@style/VoltageTheme.Dialog"
-            android:windowSoftInputMode="adjustResize|stateHidden">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activities.InboxActivity" />
-        </activity>
+            android:windowSoftInputMode="adjustResize|stateHidden" />
 
         <activity
             android:name=".activities.MembersRemoveActivity"
             android:noHistory="true"
             android:parentActivityName=".activities.InboxActivity"
             android:theme="@style/VoltageTheme.Dialog"
-            android:windowSoftInputMode="adjustResize|stateHidden">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activities.InboxActivity" />
-        </activity>
+            android:windowSoftInputMode="adjustResize|stateHidden" />
 
         <activity
             android:name=".activities.UserListActivity"
-            android:parentActivityName=".activities.InboxActivity">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activities.InboxActivity" />
-        </activity>
+            android:parentActivityName=".activities.InboxActivity" />
 
         <activity
             android:name=".activities.UserNewActivity"
-            android:parentActivityName=".activities.UserListActivity">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activities.UserListActivity" />
-        </activity>
+            android:parentActivityName=".activities.UserListActivity" />
 
         <activity
             android:name=".activities.UserSearchActivity"
             android:parentActivityName=".activities.UserListActivity"
-            android:windowSoftInputMode="adjustResize|stateHidden">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activities.UserListActivity" />
-        </activity>
+            android:windowSoftInputMode="adjustResize|stateHidden" />
 
         <activity
             android:name=".activities.UserAddParamsActivity"
-            android:parentActivityName=".activities.UserListActivity">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activities.UserListActivity" />
-        </activity>
+            android:parentActivityName=".activities.UserListActivity" />
 
         <activity
             android:name=".activities.UserAddNfcActivity"
@@ -145,9 +105,6 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <data android:mimeType="application/vnd.io.voltage.app" />
             </intent-filter>
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activities.UserListActivity" />
         </activity>
 
         <activity
@@ -164,34 +121,19 @@
                 <data android:host="voltage.io" />
                 <data android:pathPrefix="/add_friend" />
             </intent-filter>
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activities.UserListActivity" />
         </activity>
 
         <activity
             android:name=".activities.UserEditActivity"
-            android:parentActivityName=".activities.UserListActivity">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activities.UserListActivity" />
-        </activity>
+            android:parentActivityName=".activities.UserListActivity" />
 
         <activity
             android:name=".activities.SettingsActivity"
-            android:parentActivityName=".activities.InboxActivity">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activities.InboxActivity" />
-        </activity>
+            android:parentActivityName=".activities.InboxActivity" />
 
         <activity
             android:name=".activities.BroadcastActivity"
-            android:parentActivityName=".activities.SettingsActivity">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activities.SettingsActivity" />
-        </activity>
+            android:parentActivityName=".activities.SettingsActivity" />
 
         <activity
             android:name=".activities.HelpActivity"
