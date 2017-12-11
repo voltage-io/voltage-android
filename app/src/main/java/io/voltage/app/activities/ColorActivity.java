@@ -2,8 +2,6 @@ package io.voltage.app.activities;
 
 import android.annotation.TargetApi;
 import android.content.Context;
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -13,16 +11,14 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.widget.TextView;
 
 import java.lang.Thread.UncaughtExceptionHandler;
 
 import io.voltage.app.application.VoltageExceptionHandler;
-import io.voltage.app.application.VoltagePreferences;
 import io.voltage.app.utils.ColorUtils;
 import io.voltage.app.utils.DisplayUtils;
 
-public abstract class ColorActivity extends AppCompatActivity implements OnSharedPreferenceChangeListener {
+public abstract class ColorActivity extends AppCompatActivity {
 
     private static void handleUncaughtException(final Context context) {
         final UncaughtExceptionHandler handler = Thread.getDefaultUncaughtExceptionHandler();
@@ -36,48 +32,24 @@ public abstract class ColorActivity extends AppCompatActivity implements OnShare
         handleUncaughtException(this);
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
+    protected void updateColor(final String color, final String textColor) {
 
-        final SharedPreferences prefs = VoltagePreferences.getSharedPreferences(this);
-        prefs.registerOnSharedPreferenceChangeListener(this);
-
-        updateColor();
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-
-        final SharedPreferences prefs = VoltagePreferences.getSharedPreferences(this);
-        prefs.unregisterOnSharedPreferenceChangeListener(this);
-    }
-
-    @Override
-    public void onSharedPreferenceChanged(final SharedPreferences sharedPreferences, final String key) {
-        updateColor();
-    }
-
-    private void updateColor() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            updateTitleBarColor();
+            updateTitleBarColor(color);
         }
 
-        updateActionBarColor();
+        updateActionBarColor(color, textColor);
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    private void updateTitleBarColor() {
-        final String color = VoltagePreferences.getPrimaryColour(this);
+    private void updateTitleBarColor(final String color) {
+
         final int darkColor = ColorUtils.darkenColor(color, 0.2f);
 
         getWindow().setStatusBarColor(darkColor);
     }
 
-    public void updateActionBarColor() {
-        final String color = VoltagePreferences.getPrimaryColour(this);
-        final String textColor = VoltagePreferences.getSecondaryColour(this);
+    public void updateActionBarColor(final String color, final String textColor) {
 
         final ActionBarDrawable drawable = new ActionBarDrawable(this, color);
 
@@ -88,13 +60,6 @@ public abstract class ColorActivity extends AppCompatActivity implements OnShare
             // Hack to fix the color not showing on certain devices
             actionBar.setDisplayShowTitleEnabled(false);
             actionBar.setDisplayShowTitleEnabled(true);
-        }
-
-        final int titleId = getResources().getIdentifier("action_bar_title", "id", "android");
-
-        final TextView titleView = (TextView) findViewById(titleId);
-        if (titleView != null) {
-            titleView.setTextColor(Color.parseColor(textColor));
         }
     }
     

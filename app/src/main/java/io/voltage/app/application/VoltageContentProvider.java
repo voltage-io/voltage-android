@@ -84,6 +84,9 @@ public class VoltageContentProvider extends DatabaseProvider {
             @Column(Column.Type.TEXT) String ID = "id";
             @Column(Column.Type.TEXT) String TRACE = "trace";
         }
+
+        @Override public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {}
+        @Override public void onDowngrade(SQLiteDatabase db, int oldVersion, int newVersion) {}
     }
 
     public static class RegistrationTable extends SQLiteTable {
@@ -107,10 +110,16 @@ public class VoltageContentProvider extends DatabaseProvider {
             @Unique(Unique.OnConflict.IGNORE)
             @Column(Column.Type.TEXT) String ID = "id";
             @Column(Column.Type.TEXT) String NAME = "name";
+            @Column(Column.Type.TEXT) String COLOR = "color";
             @Column(Column.Type.TEXT) String KEY = "key";
         }
 
-        @Override public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {}
+        @Override public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+            if (oldVersion < 87) {
+                db.execSQL("ALTER TABLE ThreadTable ADD COLUMN color TEXT DEFAULT '#777777'");
+            }
+        }
+
         @Override public void onDowngrade(SQLiteDatabase db, int oldVersion, int newVersion) {}
     }
 
@@ -252,6 +261,8 @@ public class VoltageContentProvider extends DatabaseProvider {
             @Select("tu.thread_id") String THREAD_ID = "thread_id";
 
             @Select("t.name") String THREAD_NAME = "thread_name";
+
+            @Select("t.color") String THREAD_COLOR = "thread_color";
 
             @Select("t._state") String THREAD_STATE = "thread_state";
 

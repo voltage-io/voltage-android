@@ -21,8 +21,17 @@ public class ConversationAdapter extends ModernCursorAdapter {
 
     private static final String IMAGE_REGEX = "http(s?)://.+\\.(jpeg|jpg|gif|png).*";
 
+    private String mColor;
+
     public ConversationAdapter(final Context context, final Collection<Binding> bindings) {
         super(context, 0, bindings);
+
+        mColor = VoltagePreferences.getPrimaryColour(context);
+    }
+
+    public void setColor(final String color) {
+        mColor = color;
+        notifyDataSetChanged();
     }
 
     @Override
@@ -73,8 +82,7 @@ public class ConversationAdapter extends ModernCursorAdapter {
 
         if (senderId.equals(VoltagePreferences.getRegId(context))) {
             view.findViewById(R.id.message_letter).setVisibility(View.GONE);
-            final String color = VoltagePreferences.getPrimaryColour(context);
-            drawable.setColor(ColorUtils.alphaColor(color, 0.25f));
+            drawable.setColor(ColorUtils.alphaColor(mColor, 0.25f));
             view.setPadding(120, 0, 0, 0);
         } else {
             view.findViewById(R.id.message_letter).setVisibility(View.VISIBLE);

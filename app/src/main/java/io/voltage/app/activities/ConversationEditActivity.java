@@ -24,7 +24,7 @@ import io.voltage.app.monitors.ConversationEditMonitor;
 import io.voltage.app.requests.ThreadQuery;
 import io.voltage.app.requests.ThreadUpdateBatch;
 
-public class ConversationEditActivity extends ColorActivity {
+public class ConversationEditActivity extends ColorDefaultActivity {
 
     private interface Extras {
         String THREAD_ID = "thread_id";

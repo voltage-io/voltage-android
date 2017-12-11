@@ -15,7 +15,7 @@ import io.voltage.app.R;
 import io.voltage.app.application.VoltagePreferences;
 import io.voltage.app.models.NfcContent;
 
-public class BroadcastActivity extends ColorActivity implements CreateNdefMessageCallback {
+public class BroadcastActivity extends ColorDefaultActivity implements CreateNdefMessageCallback {
 
     public static final short TNF_MIME_MEDIA = 0x02;
 

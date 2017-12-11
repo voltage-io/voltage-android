@@ -16,7 +16,7 @@ import com.google.android.gms.common.GoogleApiAvailability;
 import io.voltage.app.R;
 import io.voltage.app.application.VoltagePreferences;
 
-public class LauncherActivity extends ColorActivity {
+public class LauncherActivity extends ColorDefaultActivity {
 
     private static final int LAUNCH_MSG = 100;
     private static final int LAUNCH_DURATION = 2000;

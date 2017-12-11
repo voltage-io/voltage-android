@@ -12,7 +12,7 @@ import io.voltage.app.R;
 import io.voltage.app.monitors.UserAddMonitor;
 import io.voltage.app.requests.UserInsert;
 
-public abstract class UserAddActivity extends ColorActivity {
+public abstract class UserAddActivity extends ColorDefaultActivity {
 
 	@Override
 	protected void onCreate(final Bundle savedInstanceState) {

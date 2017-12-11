@@ -35,6 +35,21 @@
         <View android:background="#C60E7D" android:layout_width="40dp" android:layout_height="40dp" android:layout_margin="3dp" />
         <View android:background="#E02D86" android:layout_width="40dp" android:layout_height="40dp" android:layout_margin="3dp" />
         <View android:background="#FF5391" android:layout_width="40dp" android:layout_height="40dp" android:layout_margin="3dp" />
+        <View android:background="#000000" android:layout_width="40dp" android:layout_height="40dp" android:layout_margin="3dp" />
+        <View android:background="#111111" android:layout_width="40dp" android:layout_height="40dp" android:layout_margin="3dp" />
+        <View android:background="#222222" android:layout_width="40dp" android:layout_height="40dp" android:layout_margin="3dp" />
+        <View android:background="#333333" android:layout_width="40dp" android:layout_height="40dp" android:layout_margin="3dp" />
+        <View android:background="#444444" android:layout_width="40dp" android:layout_height="40dp" android:layout_margin="3dp" />
+        <View android:background="#555555" android:layout_width="40dp" android:layout_height="40dp" android:layout_margin="3dp" />
+        <View android:background="#666666" android:layout_width="40dp" android:layout_height="40dp" android:layout_margin="3dp" />
+        <View android:background="#777777" android:layout_width="40dp" android:layout_height="40dp" android:layout_margin="3dp" />
+        <View android:background="#888888" android:layout_width="40dp" android:layout_height="40dp" android:layout_margin="3dp" />
+        <View android:background="#999999" android:layout_width="40dp" android:layout_height="40dp" android:layout_margin="3dp" />
+        <View android:background="#AAAAAA" android:layout_width="40dp" android:layout_height="40dp" android:layout_margin="3dp" />
+        <View android:background="#BBBBBB" android:layout_width="40dp" android:layout_height="40dp" android:layout_margin="3dp" />
+        <View android:background="#CCCCCC" android:layout_width="40dp" android:layout_height="40dp" android:layout_margin="3dp" />
+        <View android:background="#DDDDDD" android:layout_width="40dp" android:layout_height="40dp" android:layout_margin="3dp" />
+        <View android:background="#EEEEEE" android:layout_width="40dp" android:layout_height="40dp" android:layout_margin="3dp" />
 
     </LinearLayout>
 

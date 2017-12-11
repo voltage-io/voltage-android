@@ -12,7 +12,7 @@ import android.widget.Button;
 import io.voltage.app.R;
 import io.voltage.app.helpers.ShareHelper;
 
-public class UserNewActivity extends ColorActivity {
+public class UserNewActivity extends ColorDefaultActivity {
 
     public static void newInstance(final Context context) {
         final Intent intent = new Intent(context, UserNewActivity.class);

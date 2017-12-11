@@ -41,7 +41,7 @@ import io.voltage.app.requests.RegistrationQuery;
 import io.voltage.app.requests.ThreadMessagesDelete;
 import io.voltage.app.utils.ColorUtils;
 
-public class InboxActivity extends ColorActivity {
+public class InboxActivity extends ColorDefaultActivity {
 
     private DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle mDrawerToggle;
@@ -194,7 +194,7 @@ public class InboxActivity extends ColorActivity {
         private boolean showActionsDialog(final int position) {
             final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
             builder.setItems(R.array.inbox_actions, new ConversationClickListener(position));
-            builder.setTitle(R.string.title_select_action);
+            builder.setTitle(R.string.title_action_select);
             builder.create().show();
             return true;
         }

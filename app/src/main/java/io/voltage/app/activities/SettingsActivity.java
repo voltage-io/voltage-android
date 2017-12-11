@@ -3,11 +3,10 @@ package io.voltage.app.activities;
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.accounts.OnAccountsUpdateListener;
-import android.app.Fragment;
+import android.app.FragmentManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v7.preference.CheckBoxPreference;
 import android.support.v7.preference.Preference;
@@ -15,19 +14,18 @@ import android.support.v7.preference.PreferenceFragmentCompat;
 import android.support.v7.preference.PreferenceGroup;
 import android.support.v7.preference.PreferenceScreen;
 import android.text.TextUtils;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 
 import com.google.firebase.iid.FirebaseInstanceId;
 
 import io.pivotal.arca.service.OperationService;
 import io.voltage.app.R;
+import io.voltage.app.activities.ColorSelectionActivity.ColorSelectionFragment;
+import io.voltage.app.activities.ColorSelectionActivity.ColorSelectionFragment.OnColorSelectedListener;
 import io.voltage.app.application.VoltagePreferences;
 import io.voltage.app.operations.RegistrationDeleteOperation;
 import io.voltage.app.operations.RegistrationPostOperation;
 
-public class SettingsActivity extends ColorActivity {
+public class SettingsActivity extends ColorDefaultActivity implements OnColorSelectedListener {
 
 	public static void newInstance(final Context context) {
 		final Intent intent = new Intent(context, SettingsActivity.class);
@@ -39,9 +37,21 @@ public class SettingsActivity extends ColorActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_settings);
 		setTitle(R.string.title_settings);
+
+		findColorSelectionFragment().setOnColorSelectedListener(this);
 	}
 
-	public static class SettingsFragment extends PreferenceFragmentCompat implements SharedPreferences.OnSharedPreferenceChangeListener, Preference.OnPreferenceClickListener, OnAccountsUpdateListener {
+    private ColorSelectionFragment findColorSelectionFragment() {
+        final FragmentManager manager = getFragmentManager();
+        return (ColorSelectionFragment) manager.findFragmentById(R.id.fragment_color_selection);
+    }
+
+    @Override
+    public void onColorSelected(final String color) {
+        VoltagePreferences.setPrimaryColour(this, color);
+    }
+
+    public static class SettingsFragment extends PreferenceFragmentCompat implements SharedPreferences.OnSharedPreferenceChangeListener, Preference.OnPreferenceClickListener, OnAccountsUpdateListener {
 
         private SharedPreferences mPreferences;
 
@@ -131,43 +141,6 @@ public class SettingsActivity extends ColorActivity {
                     OperationService.start(getActivity(), new RegistrationDeleteOperation(token));
                 }
             }
-        }
-    }
-
-    public static class UserColorFragment extends Fragment implements View.OnClickListener {
-
-        @Override
-        public View onCreateView(final LayoutInflater inflater, final ViewGroup container, final Bundle savedInstanceState) {
-            return inflater.inflate(R.layout.fragment_user_color, container, false);
-        }
-
-        @Override
-        public void onViewCreated(final View view, final Bundle savedInstanceState) {
-            super.onViewCreated(view, savedInstanceState);
-
-            setOnClickListenerForChildren(view);
-        }
-
-        private void setOnClickListenerForChildren(final View view) {
-            if (view instanceof ViewGroup) {
-                iterateChildrenForViewGroup((ViewGroup) view);
-            } else {
-                view.setOnClickListener(this);
-            }
-        }
-
-        private void iterateChildrenForViewGroup(final ViewGroup group) {
-            for (int i = 0; i < group.getChildCount(); i++) {
-                final View child = group.getChildAt(i);
-                setOnClickListenerForChildren(child);
-            }
-        }
-
-        @Override
-        public void onClick(final View view) {
-            final ColorDrawable drawable = (ColorDrawable) view.getBackground();
-            final String hexColor = String.format("#%06X", (0xFFFFFF & drawable.getColor()));
-            VoltagePreferences.setPrimaryColour(getActivity(), hexColor);
         }
     }
 }

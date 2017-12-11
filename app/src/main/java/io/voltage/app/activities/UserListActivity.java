@@ -27,7 +27,7 @@ import io.voltage.app.monitors.UserListMonitor;
 import io.voltage.app.requests.UserDelete;
 import io.voltage.app.requests.UserQuery;
 
-public class UserListActivity extends ColorActivity {
+public class UserListActivity extends ColorDefaultActivity {
 
 	public static void newInstance(final Context context) {
 		final Intent intent = new Intent(context, UserListActivity.class);
@@ -89,7 +89,7 @@ public class UserListActivity extends ColorActivity {
         private boolean showActionsDialog(final int position) {
             final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
             builder.setItems(R.array.user_list_actions, new UserClickListener(position));
-            builder.setTitle(R.string.title_select_action);
+            builder.setTitle(R.string.title_action_select);
             builder.create().show();
             return true;
         }

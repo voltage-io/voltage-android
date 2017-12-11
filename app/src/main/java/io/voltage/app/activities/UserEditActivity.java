@@ -23,7 +23,7 @@ import io.voltage.app.monitors.UserEditMonitor;
 import io.voltage.app.requests.UserQuery;
 import io.voltage.app.requests.UserUpdate;
 
-public class UserEditActivity extends ColorActivity {
+public class UserEditActivity extends ColorDefaultActivity {
 
     private interface Extras {
         String REG_ID = "reg_id";

@@ -54,10 +54,13 @@ import io.voltage.app.requests.MessageDelete;
 import io.voltage.app.requests.MessageInsert;
 import io.voltage.app.requests.MessageUpdate;
 import io.voltage.app.requests.ParticipantsQuery;
+import io.voltage.app.requests.ThreadColorUpdate;
 import io.voltage.app.requests.ThreadUpdate;
 import io.voltage.app.utils.AnimUtils;
 
-public class ConversationActivity extends ColorActivity implements QueryListener {
+public class ConversationActivity extends ColorDefaultActivity implements QueryListener {
+
+    private static final int REQUEST_COLOR = 1000;
 
     private interface Extras {
         String THREAD_ID = "thread_id";
@@ -116,7 +119,17 @@ public class ConversationActivity extends ColorActivity implements QueryListener
             mThreadState = cursor.getInt(cursor.getColumnIndex(ParticipantView.Columns.THREAD_STATE));
 
             setTitle(mFormatHelper.getThreadName(threadName, userNames));
+
+            final String color = cursor.getString(cursor.getColumnIndex(ParticipantView.Columns.THREAD_COLOR));
+            final String textColor = VoltagePreferences.getSecondaryColour(this);
+
+            setColor(color, textColor);
         }
+    }
+
+    private void setColor(final String color, final String textColor) {
+        updateColor(color, textColor);
+        getConversationFragment().setColor(color);
     }
 
     private MessageSendFragment getMessageSendFragment() {
@@ -140,6 +153,18 @@ public class ConversationActivity extends ColorActivity implements QueryListener
         final String regId = VoltagePreferences.getRegId(this);
         mDispatcher.execute(new MessageInsert(mThreadId, regId, GcmPayload.Type.USER_LEFT.name(), regId, GcmPayload.Type.USER_LEFT));
         finish();
+    }
+
+    @AddTrace(name = "ConversationActivity:changeColor")
+    private void changeColor(final String color) {
+        mDispatcher.execute(new ThreadColorUpdate(mThreadId, color));
+    }
+
+    @Override
+    protected void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
+        if (requestCode == REQUEST_COLOR && resultCode == RESULT_OK) {
+            changeColor(ColorSelectionActivity.extractColor(data));
+        }
     }
 
     @Override
@@ -173,6 +198,10 @@ public class ConversationActivity extends ColorActivity implements QueryListener
 
             case R.id.menu_view_members:
                 MembersActivity.newInstance(this, mThreadId);
+                return true;
+
+            case R.id.menu_color_change:
+                ColorSelectionActivity.newInstanceForResult(this, REQUEST_COLOR);
                 return true;
 
             case R.id.menu_rename:
@@ -239,7 +268,7 @@ public class ConversationActivity extends ColorActivity implements QueryListener
 
             final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
             builder.setItems(actions, new MessageClickListener(position));
-            builder.setTitle(R.string.title_select_action);
+            builder.setTitle(R.string.title_action_select);
             builder.create().show();
             return true;
         }
@@ -247,6 +276,12 @@ public class ConversationActivity extends ColorActivity implements QueryListener
         public void setThreadId(final String threadId) {
             if (threadId != null) {
                 execute(new ConversationQuery(threadId));
+            }
+        }
+
+        public void setColor(final String color) {
+            if (color != null) {
+                ((ConversationAdapter) getCursorAdapter()).setColor(color);
             }
         }
 

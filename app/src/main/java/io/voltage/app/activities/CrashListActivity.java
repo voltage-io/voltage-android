@@ -19,7 +19,7 @@ import io.voltage.app.application.VoltageContentProvider.CrashTable;
 import io.voltage.app.requests.CrashDelete;
 import io.voltage.app.requests.CrashQuery;
 
-public class CrashListActivity extends ColorActivity {
+public class CrashListActivity extends ColorDefaultActivity {
 
 
     public static void newInstance(final Context context) {

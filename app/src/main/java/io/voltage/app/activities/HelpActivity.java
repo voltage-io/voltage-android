@@ -6,7 +6,7 @@ import android.os.Bundle;
 
 import io.voltage.app.R;
 
-public class HelpActivity extends ColorActivity {
+public class HelpActivity extends ColorDefaultActivity {
 
 	public static void newInstance(final Context context) {
 		final Intent intent = new Intent(context, HelpActivity.class);

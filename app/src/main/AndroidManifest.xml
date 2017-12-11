@@ -1,6 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="io.voltage.app"
-    android:versionCode="86"
+    android:versionCode="87"
     android:versionName="1.1.0">
 
     <uses-permission android:name="android.permission.NFC" />
@@ -136,8 +136,8 @@
             android:parentActivityName=".activities.SettingsActivity" />
 
         <activity
-            android:name=".activities.HelpActivity"
-            android:theme="@android:style/Theme.Holo.Light.Dialog.NoActionBar" />
+            android:name=".activities.ColorSelectionActivity"
+            android:theme="@style/VoltageTheme.Dialog"/>
 
         <activity
             android:name=".activities.CrashListActivity"/>

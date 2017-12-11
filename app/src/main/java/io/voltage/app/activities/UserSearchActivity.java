@@ -23,7 +23,7 @@ import io.voltage.app.application.VoltageContentProvider.UserSearchView;
 import io.voltage.app.helpers.SearchHelper;
 import io.voltage.app.requests.UserSearchQuery;
 
-public class UserSearchActivity extends ColorActivity {
+public class UserSearchActivity extends ColorDefaultActivity {
 
     public static void newInstance(final Context context) {
         final Intent intent = new Intent(context, UserSearchActivity.class);

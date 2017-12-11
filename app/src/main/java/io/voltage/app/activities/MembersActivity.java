@@ -81,7 +81,7 @@ public class MembersActivity extends FragmentActivity {
         private boolean showActionsDialog(final int position) {
             final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
             builder.setItems(R.array.members_actions, new MemberClickListener(position));
-            builder.setTitle(R.string.title_select_action);
+            builder.setTitle(R.string.title_action_select);
             builder.create().show();
             return true;
         }

@@ -32,6 +32,10 @@ android {
 }
 
 dependencies {
+    compile 'io.pivotal:arca-service:1.1.2'
+    compile 'io.pivotal:arca-provider:1.1.2'
+    compile 'io.pivotal:arca-fragments:1.1.2'
+
     compile 'com.google.code.gson:gson:2.8.0'
     compile 'com.facebook.fresco:fresco:1.0.0'
 
@@ -48,10 +52,6 @@ dependencies {
     compile 'com.google.firebase:firebase-core:11.6.2'
     compile 'com.google.firebase:firebase-messaging:11.6.2'
     compile 'com.google.android.gms:play-services-base:11.6.2'
-
-    compile 'io.pivotal:arca-service:1.1.2'
-    compile 'io.pivotal:arca-provider:1.1.2'
-    compile 'io.pivotal:arca-fragments:1.1.2'
 
     testCompile 'junit:junit:4.12'
     testCompile 'org.mockito:mockito-core:2.10.0'
