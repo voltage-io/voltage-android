@@ -58,7 +58,7 @@ import io.voltage.app.requests.ThreadColorUpdate;
 import io.voltage.app.requests.ThreadUpdate;
 import io.voltage.app.utils.AnimUtils;
 
-public class ConversationActivity extends ColorDefaultActivity implements QueryListener {
+public class ConversationActivity extends ColorActivity implements QueryListener {
 
     private static final int REQUEST_COLOR = 1000;
 
