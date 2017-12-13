@@ -19,7 +19,7 @@ import io.voltage.app.utils.ColorUtils;
 
 public class ConversationAdapter extends ModernCursorAdapter {
 
-    private static final String IMAGE_REGEX = "http(s?)://.+\\.(jpeg|jpg|gif|png).*";
+    private static final String IMAGE_REGEX = "http(s?)://.+\\.(jpeg|jpg|gif|png|webp).*";
 
     private String mColor;
 

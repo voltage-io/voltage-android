@@ -31,7 +31,7 @@ public class VoltageApi {
     }
 
     private interface VoltageService {
-        String SERVER_URL = "http://api.voltage.io";
+        String SERVER_URL = "https://voltage-api.cfapps.io";
 
         @POST("/v1/registrations")
         @Headers({"Authorization: bearer " + VoltageProperties.SERVER_KEY})

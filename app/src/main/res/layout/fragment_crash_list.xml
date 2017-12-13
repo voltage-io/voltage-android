@@ -3,18 +3,19 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <ListView
+    <android.support.v7.widget.RecyclerView
         android:id="@android:id/list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:clipToPadding="false"
         android:padding="10dp"
-        android:visibility="gone" />
+        android:scrollbars="vertical"
+        android:visibility="invisible"/>
 
     <include
-        layout="@layout/empty_no_results" />
+        layout="@layout/empty_no_results"/>
 
     <include
-        layout="@layout/progress" />
+        layout="@layout/progress"/>
 
 </FrameLayout>

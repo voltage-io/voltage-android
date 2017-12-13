@@ -84,9 +84,6 @@ public class VoltageContentProvider extends DatabaseProvider {
             @Column(Column.Type.TEXT) String ID = "id";
             @Column(Column.Type.TEXT) String TRACE = "trace";
         }
-
-        @Override public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {}
-        @Override public void onDowngrade(SQLiteDatabase db, int oldVersion, int newVersion) {}
     }
 
     public static class RegistrationTable extends SQLiteTable {
