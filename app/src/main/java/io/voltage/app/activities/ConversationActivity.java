@@ -16,7 +16,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.CursorAdapter;
-import android.widget.TextView;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.google.firebase.perf.metrics.AddTrace;
@@ -161,13 +161,6 @@ public class ConversationActivity extends ColorActivity implements QueryListener
     }
 
     @Override
-    protected void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
-        if (requestCode == REQUEST_COLOR && resultCode == RESULT_OK) {
-            changeColor(ColorSelectionActivity.extractColor(data));
-        }
-    }
-
-    @Override
     public boolean onCreateOptionsMenu(final Menu menu) {
         getMenuInflater().inflate(R.menu.activity_conversation, menu);
         return true;
@@ -201,7 +194,7 @@ public class ConversationActivity extends ColorActivity implements QueryListener
                 return true;
 
             case R.id.menu_color_change:
-                ColorSelectionActivity.newInstanceForResult(this, REQUEST_COLOR);
+                ColorSelectionActivity.newInstance(this, REQUEST_COLOR);
                 return true;
 
             case R.id.menu_rename:
@@ -214,6 +207,13 @@ public class ConversationActivity extends ColorActivity implements QueryListener
 
             default:
                 return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
+    protected void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
+        if (requestCode == REQUEST_COLOR && resultCode == RESULT_OK) {
+            changeColor(ColorSelectionActivity.extractColor(data));
         }
     }
 
@@ -281,8 +281,13 @@ public class ConversationActivity extends ColorActivity implements QueryListener
 
         public void setColor(final String color) {
             if (color != null) {
-                ((ConversationAdapter) getCursorAdapter()).setColor(color);
+                getCursorAdapter().setColor(color);
             }
+        }
+
+        @Override
+        public ConversationAdapter getCursorAdapter() {
+            return (ConversationAdapter) super.getCursorAdapter();
         }
 
         private final class MessageClickListener implements DialogInterface.OnClickListener {
@@ -342,14 +347,14 @@ public class ConversationActivity extends ColorActivity implements QueryListener
 
         private View mSendButton;
         private View mEmojiButton;
-        private TextView mMessageView;
+        private EditText mMessageView;
         private String mThreadId;
 
         @Override
         public void onViewCreated(final View view, final Bundle savedInstanceState) {
             super.onViewCreated(view, savedInstanceState);
 
-            mMessageView = (TextView) view.findViewById(R.id.message_send_text);
+            mMessageView = (EditText) view.findViewById(R.id.message_send_text);
 
             mSendButton = view.findViewById(R.id.message_send_action);
             mSendButton.setOnClickListener(this);
@@ -380,7 +385,7 @@ public class ConversationActivity extends ColorActivity implements QueryListener
 
                 execute(new MessageInsert(mThreadId, senderId, text, null, GcmPayload.Type.MESSAGE));
 
-                mMessageView.setText("");
+                mMessageView.getText().clear();
             }
         }
 
@@ -391,7 +396,8 @@ public class ConversationActivity extends ColorActivity implements QueryListener
                 @Override
                 public void onClick(final DialogInterface dialog, final int which) {
                     final String[] emojis = getResources().getStringArray(R.array.emojicons);
-                    mMessageView.setText(mMessageView.getText().toString() + emojis[which]);
+
+                    mMessageView.append(emojis[which]);
                 }
             });
             builder.create().show();

@@ -20,9 +20,9 @@ public class ColorSelectionActivity extends FragmentActivity {
         String COLOR = "color";
     }
 
-    public static void newInstanceForResult(final Activity activity, final int result) {
+    public static void newInstance(final Activity activity, final int requestCode) {
         final Intent intent = new Intent(activity, ColorSelectionActivity.class);
-        activity.startActivityForResult(intent, result);
+        activity.startActivityForResult(intent, requestCode);
     }
 
     public static String extractColor(final Intent intent) {

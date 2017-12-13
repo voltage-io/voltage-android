@@ -1,48 +1,42 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="65dp"
-    android:paddingBottom="5dp"
-    android:paddingLeft="5dp"
-    android:paddingRight="5dp">
+    android:layout_height="75dp"
+    android:paddingBottom="10dp"
+    android:paddingLeft="10dp"
+    android:paddingRight="10dp">
 
-    <LinearLayout
+    <Button
+        android:id="@+id/message_emojis"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_gravity="left|center_vertical"
+        android:background="@android:color/transparent"
+        android:gravity="center"
+        android:text="@string/emoji"
+        android:textColor="#777"
+        android:textStyle="bold"/>
+
+    <EditText
+        android:id="@+id/message_send_text"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@drawable/background_dark"
-        android:orientation="horizontal"
-        android:padding="10dp">
+        android:layout_height="60dp"
+        android:background="@drawable/background_light"
+        android:inputType="textMultiLine"
+        android:paddingBottom="7dp"
+        android:paddingLeft="50dp"
+        android:paddingRight="50dp"
+        android:paddingTop="7dp"
+        android:textColor="#777"
+        android:textSize="14sp"/>
 
-        <Button
-            android:id="@+id/message_emojis"
-            android:layout_width="25dp"
-            android:layout_height="45dp"
-            android:background="@drawable/background_selector"
-            android:gravity="center"
-            android:text="@string/emoji"
-            android:textColor="#777"
-            android:textStyle="bold" />
+    <ImageButton
+        android:id="@+id/message_send_action"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_gravity="right|center_vertical"
+        android:background="@android:color/transparent"
+        android:contentDescription="@string/title_send"
+        android:gravity="center"
+        android:src="?attr/actionSend"/>
 
-        <EditText
-            android:id="@+id/message_send_text"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:layout_weight="1"
-            android:background="@drawable/background_light"
-            android:inputType="textMultiLine"
-            android:padding="7dp"
-            android:textColor="#777"
-            android:textSize="14sp" />
-
-        <ImageButton
-            android:id="@+id/message_send_action"
-            android:layout_width="45dp"
-            android:layout_height="45dp"
-            android:background="@drawable/background_selector"
-            android:contentDescription="@string/title_send"
-            android:gravity="center_vertical"
-            android:src="?attr/actionSend" />
-
-    </LinearLayout>
 </FrameLayout>
