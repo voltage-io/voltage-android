@@ -8,7 +8,6 @@ import java.util.List;
 
 import io.pivotal.arca.provider.Column;
 import io.pivotal.arca.provider.ColumnOptions;
-import io.pivotal.arca.provider.DataUtils;
 import io.pivotal.arca.provider.DatabaseProvider;
 import io.pivotal.arca.provider.GroupBy;
 import io.pivotal.arca.provider.Joins;
@@ -21,7 +20,9 @@ import io.pivotal.arca.provider.SelectAs;
 import io.pivotal.arca.provider.SelectFrom;
 import io.pivotal.arca.provider.Unique;
 import io.pivotal.arca.provider.Where;
+import io.voltage.app.models.ImageResponse.Result;
 import io.voltage.app.models.Registration;
+import io.voltage.app.utils.DataUtils;
 
 public class VoltageContentProvider extends DatabaseProvider {
 
@@ -42,6 +43,7 @@ public class VoltageContentProvider extends DatabaseProvider {
         Uri RECIPIENTS = Uri.withAppendedPath(BASE_URI, Paths.RECIPIENTS);
         Uri TRANSACTIONS = Uri.withAppendedPath(BASE_URI, Paths.TRANSACTIONS);
         Uri USER_SEARCH = Uri.withAppendedPath(BASE_URI, Paths.USER_SEARCH);
+        Uri IMAGE_SEARCH = Uri.withAppendedPath(BASE_URI, Paths.IMAGE_SEARCH);
     }
 
     private interface Paths {
@@ -58,6 +60,7 @@ public class VoltageContentProvider extends DatabaseProvider {
         String RECIPIENTS = "recipients";
         String TRANSACTIONS = "transactions";
         String USER_SEARCH = "user_search";
+        String IMAGE_SEARCH = "image_search";
     }
 
     @Override
@@ -75,6 +78,7 @@ public class VoltageContentProvider extends DatabaseProvider {
         registerDataset(AUTHORITY, Paths.RECIPIENTS, RecipientView.class);
         registerDataset(AUTHORITY, Paths.TRANSACTIONS, TransactionView.class);
         registerDataset(AUTHORITY, Paths.USER_SEARCH, UserSearchView.class);
+        registerDataset(AUTHORITY, Paths.IMAGE_SEARCH, ImageSearchView.class);
         return true;
     }
 
@@ -362,4 +366,16 @@ public class VoltageContentProvider extends DatabaseProvider {
         }
     }
 
+    public static class ImageSearchView extends SearchDataset {
+
+        public interface Columns {
+            @Column(Column.Type.TEXT) String _ID = "_id";
+            @Column(Column.Type.TEXT) String IMAGE_URL = "image_url";
+        }
+
+        public Cursor search(final String[] args) throws Exception {
+            final List<Result> results = VoltageApi.getImages(args[0]).getResults();
+            return DataUtils.getCursor(results);
+        }
+    }
 }

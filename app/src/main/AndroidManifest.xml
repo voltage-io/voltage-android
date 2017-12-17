@@ -140,6 +140,9 @@
             android:theme="@style/VoltageTheme.Dialog"/>
 
         <activity
+            android:name=".activities.ImageSearchActivity"/>
+
+        <activity
             android:name=".activities.CrashListActivity"/>
 
         <provider

@@ -1,0 +1,22 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:fresco="http://schemas.android.com/apk/res-auto"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical">
+
+    <com.facebook.drawee.view.SimpleDraweeView
+        android:id="@+id/powered_by_giphy"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="#000"
+        android:padding="5dp"
+        android:scaleType="fitCenter"
+        fresco:actualImageScaleType="fitCenter"/>
+
+    <fragment
+        android:id="@+id/fragment_image_search"
+        android:name="io.voltage.app.activities.ImageSearchActivity$ImageSearchFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+</LinearLayout>

@@ -5,6 +5,7 @@ import java.util.List;
 
 import io.voltage.app.models.GcmRequest;
 import io.voltage.app.models.GcmResponse;
+import io.voltage.app.models.ImageResponse;
 import io.voltage.app.models.Registration;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
@@ -46,19 +47,32 @@ public class VoltageApi {
         Call<List<Registration>> getRegistrations(@Query("search") final String search);
     }
 
+    private interface GiphyService {
+        String SERVER_URL = "https://api.giphy.com";
+
+        @GET("/v1/gifs/search")
+        Call<ImageResponse> getImages(@Query("api_key") final String key, @Query("q") final String query);
+    }
+
     private static final GcmService GCM_SERVICE = new Retrofit.Builder()
             .baseUrl(GcmService.SERVER_URL)
             .addConverterFactory(GsonConverterFactory.create())
-            .client(createAuthClient())
+            .client(createLoggingClient())
             .build().create(GcmService.class);
 
     private static final VoltageService VOLTAGE_SERVICE = new Retrofit.Builder()
             .baseUrl(VoltageService.SERVER_URL)
             .addConverterFactory(GsonConverterFactory.create())
-            .client(createAuthClient())
+            .client(createLoggingClient())
             .build().create(VoltageService.class);
 
-    private static OkHttpClient createAuthClient() {
+    private static final GiphyService GIPHY_SERVICE = new Retrofit.Builder()
+            .baseUrl(GiphyService.SERVER_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .client(createLoggingClient())
+            .build().create(GiphyService.class);
+
+    private static OkHttpClient createLoggingClient() {
         final HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
         logging.setLevel(HttpLoggingInterceptor.Level.BODY);
         return new OkHttpClient.Builder().addInterceptor(logging).build();
@@ -79,5 +93,9 @@ public class VoltageApi {
 
     public static List<Registration> getRegistrations(final String search) throws IOException {
         return VOLTAGE_SERVICE.getRegistrations(search).execute().body();
+    }
+
+    public static ImageResponse getImages(final String search) throws IOException {
+        return GIPHY_SERVICE.getImages(VoltageProperties.GIPHY_KEY, search).execute().body();
     }
 }

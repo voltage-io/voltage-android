@@ -27,20 +27,26 @@
         android:title="@string/menu_members_view"/>
 
     <item
-        android:id="@+id/menu_color_change"
+        android:id="@+id/menu_image_search"
         android:orderInCategory="104"
+        app:showAsAction="never"
+        android:title="@string/menu_image_search"/>
+
+    <item
+        android:id="@+id/menu_color_change"
+        android:orderInCategory="105"
         app:showAsAction="never"
         android:title="@string/menu_color_change"/>
 
     <item
         android:id="@+id/menu_rename"
-        android:orderInCategory="105"
+        android:orderInCategory="106"
         app:showAsAction="never"
         android:title="@string/menu_rename"/>
 
     <item
         android:id="@+id/menu_leave"
-        android:orderInCategory="106"
+        android:orderInCategory="107"
         app:showAsAction="never"
         android:title="@string/menu_leave" />
 

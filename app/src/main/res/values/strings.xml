@@ -12,6 +12,7 @@
     <string name="title_conversation_edit">EDIT CONVERSATION</string>
     <string name="title_user_list">FRIENDS</string>
     <string name="title_user_search">USER SEARCH</string>
+    <string name="title_image_search">IMAGE SEARCH</string>
     <string name="title_action_select">SELECT ACTION</string>
     <string name="title_color_select">SELECT COLOR</string>
     <string name="title_messages_delete">DELETE MESSAGES</string>
@@ -67,6 +68,7 @@
     <string name="menu_members_remove">Remove Members</string>
     <string name="menu_members_view">View Members</string>
     <string name="menu_color_change">Change Color</string>
+    <string name="menu_image_search">Image Search</string>
     <string name="menu_rename">Rename</string>
     <string name="menu_leave">Leave</string>
     <string name="menu_mute">Mute</string>

@@ -16,6 +16,7 @@ import io.pivotal.arca.fragments.ArcaFragmentBindings;
 import io.pivotal.arca.fragments.ArcaSimpleRecyclerViewFragment;
 import io.voltage.app.R;
 import io.voltage.app.application.VoltageContentProvider.CrashTable;
+import io.voltage.app.monitors.CrashListMonitor;
 import io.voltage.app.requests.CrashDelete;
 import io.voltage.app.requests.CrashQuery;
 
@@ -35,7 +36,8 @@ public class CrashListActivity extends ColorDefaultActivity {
 
     @ArcaFragment(
             fragmentLayout = R.layout.fragment_crash_list,
-            adapterItemLayout = R.layout.list_item_crash
+            adapterItemLayout = R.layout.list_item_crash,
+            monitor = CrashListMonitor.class
     )
     public static class CrashListFragment extends ArcaSimpleRecyclerViewFragment {
 

@@ -61,6 +61,7 @@ import io.voltage.app.utils.AnimUtils;
 public class ConversationActivity extends ColorActivity implements QueryListener {
 
     private static final int REQUEST_COLOR = 1000;
+    private static final int REQUEST_IMAGE = 10000;
 
     private interface Extras {
         String THREAD_ID = "thread_id";
@@ -155,6 +156,12 @@ public class ConversationActivity extends ColorActivity implements QueryListener
         finish();
     }
 
+    @AddTrace(name = "ConversationActivity:insertImage")
+    private void insertImage(final String url) {
+        final String regId = VoltagePreferences.getRegId(this);
+        mDispatcher.execute(new MessageInsert(mThreadId, regId, url, null, GcmPayload.Type.MESSAGE));
+    }
+
     @AddTrace(name = "ConversationActivity:changeColor")
     private void changeColor(final String color) {
         mDispatcher.execute(new ThreadColorUpdate(mThreadId, color));
@@ -193,6 +200,10 @@ public class ConversationActivity extends ColorActivity implements QueryListener
                 MembersActivity.newInstance(this, mThreadId);
                 return true;
 
+            case R.id.menu_image_search:
+                ImageSearchActivity.newInstance(this, REQUEST_IMAGE);
+                return true;
+
             case R.id.menu_color_change:
                 ColorSelectionActivity.newInstance(this, REQUEST_COLOR);
                 return true;
@@ -212,7 +223,11 @@ public class ConversationActivity extends ColorActivity implements QueryListener
 
     @Override
     protected void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
-        if (requestCode == REQUEST_COLOR && resultCode == RESULT_OK) {
+        if (requestCode == REQUEST_IMAGE && resultCode == RESULT_OK) {
+            insertImage(ImageSearchActivity.extractImageUrl(data));
+        }
+
+	    if (requestCode == REQUEST_COLOR && resultCode == RESULT_OK) {
             changeColor(ColorSelectionActivity.extractColor(data));
         }
     }

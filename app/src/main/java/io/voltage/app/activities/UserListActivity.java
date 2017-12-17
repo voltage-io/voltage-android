@@ -105,7 +105,7 @@ public class UserListActivity extends ColorDefaultActivity {
 
         @Override
         public void onCreateOptionsMenu(final Menu menu, final MenuInflater inflater) {
-            inflater.inflate(R.menu.fragment_user_list, menu);
+            inflater.inflate(R.menu.fragment_search, menu);
 
             new SearchHelper.Default().styleSearchView(menu, this);
         }
