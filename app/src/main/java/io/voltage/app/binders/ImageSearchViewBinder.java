@@ -16,7 +16,6 @@ import io.pivotal.arca.adapters.Binding;
 import io.pivotal.arca.adapters.ViewBinder;
 import io.voltage.app.R;
 import io.voltage.app.application.VoltagePreferences;
-import io.voltage.app.utils.Logger;
 
 public class ImageSearchViewBinder implements ViewBinder {
 
@@ -28,7 +27,6 @@ public class ImageSearchViewBinder implements ViewBinder {
                 return setMessageImage((SimpleDraweeView) view, cursor, binding);
 
             default:
-                Logger.ex(new RuntimeException("no id"));
                 return false;
         }
     }
@@ -59,15 +57,11 @@ public class ImageSearchViewBinder implements ViewBinder {
             final boolean autoPlayGifs = VoltagePreferences.shouldAutoPlayGifs(mView.getContext());
             final boolean showPlayOverlay = animatable != null && !autoPlayGifs;
 
-            Logger.v("autoplay: " + autoPlayGifs);
-
             final ViewGroup viewGroup = (ViewGroup) mView.getParent();
             final View overlay = viewGroup.findViewById(R.id.search_image_overlay);
             overlay.setVisibility(showPlayOverlay ? View.VISIBLE : View.INVISIBLE);
 
             if (animatable != null && autoPlayGifs) {
-
-                Logger.v("start gif");
                 animatable.start();
             }
         }
