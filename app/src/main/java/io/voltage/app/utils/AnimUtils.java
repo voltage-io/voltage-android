@@ -22,19 +22,15 @@ public class AnimUtils {
     }
 
     public static void animate(final View view) {
-        if (view != null) {
-            if (view instanceof SimpleDraweeView) {
-                animate((SimpleDraweeView) view);
-            }
+        if (view != null && view instanceof SimpleDraweeView) {
+            animate((SimpleDraweeView) view);
         }
     }
 
     private static void animate(final SimpleDraweeView view) {
         final DraweeController controller = view.getController();
         if (controller != null) {
-            final Animatable animatable = controller.getAnimatable();
-
-            toggleAnimatable(view, animatable);
+            toggleAnimatable(view, controller.getAnimatable());
         }
     }
 
@@ -43,7 +39,7 @@ public class AnimUtils {
             final boolean running = animatable.isRunning();
 
             final ViewGroup viewGroup = (ViewGroup) view.getParent();
-            final View overlay = viewGroup.findViewById(R.id.message_image_overlay);
+            final View overlay = viewGroup.findViewById(R.id.image_overlay);
             overlay.setVisibility(running ? View.VISIBLE : View.INVISIBLE);
 
             if (running) {

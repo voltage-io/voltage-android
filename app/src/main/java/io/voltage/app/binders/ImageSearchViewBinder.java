@@ -58,7 +58,7 @@ public class ImageSearchViewBinder implements ViewBinder {
             final boolean showPlayOverlay = animatable != null && !autoPlayGifs;
 
             final ViewGroup viewGroup = (ViewGroup) mView.getParent();
-            final View overlay = viewGroup.findViewById(R.id.search_image_overlay);
+            final View overlay = viewGroup.findViewById(R.id.image_overlay);
             overlay.setVisibility(showPlayOverlay ? View.VISIBLE : View.INVISIBLE);
 
             if (animatable != null && autoPlayGifs) {

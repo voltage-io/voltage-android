@@ -17,7 +17,7 @@
         fresco:viewAspectRatio="1.33"/>
 
     <ImageView
-        android:id="@+id/search_image_overlay"
+        android:id="@+id/image_overlay"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_margin="2dp"
@@ -25,5 +25,5 @@
         android:contentDescription="@string/play"
         android:scaleType="centerInside"
         android:src="@drawable/ic_play_circle_filled_white_48dp"
-        android:visibility="invisible" />
+        android:visibility="invisible"/>
 </FrameLayout>

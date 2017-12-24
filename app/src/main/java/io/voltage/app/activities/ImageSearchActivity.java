@@ -29,6 +29,7 @@ import io.voltage.app.application.VoltageContentProvider.ImageSearchView;
 import io.voltage.app.binders.ImageSearchViewBinder;
 import io.voltage.app.helpers.SearchHelper;
 import io.voltage.app.requests.ImageSearchQuery;
+import io.voltage.app.utils.AnimUtils;
 
 public class ImageSearchActivity extends ColorDefaultActivity {
 
@@ -111,6 +112,11 @@ public class ImageSearchActivity extends ColorDefaultActivity {
 
         @Override
         public void onItemClick(final RecyclerView recyclerView, final View view, final int position, final long id) {
+            AnimUtils.animate(view.findViewById(R.id.search_image));
+        }
+
+        @Override
+        public void onItemLongClick(final RecyclerView recyclerView, final View view, final int position, final long id) {
             final Cursor cursor = (Cursor) getRecyclerViewAdapter().getItem(position);
             final String url = cursor.getString(cursor.getColumnIndex(ImageSearchView.Columns.IMAGE_URL));
 
