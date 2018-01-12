@@ -11,6 +11,8 @@ public interface FormatHelper {
 
     String getThreadName(final String threadName, final String userNames);
     String getThreadName(final Context context, final String threadId);
+    String getThreadColor(final String color);
+
     int getNotificationId(final String idString);
 
 
@@ -34,6 +36,14 @@ public interface FormatHelper {
 
             return "UNKNOWN";
         }
+        public String getThreadColor(final String color) {
+            if (!TextUtils.isEmpty(color) && !"null".equals(color)) {
+                return color;
+            }
+
+            return "#777777";
+        }
+
 
         public int getNotificationId(final String idString) {
             if (idString != null) {

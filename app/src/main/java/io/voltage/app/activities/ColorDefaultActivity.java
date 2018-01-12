@@ -14,10 +14,7 @@ public abstract class ColorDefaultActivity extends ColorActivity implements OnSh
         final SharedPreferences prefs = VoltagePreferences.getSharedPreferences(this);
         prefs.registerOnSharedPreferenceChangeListener(this);
 
-        final String color = VoltagePreferences.getPrimaryColour(this);
-        final String textColor = VoltagePreferences.getSecondaryColour(this);
-
-        updateColor(color, textColor);
+        updateColor(VoltagePreferences.getPrimaryColour(this));
     }
 
     @Override
@@ -30,9 +27,7 @@ public abstract class ColorDefaultActivity extends ColorActivity implements OnSh
 
     @Override
     public void onSharedPreferenceChanged(final SharedPreferences sharedPreferences, final String key) {
-        final String color = VoltagePreferences.getPrimaryColour(this);
-        final String textColor = VoltagePreferences.getSecondaryColour(this);
 
-        updateColor(color, textColor);
+        updateColor(VoltagePreferences.getPrimaryColour(this));
     }
 }

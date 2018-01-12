@@ -40,6 +40,7 @@ import io.voltage.app.adapters.ConversationAdapter.ViewType;
 import io.voltage.app.application.VoltageContentProvider.ConversationView;
 import io.voltage.app.application.VoltageContentProvider.MessageTable;
 import io.voltage.app.application.VoltageContentProvider.ParticipantView;
+import io.voltage.app.application.VoltageContentProvider.ParticipantView.Columns;
 import io.voltage.app.application.VoltageContentProvider.ThreadTable;
 import io.voltage.app.application.VoltagePreferences;
 import io.voltage.app.binders.ConversationViewBinder;
@@ -116,20 +117,17 @@ public class ConversationActivity extends ColorActivity implements QueryListener
         if (cursor != null && cursor.moveToFirst()) {
             final String threadName = cursor.getString(cursor.getColumnIndex(ParticipantView.Columns.THREAD_NAME));
             final String userNames = cursor.getString(cursor.getColumnIndex(ParticipantView.Columns.USER_NAMES));
+            final String color = cursor.getString(cursor.getColumnIndex(Columns.THREAD_COLOR));
 
             mThreadState = cursor.getInt(cursor.getColumnIndex(ParticipantView.Columns.THREAD_STATE));
 
             setTitle(mFormatHelper.getThreadName(threadName, userNames));
-
-            final String color = cursor.getString(cursor.getColumnIndex(ParticipantView.Columns.THREAD_COLOR));
-            final String textColor = VoltagePreferences.getSecondaryColour(this);
-
-            setColor(color, textColor);
+            setColor(mFormatHelper.getThreadColor(color));
         }
     }
 
-    private void setColor(final String color, final String textColor) {
-        updateColor(color, textColor);
+    private void setColor(final String color) {
+        updateColor(color);
         getConversationFragment().setColor(color);
     }
 

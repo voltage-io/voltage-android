@@ -32,13 +32,13 @@ public abstract class ColorActivity extends AppCompatActivity {
         handleUncaughtException(this);
     }
 
-    protected void updateColor(final String color, final String textColor) {
+    protected void updateColor(final String color) {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             updateTitleBarColor(color);
         }
 
-        updateActionBarColor(color, textColor);
+        updateActionBarColor(color);
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
@@ -49,7 +49,7 @@ public abstract class ColorActivity extends AppCompatActivity {
         getWindow().setStatusBarColor(darkColor);
     }
 
-    public void updateActionBarColor(final String color, final String textColor) {
+    public void updateActionBarColor(final String color) {
 
         final ActionBarDrawable drawable = new ActionBarDrawable(this, color);
 

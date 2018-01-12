@@ -117,7 +117,7 @@ public class VoltageContentProvider extends DatabaseProvider {
 
         @Override public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
             if (oldVersion < 87) {
-                db.execSQL("ALTER TABLE ThreadTable ADD COLUMN color TEXT DEFAULT '#777777'");
+                db.execSQL("ALTER TABLE ThreadTable ADD COLUMN color TEXT");
             }
         }
 
