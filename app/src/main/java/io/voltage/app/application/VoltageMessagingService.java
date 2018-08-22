@@ -12,7 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import io.pivotal.arca.service.OperationService;
+import io.pivotal.arca.service.BackgroundService;
 import io.voltage.app.application.VoltageContentProvider.MessageTable;
 import io.voltage.app.helpers.DatabaseHelper;
 import io.voltage.app.helpers.NotificationHelper;
@@ -169,7 +169,7 @@ public class VoltageMessagingService extends FirebaseMessagingService {
             final String msgUuid = message.getMsgUuid();
             final int state = MessageTable.State.RECEIPT;
 
-            OperationService.start(context, new MessageStateOperation(msgUuid, state));
+            BackgroundService.start(context, new MessageStateOperation(msgUuid, state));
         }
 
         private void handleThreadCreated(final Context context, final GcmMessage gcmMessage) {
@@ -224,7 +224,7 @@ public class VoltageMessagingService extends FirebaseMessagingService {
         private void handleUserCheck(final Context context, final String userId) {
             final User user = mDatabaseHelper.getUser(context, userId);
             if (user == null) {
-                OperationService.start(context, new FriendRequestOperation(userId));
+                BackgroundService.start(context, new FriendRequestOperation(userId));
             }
         }
 
@@ -255,7 +255,7 @@ public class VoltageMessagingService extends FirebaseMessagingService {
         private void handleFriendRequest(final Context context, final GcmFriendRequest gcmFriendRequest) {
             final String senderId = gcmFriendRequest.getSenderId();
 
-            OperationService.start(context, new FriendResponseOperation(senderId));
+            BackgroundService.start(context, new FriendResponseOperation(senderId));
         }
 
         private void handleFriendResponse(final Context context, final GcmFriendResponse gcmFriendResponse) {
@@ -274,14 +274,14 @@ public class VoltageMessagingService extends FirebaseMessagingService {
             final String senderId = gcmChecksum.getSenderId();
             final String checksum = gcmChecksum.getChecksum();
 
-            OperationService.start(context, new ChecksumReplyOperation(threadId, senderId, checksum));
+            BackgroundService.start(context, new ChecksumReplyOperation(threadId, senderId, checksum));
         }
 
         private void handleChecksumFailed(final Context context, final GcmChecksumFailed gcmChecksumFailed) {
             final String threadId = gcmChecksumFailed.getThreadId();
             final String senderId = gcmChecksumFailed.getSenderId();
 
-            OperationService.start(context, new SyncRequestOperation(threadId, senderId));
+            BackgroundService.start(context, new SyncRequestOperation(threadId, senderId));
         }
 
         private void handleSyncRequest(final Context context, final GcmSyncRequest gcmSyncRequest) {
@@ -290,7 +290,7 @@ public class VoltageMessagingService extends FirebaseMessagingService {
             final String msgUuid = gcmSyncRequest.getMsgUuid();
             final int msgIndex = gcmSyncRequest.getMsgIndex();
 
-            OperationService.start(context, new SyncStartOperation(threadId, senderId, msgUuid, msgIndex));
+            BackgroundService.start(context, new SyncStartOperation(threadId, senderId, msgUuid, msgIndex));
         }
 
         private void handleSyncStart(final Context context, final GcmSyncStart gcmSyncStart) {
@@ -301,7 +301,7 @@ public class VoltageMessagingService extends FirebaseMessagingService {
 
             MESSAGES.put(lookup, new GcmSyncMessageList(count));
 
-            OperationService.start(context, new SyncReadyOperation(threadId, senderId, count));
+            BackgroundService.start(context, new SyncReadyOperation(threadId, senderId, count));
         }
 
         private void handleSyncReady(final Context context, final GcmSyncReady gcmSyncReady) {
@@ -309,7 +309,7 @@ public class VoltageMessagingService extends FirebaseMessagingService {
             final String senderId = gcmSyncReady.getSenderId();
             final int count = gcmSyncReady.getCount();
 
-            OperationService.start(context, new SyncMessagesOperation(threadId, senderId, count));
+            BackgroundService.start(context, new SyncMessagesOperation(threadId, senderId, count));
         }
 
         private void handleSyncMessage(final Context context, final GcmSyncMessage gcmSyncMessage) {
